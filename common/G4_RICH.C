@@ -10,7 +10,7 @@
 
 #include <GlobalVariables.C>
 
-#include <g4detectors/PHG4RICHSubsystem.h>
+#include <g4rich/PHG4RICHSubsystem.h>
 
 #include <g4main/PHG4Reco.h>
 

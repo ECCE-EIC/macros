@@ -5,8 +5,8 @@
 
 #include <g4calo/RawTowerBuilderByHitIndex.h>
 #include <g4calo/RawTowerDigitizer.h>
-#include <g4detectors/PHG4CrystalCalorimeterSubsystem.h>
-#include <g4detectors/PHG4ForwardCalCellReco.h>
+#include <g4eiccalos/PHG4CrystalCalorimeterSubsystem.h>
+#include <g4eiccalos/PHG4ForwardCalCellReco.h>
 
 #include <g4eval/CaloEvaluator.h>
 
@@ -19,7 +19,7 @@
 #include <fun4all/Fun4AllServer.h>
 
 R__LOAD_LIBRARY(libcalo_reco.so)
-R__LOAD_LIBRARY(libg4calo.so)
+R__LOAD_LIBRARY(libg4eiccalos.so)
 R__LOAD_LIBRARY(libg4detectors.so)
 R__LOAD_LIBRARY(libg4eval.so)
 
