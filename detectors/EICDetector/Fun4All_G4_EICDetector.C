@@ -9,7 +9,6 @@
 #include <G4_DSTReader_EICDetector.C>
 #include <G4_FwdJets.C>
 #include <G4_Global.C>
-#include <G4_HIJetReco.C>
 #include <G4_Input.C>
 #include <G4_Jets.C>
 #include <G4_Production.C>
@@ -339,11 +338,6 @@ int Fun4All_G4_EICDetector(
   Enable::FWDJETS = true;
   Enable::FWDJETS_EVAL = Enable::FWDJETS && true;
 
-  // HI Jet Reco for jet simulations in Au+Au (default is false for
-  // single particle / p+p simulations, or for Au+Au simulations which
-  // don't care about jets)
-  Enable::HIJETS = false && Enable::JETS && Enable::CEMC_TOWER && Enable::HCALIN_TOWER && Enable::HCALOUT_TOWER;
-
   // new settings using Enable namespace in GlobalVariables.C
   Enable::BLACKHOLE = true;
   //Enable::BLACKHOLE_SAVEHITS = false; // turn off saving of bh hits
@@ -454,8 +448,6 @@ int Fun4All_G4_EICDetector(
   //---------
 
   if (Enable::JETS) Jet_Reco();
-
-  if (Enable::HIJETS) HIJetReco();
 
   if (Enable::FWDJETS) Jet_FwdReco();
 
