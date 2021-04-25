@@ -6,7 +6,6 @@
 #include <DisplayOn.C>
 #include <G4Setup_EICDetector.C>
 #include <G4_Bbc.C>
-#include <G4_CaloTrigger.C>
 #include <G4_DSTReader_EICDetector.C>
 #include <G4_FwdJets.C>
 #include <G4_Global.C>
@@ -332,8 +331,6 @@ int Fun4All_G4_EICDetector(
   Enable::GLOBAL_RECO = true;
   Enable::GLOBAL_FASTSIM = true;
 
-  Enable::CALOTRIGGER = true && Enable::CEMC_TOWER && Enable::HCALIN_TOWER && Enable::HCALOUT_TOWER;
-
   // Select only one jet reconstruction- they currently use the same
   // output collections on the node tree!
   Enable::JETS = true;
@@ -451,13 +448,7 @@ int Fun4All_G4_EICDetector(
   {
     Global_FastSim();
   }
-
-  //-----------------
-  // Calo Trigger Simulation
-  //-----------------
-
-  if (Enable::CALOTRIGGER) CaloTrigger_Sim();
-
+    
   //---------
   // Jet reco
   //---------
