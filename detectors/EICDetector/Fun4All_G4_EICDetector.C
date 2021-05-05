@@ -13,13 +13,12 @@
 #include <G4_Jets.C>
 #include <G4_Production.C>
 #include <G4_User.C>
-#include <QA.C>
 
 #include <TROOT.h>
 #include <fun4all/Fun4AllDstOutputManager.h>
 #include <fun4all/Fun4AllOutputManager.h>
 #include <fun4all/Fun4AllServer.h>
-
+#include <g4eval/EventEvaluator.h>
 #include <phool/recoConsts.h>
 
 R__LOAD_LIBRARY(libfun4all.so)
@@ -48,6 +47,9 @@ int Fun4All_G4_EICDetector(
   // which will produce identical results so you can debug your code
   // rc->set_IntFlag("RANDOMSEED", 12345);
 
+   // Use the event evaluator or the default detector evaluators
+   bool use_event_evaluator = true;
+   bool use_individual_evaluators = true;// && !use_event_evaluator;
   //===============
   // Input options
   //===============
@@ -82,7 +84,7 @@ int Fun4All_G4_EICDetector(
   //   Input::SARTRE = true;
 
   // Simple multi particle generator in eta/phi/pt ranges
-  Input::SIMPLE = true;
+  // Input::SIMPLE = true;
   // Input::SIMPLE_NUMBER = 2; // if you need 2 of them
   // Input::SIMPLE_VERBOSITY = 1;
 
@@ -99,7 +101,7 @@ int Fun4All_G4_EICDetector(
   // And/Or read generated particles from file
 
   // eic-smear output
-  //  Input::READEIC = true;
+  Input::READEIC = true;
   INPUTREADEIC::filename = inputFile;
 
   // HepMC2 files
@@ -221,10 +223,10 @@ int Fun4All_G4_EICDetector(
   // Write the DST
   //======================
 
-  Enable::DSTOUT = false;
+  Enable::DSTOUT = true;
   DstOut::OutputDir = outdir;
   DstOut::OutputFile = outputFile;
-  Enable::DSTOUT_COMPRESS = false;  // Compress DST files
+  Enable::DSTOUT_COMPRESS = true;  // Compress DST files
 
   //Option to convert DST to human command readable TTree for quick poke around the outputs
 //  Enable::DSTREADER = true;
@@ -452,36 +454,59 @@ int Fun4All_G4_EICDetector(
 
   if (Enable::FWDJETS) Jet_FwdReco();
 
-  string outputroot = outputFile;
+  string evalDir = DstOut::OutputDir + "/eval/";
+  string outputroot = evalDir + outputFile;
   string remove_this = ".root";
   size_t pos = outputroot.find(remove_this);
   if (pos != string::npos)
   {
     outputroot.erase(pos, remove_this.length());
   }
+  string evalPrepend = outputFile.substr(0, outputFile.size() - 5) + "_";
 
   if (Enable::DSTREADER) G4DSTreader_EICDetector(outputroot + "_DSTReader.root");
 
   //----------------------
   // Simulation evaluation
   //----------------------
-  if (Enable::TRACKING_EVAL) Tracking_Eval(outputroot + "_g4tracking_eval.root");
+  if (use_event_evaluator)
+  {
+    EventEvaluator *eval = new EventEvaluator("EVENTEVALUATOR",  outputroot + "_eventtree.root");
+    eval->set_reco_tracing_energy_threshold(0.05);
+    eval->Verbosity(0);
 
-  if (Enable::CEMC_EVAL) CEMC_Eval(outputroot + "_g4cemc_eval.root");
-
-  if (Enable::HCALIN_EVAL) HCALInner_Eval(outputroot + "_g4hcalin_eval.root");
-
-  if (Enable::HCALOUT_EVAL) HCALOuter_Eval(outputroot + "_g4hcalout_eval.root");
-
-  if (Enable::FEMC_EVAL) FEMC_Eval(outputroot + "_g4femc_eval.root");
-
-  if (Enable::FHCAL_EVAL) FHCAL_Eval(outputroot + "_g4fhcal_eval.root");
-
-  if (Enable::EEMC_EVAL) EEMC_Eval(outputroot + "_g4eemc_eval.root");
-
-  if (Enable::JETS_EVAL) Jet_Eval(outputroot + "_g4jet_eval.root");
-
-  if (Enable::FWDJETS_EVAL) Jet_FwdEval(outputroot + "_g4fwdjet_eval.root");
+    if (Enable::TRACKING_EVAL)
+    {
+      eval->set_do_TRACKS(true);
+      //eval->set_do_HITS(true); //Potential problem 
+      eval->set_do_PROJECTIONS(true);
+      if (G4TRACKING::DISPLACED_VERTEX) 
+        eval->set_do_VERTEX(true);
+     }
+    //if (Enable::CEMC_EVAL) eval->set_do_CEMC(true); //Potential problem
+    if (Enable::EEMC_EVAL) eval->set_do_EEMC(true);
+    //if (Enable::FEMC_EVAL) eval->set_do_FEMC(true); //Potential problem
+    if (Enable::HCALIN_EVAL) eval->set_do_HCALIN(true);
+    if (Enable::HCALOUT_EVAL) eval->set_do_HCALOUT(true);
+    if (Enable::FHCAL_EVAL) eval->set_do_FHCAL(true);
+    //if (Enable::FHCAL_EVAL || Enable::FEMC_EVAL || Enable::EEMC_EVAL) //Potential problem 
+    ///  eval->set_do_CLUSTERS(true);
+    
+    //eval->set_do_MCPARTICLES(true);
+    se->registerSubsystem(eval);
+  }
+  if (use_individual_evaluators) 
+  {
+    if (Enable::TRACKING_EVAL) Tracking_Eval(outputroot + "_g4tracking_eval.root");
+    if (Enable::CEMC_EVAL) CEMC_Eval(outputroot + "_g4cemc_eval.root");
+    if (Enable::EEMC_EVAL) EEMC_Eval(outputroot + "_g4eemc_eval.root");
+    if (Enable::FEMC_EVAL) FEMC_Eval(outputroot + "_g4femc_eval.root");
+    if (Enable::HCALIN_EVAL) HCALInner_Eval(outputroot + "_g4hcalin_eval.root");
+    if (Enable::HCALOUT_EVAL) HCALOuter_Eval(outputroot + "_g4hcalout_eval.root");
+    if (Enable::FHCAL_EVAL) FHCAL_Eval(outputroot + "_g4fhcal_eval.root");
+    if (Enable::JETS_EVAL) Jet_Eval(outputroot + "_g4jet_eval.root");
+    if (Enable::FWDJETS_EVAL) Jet_FwdEval(outputroot + "_g4fwdjet_eval.root", evalDir, evalPrepend);
+  }
 
   if (Enable::USER) UserAnalysisInit();
 
