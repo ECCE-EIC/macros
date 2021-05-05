@@ -13,6 +13,7 @@
 #include <G4_Jets.C>
 #include <G4_Production.C>
 #include <G4_User.C>
+#include <QA.C>
 
 #include <TROOT.h>
 #include <fun4all/Fun4AllDstOutputManager.h>
