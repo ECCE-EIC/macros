@@ -126,74 +126,74 @@ void Jet_FwdReco()
   return;
 }
 
-void Jet_FwdEval(const std::string &outfilename = "g4fwdjets_eval.root")
+void Jet_FwdEval(const std::string &outfilepath = ".", const std::string &prepend = "")
 {
   int verbosity = std::max(Enable::VERBOSITY, Enable::FWDJETS_VERBOSITY);
   Fun4AllServer *se = Fun4AllServer::instance();
 
   JetEvaluator *evaltrk05 = new JetEvaluator("JETEVALUATORTRACK05","AntiKt_Track_r05",
-                                        "AntiKt_Truth_r05", "g4fwdjets_track_05_eval.root");
+                                        "AntiKt_Truth_r05", outfilepath + "/" + prepend + "g4fwdjets_track_05_eval.root");
   evaltrk05->Verbosity(verbosity);
   se->registerSubsystem(evaltrk05);
 
   JetEvaluator *evalfull05 = new JetEvaluator("JETEVALUATORFULL05","AntiKt_Full_r05",
-                                        "AntiKt_Truth_r05", "g4fwdjets_full_05_eval.root");
+                                        "AntiKt_Truth_r05", outfilepath + "/" + prepend + "g4fwdjets_full_05_eval.root");
   evalfull05->Verbosity(verbosity);
   se->registerSubsystem(evalfull05);
 
   JetEvaluator *evalt05 = new JetEvaluator("JETEVALUATORTOWER05","AntiKt_Tower_r05",
-                                        "AntiKt_Truth_r05", "g4fwdjets_tower_05_eval.root");
+                                        "AntiKt_Truth_r05", outfilepath + "/" + prepend + "g4fwdjets_tower_05_eval.root");
   evalt05->Verbosity(verbosity);
   se->registerSubsystem(evalt05);
   JetEvaluator *evalt07 = new JetEvaluator("JETEVALUATORTOWER07","AntiKt_Tower_r07",
-                                        "AntiKt_Truth_r07", "g4fwdjets_tower_07_eval.root");
+                                        "AntiKt_Truth_r07", outfilepath + "/" + prepend + "g4fwdjets_tower_07_eval.root");
   evalt07->Verbosity(verbosity);
   se->registerSubsystem(evalt07);
   JetEvaluator *evalt10 = new JetEvaluator("JETEVALUATORTOWER10","AntiKt_Tower_r10",
-                                        "AntiKt_Truth_r10", "g4fwdjets_tower_10_eval.root");
+                                        "AntiKt_Truth_r10", outfilepath + "/" + prepend + "g4fwdjets_tower_10_eval.root");
   evalt10->Verbosity(verbosity);
   se->registerSubsystem(evalt10);
 
   JetEvaluator *evalc05 = new JetEvaluator("JETEVALUATORCLUSTER05", "AntiKt_Cluster_r05",
-                                        "AntiKt_Truth_r05", "g4fwdjets_cluster_05_eval.root");
+                                        "AntiKt_Truth_r05", outfilepath + "/" + prepend + "g4fwdjets_cluster_05_eval.root");
   evalc05->Verbosity(verbosity);
   se->registerSubsystem(evalc05);
 
   JetEvaluator *evalc07 = new JetEvaluator("JETEVALUATORCLUSTER07", "AntiKt_Cluster_r07",
-                                        "AntiKt_Truth_r07", "g4fwdjets_cluster_07_eval.root");
+                                        "AntiKt_Truth_r07", outfilepath + "/" + prepend + "g4fwdjets_cluster_07_eval.root");
   evalc07->Verbosity(verbosity);
   se->registerSubsystem(evalc07);
 
   JetEvaluator *evalc10 = new JetEvaluator("JETEVALUATORCLUSTER10", "AntiKt_Cluster_r10",
-                                        "AntiKt_Truth_r10", "g4fwdjets_cluster_10_eval.root");
+                                        "AntiKt_Truth_r10", outfilepath + "/" + prepend + "g4fwdjets_cluster_10_eval.root");
   evalc10->Verbosity(verbosity);
   se->registerSubsystem(evalc10);
 
   JetEvaluator *evaltfwd05 = new JetEvaluator("JETEVALUATORFWDTOWER05","AntiKt_TowerFwd_r05",
-                                        "AntiKt_Truth_r05", "g4fwdjets_TowerFwd_05_eval.root");
+                                        "AntiKt_Truth_r05", outfilepath + "/" +  prepend + "g4fwdjets_TowerFwd_05_eval.root");
   evaltfwd05->Verbosity(verbosity);
   se->registerSubsystem(evaltfwd05);
   JetEvaluator *evaltfwd07 = new JetEvaluator("JETEVALUATORFWDTOWER07","AntiKt_TowerFwd_r07",
-                                        "AntiKt_Truth_r07", "g4fwdjets_TowerFwd_07_eval.root");
+                                        "AntiKt_Truth_r07", outfilepath + "/" +  prepend + "g4fwdjets_TowerFwd_07_eval.root");
   evaltfwd07->Verbosity(verbosity);
   se->registerSubsystem(evaltfwd07);
   JetEvaluator *evaltfwd10 = new JetEvaluator("JETEVALUATORFWDTOWER10","AntiKt_TowerFwd_r10",
-                                        "AntiKt_Truth_r10", "g4fwdjets_TowerFwd_10_eval.root");
+                                        "AntiKt_Truth_r10", outfilepath + "/" +  prepend + "g4fwdjets_TowerFwd_10_eval.root");
   evaltfwd10->Verbosity(verbosity);
   se->registerSubsystem(evaltfwd10);
 
   JetEvaluator *evalcfwd05 = new JetEvaluator("JETEVALUATORFWDCLUSTER05", "AntiKt_ClusterFwd_r05",
-                                        "AntiKt_Truth_r05", "g4fwdjets_ClusterFwd_05_eval.root");
+                                        "AntiKt_Truth_r05", outfilepath + "/" +  prepend + "g4fwdjets_ClusterFwd_05_eval.root");
   evalcfwd05->Verbosity(verbosity);
   se->registerSubsystem(evalcfwd05);
 
   JetEvaluator *evalcfwd07 = new JetEvaluator("JETEVALUATORFWDCLUSTER07", "AntiKt_ClusterFwd_r07",
-                                        "AntiKt_Truth_r07", "g4fwdjets_ClusterFwd_07_eval.root");
+                                        "AntiKt_Truth_r07", outfilepath + "/" +  prepend + "g4fwdjets_ClusterFwd_07_eval.root");
   evalcfwd07->Verbosity(verbosity);
   se->registerSubsystem(evalcfwd07);
 
   JetEvaluator *evalcfwd10 = new JetEvaluator("JETEVALUATORFWDCLUSTER10", "AntiKt_ClusterFwd_r10",
-                                        "AntiKt_Truth_r10", "g4fwdjets_ClusterFwd_10_eval.root");
+                                        "AntiKt_Truth_r10", outfilepath + "/" +  prepend + "g4fwdjets_ClusterFwd_10_eval.root");
   evalcfwd10->Verbosity(verbosity);
   se->registerSubsystem(evalcfwd10);
 
