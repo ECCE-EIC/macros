@@ -505,7 +505,7 @@ int Fun4All_G4_EICDetector(
     if (Enable::HCALOUT_EVAL) HCALOuter_Eval(outputroot + "_g4hcalout_eval.root");
     if (Enable::FHCAL_EVAL) FHCAL_Eval(outputroot + "_g4fhcal_eval.root");
     if (Enable::JETS_EVAL) Jet_Eval(outputroot + "_g4jet_eval.root");
-    if (Enable::FWDJETS_EVAL) Jet_FwdEval(outputroot + "_g4fwdjet_eval.root", evalDir, evalPrepend);
+    if (Enable::FWDJETS_EVAL) Jet_FwdEval(evalDir, evalPrepend);
   }
 
   if (Enable::USER) UserAnalysisInit();

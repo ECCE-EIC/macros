@@ -126,7 +126,7 @@ void Jet_FwdReco()
   return;
 }
 
-void Jet_FwdEval(const std::string &outfilename = "g4fwdjets_eval.root", const std::string &outfilepath = ".", const std::string &prepend = "")
+void Jet_FwdEval(const std::string &outfilepath = ".", const std::string &prepend = "")
 {
   int verbosity = std::max(Enable::VERBOSITY, Enable::FWDJETS_VERBOSITY);
   Fun4AllServer *se = Fun4AllServer::instance();
