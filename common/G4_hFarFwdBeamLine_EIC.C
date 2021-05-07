@@ -188,17 +188,12 @@ void hFarFwdDefineMagnets(PHG4Reco* g4Reco){
     }
 }
 
-void hFarFwdDefineDetectors(PHG4Reco* g4Reco){
+void hFarFwdDefineDetectorsIP6(PHG4Reco* g4Reco){
 
   if (Enable::HFARFWD_VIRTUAL_DETECTORS_IP6 && Enable::HFARFWD_VIRTUAL_DETECTORS_IP8)
   {
     cout << "You cannot have detectors enabled for both IP6 and IP8 ON at the same time" << endl;
     gSystem->Exit(1);
-  }
-
-  if (Enable::HFARFWD_VIRTUAL_DETECTORS_IP8) {
-    cout << " IP8 h far forward detectors not defined right now. " <<endl;
-    return;
   }
 
   int verbosity = std::max(Enable::VERBOSITY, Enable::HFARFWD_VERBOSITY);
@@ -217,6 +212,25 @@ void hFarFwdDefineDetectors(PHG4Reco* g4Reco){
   if(verbosity)
     detZDC->Verbosity(verbosity);
   g4Reco->registerSubsystem(detZDC);
+
+  const int offMomDetNr = 2;
+  const double om_zCent[offMomDetNr]={3450  ,3650};
+  const double om_xCent[offMomDetNr]={162   ,171};
+  for(int i=0;i<offMomDetNr;i++){
+    auto *detOM = new PHG4BlockSubsystem(Form("offMomTruth_%d",i));
+    detOM->set_double_param("place_x",om_xCent[i]);
+    detOM->set_double_param("place_y",0);
+    detOM->set_double_param("place_z",om_zCent[i]);
+    detOM->set_double_param("rot_y",-0.045*TMath::RadToDeg());
+    detOM->set_double_param("size_x",50);
+    detOM->set_double_param("size_y",35);
+    detOM->set_double_param("size_z",0.03);
+    detOM->set_string_param("material","G4_Si");
+    detOM->SetActive();
+    if(verbosity)
+      detOM->Verbosity(verbosity);
+    g4Reco->registerSubsystem(detOM);
+  }
  
   const int rpDetNr = 2;
   const double rp_zCent[rpDetNr]={2600  ,2800};
@@ -249,6 +263,93 @@ void hFarFwdDefineDetectors(PHG4Reco* g4Reco){
     detB0->set_double_param("length",0.1);
     detB0->set_string_param("material","G4_Si");
     detB0->set_double_param("place_x",13.2);
+    detB0->set_double_param("place_y",0);
+    detB0->set_double_param("place_z", (b0Mag_zCent - b0Mag_zLen/2) + b0Mag_zLen/(b0DetNr-1) * i);
+    detB0->SetActive(true);
+    if(verbosity)
+      detB0->Verbosity(verbosity);
+    g4Reco->registerSubsystem(detB0);
+  }
+ 
+  
+}
+
+void hFarFwdDefineDetectorsIP8(PHG4Reco* g4Reco){
+
+  if (Enable::HFARFWD_VIRTUAL_DETECTORS_IP6 && Enable::HFARFWD_VIRTUAL_DETECTORS_IP8)
+  {
+    cout << "You cannot have detectors enabled for both IP6 and IP8 ON at the same time" << endl;
+    gSystem->Exit(1);
+  }
+
+  int verbosity = std::max(Enable::VERBOSITY, Enable::HFARFWD_VERBOSITY);
+
+  const int offMomDetNr = 3;
+  const double om_zCent[offMomDetNr]={4250, 4400, 4550};
+  const double om_xCent[offMomDetNr]={ 100,  100,  100};
+  for(int i=0;i<offMomDetNr;i++){
+    auto *detOM = new PHG4BlockSubsystem(Form("offMomTruth_%d",i));
+    detOM->set_double_param("place_x",om_xCent[i]);
+    detOM->set_double_param("place_y",0);
+    detOM->set_double_param("place_z",om_zCent[i]);
+    detOM->set_double_param("rot_y",-0.029*TMath::RadToDeg());
+    detOM->set_double_param("size_x",100);
+    detOM->set_double_param("size_y",100);
+    detOM->set_double_param("size_z",0.03);
+    detOM->set_string_param("material","G4_Si");
+    detOM->SetActive();
+    if(verbosity)
+      detOM->Verbosity(verbosity);
+    g4Reco->registerSubsystem(detOM);
+  }
+
+
+  auto *detZDC = new PHG4BlockSubsystem("zdcTruth");
+  detZDC->SuperDetector("ZDC");
+  detZDC->set_double_param("place_x",40.0);
+  detZDC->set_double_param("place_y",0);
+  detZDC->set_double_param("place_z",3650);
+  detZDC->set_double_param("rot_y",-0.035*TMath::RadToDeg());
+  detZDC->set_double_param("size_x",60);
+  detZDC->set_double_param("size_y",60);
+  detZDC->set_double_param("size_z",0.1);
+  detZDC->set_string_param("material","G4_Si");
+  detZDC->SetActive();
+  if(verbosity)
+    detZDC->Verbosity(verbosity);
+  g4Reco->registerSubsystem(detZDC);
+ 
+  const int rpDetNr = 4;
+  const double rp_zCent[rpDetNr]={2200, 2500, 2800, 3100};
+  const double rp_xCent[rpDetNr]={  75,   75,   75,   75};
+  for(int i=0;i<rpDetNr;i++){
+    auto *detRP = new PHG4BlockSubsystem(Form("rpTruth_%d",i));
+    //detRP->SuperDetector("RomanPots");
+    detRP->set_double_param("place_x",rp_xCent[i]);
+    detRP->set_double_param("place_y",0);
+    detRP->set_double_param("place_z",rp_zCent[i]);
+    detRP->set_double_param("rot_y",-0.0215*TMath::RadToDeg());
+    detRP->set_double_param("size_x",100);
+    detRP->set_double_param("size_y",100);
+    detRP->set_double_param("size_z",0.03);
+    detRP->set_string_param("material","G4_Si");
+    detRP->SetActive();
+    if(verbosity)
+      detRP->Verbosity(verbosity);
+    g4Reco->registerSubsystem(detRP);
+  }
+
+  const int b0DetNr = 4;
+  const double b0Mag_zCent = 610;
+  const double b0Mag_zLen = 120;
+  for(int i=0;i<b0DetNr;i++){
+    auto *detB0 = new PHG4CylinderSubsystem(Form("b0Truth_%d",i),0);
+    //detB0->SuperDetector("B0detectors");
+    detB0->set_double_param("radius",0);
+    detB0->set_double_param("thickness",20);
+    detB0->set_double_param("length",0.1);
+    detB0->set_string_param("material","G4_Si");
+    detB0->set_double_param("place_x",21.2);
     detB0->set_double_param("place_y",0);
     detB0->set_double_param("place_z", (b0Mag_zCent - b0Mag_zLen/2) + b0Mag_zLen/(b0DetNr-1) * i);
     detB0->SetActive(true);
