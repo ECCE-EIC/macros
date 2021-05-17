@@ -165,7 +165,7 @@ void hFarFwdDefineMagnets(PHG4Reco* g4Reco){
 		      bl->set_double_param("inner_radius",inner_radius_zin);
 		      bl->set_double_param("outer_radius", outer_magnet_diameter/2.);
 		      bl->SetActive(magnet_active);
-		      bl->BlackHole();
+		      // bl->BlackHole(); disabling the black-hole absorbtion of the forward magnet due to bug in blackhole handling of `BeamLineMagnetSubsystem`
 		      if (absorberactive)  
 			{
 			  bl->SetAbsorberActive();
