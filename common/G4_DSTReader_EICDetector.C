@@ -195,7 +195,7 @@ void G4DSTreader_EICDetector(const string &outputFile = "G4sPHENIXCells.root")
       ana->AddNode("BH_FORWARD_NEG");
     }
 
-    if (Enable::ZDC)
+    if  (Enable::HFARFWD_MAGNETS_IP6 && Enable::HFARFWD_MAGNETS_IP8)
     {
       ana->AddNode("ZDC");
     }
