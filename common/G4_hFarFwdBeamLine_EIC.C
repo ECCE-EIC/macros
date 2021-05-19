@@ -209,6 +209,8 @@ void hFarFwdDefineDetectorsIP6(PHG4Reco* g4Reco){
   detZDC->set_double_param("size_z",0.1);
   detZDC->set_string_param("material","G4_Si");
   detZDC->SetActive();
+  detZDC->set_color(1,0,0,0.5);
+  detZDC->BlackHole(); 
   if(verbosity)
     detZDC->Verbosity(verbosity);
   g4Reco->registerSubsystem(detZDC);
@@ -315,6 +317,8 @@ void hFarFwdDefineDetectorsIP8(PHG4Reco* g4Reco){
   detZDC->set_double_param("size_z",0.1);
   detZDC->set_string_param("material","G4_Si");
   detZDC->SetActive();
+  detZDC->set_color(1,0,0,0.5);
+  detZDC->BlackHole(); 
   if(verbosity)
     detZDC->Verbosity(verbosity);
   g4Reco->registerSubsystem(detZDC);

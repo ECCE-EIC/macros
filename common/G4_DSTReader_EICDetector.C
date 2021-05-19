@@ -17,6 +17,7 @@
 #include <G4_Mvtx_EIC.C>
 #include <G4_RICH.C>
 #include <G4_TPC_EIC.C>
+#include <G4_hFarFwdBeamLine_EIC.C>
 
 #include <g4eval/PHG4DSTReader.h>
 
@@ -193,6 +194,12 @@ void G4DSTreader_EICDetector(const string &outputFile = "G4sPHENIXCells.root")
       ana->AddNode("BH_FORWARD_PLUS");
       ana->AddNode("BH_FORWARD_NEG");
     }
+
+    if (Enable::ZDC)
+    {
+      ana->AddNode("ZDC");
+    }
+
   }
 
   ana->set_tower_zero_sup(G4DSTREADER::tower_zero_supp);
