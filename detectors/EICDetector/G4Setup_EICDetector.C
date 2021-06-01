@@ -201,9 +201,14 @@ void ShowerCompress()
 
   PHG4DstCompressReco *compress = new PHG4DstCompressReco("PHG4DstCompressReco");
   compress->AddHitContainer("G4HIT_PIPE");
-  compress->AddHitContainer("G4HIT_ZDC");
-  compress->AddHitContainer("G4HIT_RomanPots");
-  compress->AddHitContainer("G4HIT_B0detector");
+
+////------------------
+//// Disabling these option during the compression, 
+//// until ZDC, Romanpots, and B0 have real design.
+//
+//  compress->AddHitContainer("G4HIT_ZDC");
+//  compress->AddHitContainer("G4HIT_RomanPots");
+//  compress->AddHitContainer("G4HIT_B0detector");
   compress->AddHitContainer("G4HIT_FIELDCAGE");
   compress->AddHitContainer("G4HIT_CEMC_ELECTRONICS");
   compress->AddHitContainer("G4HIT_CEMC");
@@ -261,9 +266,14 @@ void DstCompress(Fun4AllDstOutputManager *out)
   if (out)
   {
     out->StripNode("G4HIT_PIPE");
-    out->StripNode("G4HIT_ZDC");
-    out->StripNode("G4HIT_RomanPots");
-    out->StripNode("G4HIT_B0detectors");
+
+////------------------
+//// Disabling these option during the compression, 
+//// until ZDC, Romanpots, and B0 have real design.
+//
+//    out->StripNode("G4HIT_ZDC");
+//    out->StripNode("G4HIT_RomanPots");
+//    out->StripNode("G4HIT_B0detectors");
     out->StripNode("G4HIT_SVTXSUPPORT");
     out->StripNode("G4HIT_CEMC_ELECTRONICS");
     out->StripNode("G4HIT_CEMC");
