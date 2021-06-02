@@ -79,17 +79,10 @@ void FGEMSetup(PHG4Reco *g4Reco, const int N_Sector = 8,  //
     make_GEM_station("FGEM_1", g4Reco, 66.5, 2.07, 3.20, N_Sector);
   }
   ///////////////////////////////////////////////////////////////////////////
-  if (Enable::FGEM_ORIG)
-  {
-    etamax = 3.3;
-  }
-  else
-  {
-    etamax = 2;
-  }
-  make_GEM_station("FGEM_2", g4Reco, 134.0, min_eta, etamax, N_Sector);
+  etamax = 3.3;
+  make_GEM_station("FGEM_2", g4Reco, 134.0, 2, etamax, N_Sector);
   ///////////////////////////////////////////////////////////////////////////
-  make_GEM_station("FGEM_3", g4Reco, 157.0, min_eta, 3.3, N_Sector, tilt, true);
+  make_GEM_station("FGEM_3", g4Reco, 157.0, min_eta, etamax, N_Sector, tilt, true);
 
   ///////////////////////////////////////////////////////////////////////////
   make_GEM_station("FGEM_4", g4Reco, 271.0, 2, 3.5, N_Sector);
