@@ -282,6 +282,37 @@ void Tracking_Eval(const std::string &outputfile)
   fast_sim_eval->set_trackmapname(TRACKING::TrackNodeName);
   fast_sim_eval->set_filename(outputfile);
   fast_sim_eval->Verbosity(verbosity);
+  //-------------------------
+  // FEMC
+  //-------------------------
+  // Saved track states (projections)
+  if (Enable::FEMC && G4TRACKING::PROJECTION_FEMC)
+  {
+    fast_sim_eval->AddProjection("FEMC");
+  }
+
+  //-------------------------
+  // FHCAL
+  //-------------------------
+  if (Enable::FHCAL && G4TRACKING::PROJECTION_FHCAL)
+  {
+    fast_sim_eval->AddProjection("FHCAL");
+  }
+  //-------------------------
+  // CEMC
+  //-------------------------
+  if (Enable::CEMC && G4TRACKING::PROJECTION_CEMC)
+  {
+    fast_sim_eval->AddProjection("CEMC");
+  }
+  //-------------------------
+  // EEMC
+  //-------------------------
+  if (Enable::EEMC && G4TRACKING::PROJECTION_EEMC)
+  {
+    fast_sim_eval->AddProjection("EEMC");
+  }
+
   se->registerSubsystem(fast_sim_eval);
 }
 #endif
