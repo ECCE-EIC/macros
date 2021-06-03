@@ -12,6 +12,7 @@
 #include <G4_Input.C>
 #include <G4_Jets.C>
 #include <G4_Production.C>
+#include <G4_EventEvaluator.C>
 #include <G4_User.C>
 
 #include <TROOT.h>
@@ -20,7 +21,6 @@
 #include <fun4all/Fun4AllServer.h>
 
 #include <phool/recoConsts.h>
-#include <g4eval/EventEvaluator.h>
 
 R__LOAD_LIBRARY(libfun4all.so)
 
@@ -47,9 +47,6 @@ int Fun4All_G4_EICDetector(
   // if the RANDOMSEED flag is set its value is taken as initial seed
   // which will produce identical results so you can debug your code
   // rc->set_IntFlag("RANDOMSEED", 12345);
-
-  // Enabling the event evaluator?
-  bool use_event_evaluator = true;
 
   //===============
   // Input options
@@ -348,6 +345,11 @@ int Fun4All_G4_EICDetector(
   //Enable::BLACKHOLE_SAVEHITS = false; // turn off saving of bh hits
   //BlackHoleGeometry::visible = true;
 
+  // Enabling the event evaluator?
+  Enable::EVENT_EVAL = true;
+  // EVENT_EVALUATOR::Verbosity = 1;
+  // EVENT_EVALUATOR::EnergyThreshold = 0.05; // GeV
+
   //Enable::USER = true;
 
   //---------------
@@ -469,32 +471,8 @@ int Fun4All_G4_EICDetector(
   //----------------------
   // Simulation evaluation
   //----------------------
-  if (use_event_evaluator)
-  {
-    EventEvaluator *eval = new EventEvaluator("EVENTEVALUATOR",  outputroot + "_eventtree.root");
-    eval->set_reco_tracing_energy_threshold(0.05);
-    eval->Verbosity(0);
 
-    if (Enable::TRACKING_EVAL)
-    {
-      eval->set_do_TRACKS(true);
-      eval->set_do_HITS(true);  
-      eval->set_do_PROJECTIONS(true);
-      if (G4TRACKING::DISPLACED_VERTEX) 
-        eval->set_do_VERTEX(true);
-     }
-    if (Enable::CEMC_EVAL) eval->set_do_CEMC(true); 
-    if (Enable::EEMC_EVAL) eval->set_do_EEMC(true);
-    if (Enable::FEMC_EVAL) eval->set_do_FEMC(true); 
-    if (Enable::HCALIN_EVAL) eval->set_do_HCALIN(true);
-    if (Enable::HCALOUT_EVAL) eval->set_do_HCALOUT(true);
-    if (Enable::FHCAL_EVAL) eval->set_do_FHCAL(true);
-    if (Enable::FHCAL_EVAL || Enable::FEMC_EVAL || Enable::EEMC_EVAL)  
-       eval->set_do_CLUSTERS(true);
-    
-    eval->set_do_MCPARTICLES(true);  
-    se->registerSubsystem(eval);
-  }
+  if (Enable::EVENT_EVAL) Event_Eval(outputroot + "_eventtree.root");
 
   if (Enable::TRACKING_EVAL) Tracking_Eval(outputroot + "_g4tracking_eval.root");
 
