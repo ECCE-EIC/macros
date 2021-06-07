@@ -48,6 +48,10 @@ int Fun4All_G4_EICDetector(
   // which will produce identical results so you can debug your code
   // rc->set_IntFlag("RANDOMSEED", 12345);
 
+  // Use the event evaluator or the default detector evaluators
+  bool use_event_evaluator = true;
+  bool use_individual_evaluators = true;
+
   //===============
   // Input options
   //===============
