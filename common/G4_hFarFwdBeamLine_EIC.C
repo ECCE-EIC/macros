@@ -8,6 +8,10 @@
 #include <g4detectors/BeamLineMagnetSubsystem.h>
 #include <g4detectors/PHG4BlockSubsystem.h>
 
+#include <eicg4zdc/EICG4ZDCSubsystem.h>
+#include <eicg4zdc/EICG4ZDCNtuple.h>
+#include <eicg4zdc/EICG4ZDCHitTree.h>
+
 #include <g4main/PHG4Reco.h>
 
 #include <TSystem.h>
@@ -24,6 +28,7 @@ namespace Enable
   bool HFARFWD_PIPE = false;
   bool HFARFWD_OVERLAPCHECK = false;
   int HFARFWD_VERBOSITY = 0;
+  bool ZDC_DISABLE_BLACKHOLE = false;
 }  // namespace Enable
 
 
@@ -190,6 +195,7 @@ void hFarFwdDefineMagnets(PHG4Reco* g4Reco){
 
 void hFarFwdDefineDetectorsIP6(PHG4Reco* g4Reco){
 
+  bool overlapCheck = Enable::OVERLAPCHECK || Enable::HFARFWD_OVERLAPCHECK;
   if (Enable::HFARFWD_VIRTUAL_DETECTORS_IP6 && Enable::HFARFWD_VIRTUAL_DETECTORS_IP8)
   {
     cout << "You cannot have detectors enabled for both IP6 and IP8 ON at the same time" << endl;
@@ -198,21 +204,31 @@ void hFarFwdDefineDetectorsIP6(PHG4Reco* g4Reco){
 
   int verbosity = std::max(Enable::VERBOSITY, Enable::HFARFWD_VERBOSITY);
 
-  auto *detZDC = new PHG4BlockSubsystem("zdcTruth");
-  detZDC->SuperDetector("ZDC");
-  detZDC->set_double_param("place_x",96.24);
-  detZDC->set_double_param("place_y",0);
-  detZDC->set_double_param("place_z",3750);
-  detZDC->set_double_param("rot_y",-0.025*TMath::RadToDeg());
-  detZDC->set_double_param("size_x",60);
-  detZDC->set_double_param("size_y",60);
-  detZDC->set_double_param("size_z",0.1);
-  detZDC->set_string_param("material","G4_Si");
-  detZDC->SetActive();
-  detZDC->set_color(1,0,0,0.5);
-  detZDC->BlackHole(); 
+  auto *detZDCsurrogate = new PHG4BlockSubsystem("zdcTruth");
+  const double detZDCsurrogate_size_z = 0.1;
+  detZDCsurrogate->SuperDetector("ZDCsurrogate");
+  detZDCsurrogate->set_double_param("place_x",96.24);
+  detZDCsurrogate->set_double_param("place_y",0);
+  detZDCsurrogate->set_double_param("place_z",3750);
+  detZDCsurrogate->set_double_param("rot_y",-0.025*TMath::RadToDeg());
+  detZDCsurrogate->set_double_param("size_x",60);
+  detZDCsurrogate->set_double_param("size_y",60);
+  detZDCsurrogate->set_double_param("size_z",detZDCsurrogate_size_z);
+  detZDCsurrogate->set_string_param("material","G4_Si");
+  detZDCsurrogate->SetActive();
+  detZDCsurrogate->set_color(1,0,0,0.5);
+  detZDCsurrogate->OverlapCheck(overlapCheck);
+  if (!Enable::ZDC_DISABLE_BLACKHOLE) detZDCsurrogate->BlackHole(); 
   if(verbosity)
-    detZDC->Verbosity(verbosity);
+    detZDCsurrogate->Verbosity(verbosity);
+  g4Reco->registerSubsystem(detZDCsurrogate);
+
+  EICG4ZDCSubsystem *detZDC = new EICG4ZDCSubsystem("EICG4ZDC");
+  detZDC->SetActive();
+  detZDC->set_double_param("place_z",3750. + detZDCsurrogate_size_z);
+  detZDC->set_double_param("place_x",96.24);
+  detZDC->set_double_param("rot_y",-0.025*TMath::RadToDeg());
+  detZDC->OverlapCheck(overlapCheck);
   g4Reco->registerSubsystem(detZDC);
 
   const int offMomDetNr = 2;
@@ -278,6 +294,7 @@ void hFarFwdDefineDetectorsIP6(PHG4Reco* g4Reco){
 
 void hFarFwdDefineDetectorsIP8(PHG4Reco* g4Reco){
 
+  bool overlapCheck = Enable::OVERLAPCHECK || Enable::HFARFWD_OVERLAPCHECK;
   if (Enable::HFARFWD_VIRTUAL_DETECTORS_IP6 && Enable::HFARFWD_VIRTUAL_DETECTORS_IP8)
   {
     cout << "You cannot have detectors enabled for both IP6 and IP8 ON at the same time" << endl;
@@ -304,25 +321,34 @@ void hFarFwdDefineDetectorsIP8(PHG4Reco* g4Reco){
       detOM->Verbosity(verbosity);
     g4Reco->registerSubsystem(detOM);
   }
-
-
-  auto *detZDC = new PHG4BlockSubsystem("zdcTruth");
-  detZDC->SuperDetector("ZDC");
-  detZDC->set_double_param("place_x",40.0);
-  detZDC->set_double_param("place_y",0);
-  detZDC->set_double_param("place_z",3650);
-  detZDC->set_double_param("rot_y",-0.035*TMath::RadToDeg());
-  detZDC->set_double_param("size_x",60);
-  detZDC->set_double_param("size_y",60);
-  detZDC->set_double_param("size_z",0.1);
-  detZDC->set_string_param("material","G4_Si");
-  detZDC->SetActive();
-  detZDC->set_color(1,0,0,0.5);
-  detZDC->BlackHole(); 
-  if(verbosity)
-    detZDC->Verbosity(verbosity);
-  g4Reco->registerSubsystem(detZDC);
  
+  auto *detZDCsurrogate = new PHG4BlockSubsystem("zdcTruth");
+  const double detZDCsurrogate_size_z = 0.1;
+  detZDCsurrogate->SuperDetector("ZDCsurrogate");
+  detZDCsurrogate->set_double_param("place_x",40);
+  detZDCsurrogate->set_double_param("place_y",0);
+  detZDCsurrogate->set_double_param("place_z",3650);
+  detZDCsurrogate->set_double_param("rot_y",-0.035*TMath::RadToDeg());
+  detZDCsurrogate->set_double_param("size_x",60);
+  detZDCsurrogate->set_double_param("size_y",60);
+  detZDCsurrogate->set_double_param("size_z",detZDCsurrogate_size_z);
+  detZDCsurrogate->set_string_param("material","G4_Si");
+  detZDCsurrogate->SetActive();
+  detZDCsurrogate->OverlapCheck(overlapCheck);
+  detZDCsurrogate->set_color(1,0,0,0.5);
+  if (!Enable::ZDC_DISABLE_BLACKHOLE) detZDCsurrogate->BlackHole(); 
+  if(verbosity)
+    detZDCsurrogate->Verbosity(verbosity);
+  g4Reco->registerSubsystem(detZDCsurrogate);
+
+  EICG4ZDCSubsystem *detZDC = new EICG4ZDCSubsystem("EICG4ZDC");
+  detZDC->SetActive();
+  detZDC->set_double_param("place_z",3650. + detZDCsurrogate_size_z);
+  detZDC->set_double_param("place_x",40);
+  detZDC->set_double_param("rot_y",-0.035*TMath::RadToDeg());
+  detZDC->OverlapCheck(overlapCheck);
+  g4Reco->registerSubsystem(detZDC);
+
   const int rpDetNr = 4;
   const double rp_zCent[rpDetNr]={2200, 2500, 2800, 3100};
   const double rp_xCent[rpDetNr]={  75,   75,   75,   75};
