@@ -81,7 +81,7 @@ void FSTSetup(PHG4Reco *g4Reco, const double min_eta = 1.245)
   const double um = 1e-3 * mm;
 
   //Design from Xuan Li @LANL
-  // Different FST version documented in arXiv:2009.0288
+  // Different FST version documented in arXiv:2009.02888
   if (G4FST::SETTING::FSTV1)
   {                                                              // version 1
     make_LANL_FST_station("FST_0", g4Reco, 35, 4, 25, 50 * um);  //cm
