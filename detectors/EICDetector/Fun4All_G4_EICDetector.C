@@ -263,7 +263,8 @@ int Fun4All_G4_EICDetector(
   //G4BARREL::SETTING::BARRELV6=true;
   // fst
   Enable::FST = true;
-  G4FST::SETTING::FST_TPC = true;
+  G4FST::SETTING::FST_TPC=false;
+  G4FST::SETTING::SUPPORTCYL=true;
   // mvtx/tpc tracker
   Enable::MVTX = true;
   Enable::TPC = true;

@@ -122,10 +122,6 @@ void G4DSTreader_EICDetector(const string &outputFile = "G4sPHENIXCells.root")
       ana->AddNode("FST_2");
       ana->AddNode("FST_3");
       ana->AddNode("FST_4");
-      if (G4FST::SETTING::FSTV4 || G4FST::SETTING::FSTV5)
-      {
-	ana->AddNode("FST_5");
-      }
     }
 
     if (Enable::CEMC)

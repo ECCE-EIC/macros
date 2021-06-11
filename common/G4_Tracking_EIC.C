@@ -211,10 +211,6 @@ void Tracking_Reco()
   {
     float pitch = 20e-4;
     int nPlane = 5;
-    if (G4FST::SETTING::FSTV4 || G4FST::SETTING::FSTV5)
-    {
-      nPlane = 6;
-    }
 
     for (int i = 0; i < nPlane; i++)
     {
