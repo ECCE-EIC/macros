@@ -254,16 +254,40 @@ void hFarFwdDefineDetectorsIP6(PHG4Reco* g4Reco){
   const double rp_zCent[rpDetNr]={2600  ,2800};
   const double rp_xCent[rpDetNr]={84.49 ,93.59};
   for(int i=0;i<rpDetNr;i++){
-    auto *detRP = new PHG4BlockSubsystem(Form("rpTruth_%d",i));
-    //detRP->SuperDetector("RomanPots");
+
+
+////*********************
+//// Square design
+//// 25 cm in x
+//
+//    auto *detRP = new PHG4BlockSubsystem(Form("rpTruth_%d",i));
+////    detRP->SuperDetector("RomanPots");
+//    detRP->SuperDetector(Form("RomanPots_%d",i));
+//    detRP->set_double_param("place_x",rp_xCent[i]);
+//    detRP->set_double_param("place_y",0);
+//    detRP->set_double_param("place_z",rp_zCent[i]);
+//    detRP->set_double_param("rot_y",-0.025*TMath::RadToDeg());
+//    detRP->set_double_param("size_x",25);
+//    detRP->set_double_param("size_y",10);
+//    detRP->set_double_param("size_z",0.03);
+//    detRP->set_string_param("material","G4_Si");
+
+
+////*********************
+//// Disk design
+//// 50 cm in x
+
+    auto *detRP = new PHG4CylinderSubsystem(Form("rpTruth_%d",i));
+    detRP->SuperDetector(Form("RomanPots_%d",i));
     detRP->set_double_param("place_x",rp_xCent[i]);
     detRP->set_double_param("place_y",0);
     detRP->set_double_param("place_z",rp_zCent[i]);
     detRP->set_double_param("rot_y",-0.025*TMath::RadToDeg());
-    detRP->set_double_param("size_x",25);
-    detRP->set_double_param("size_y",10);
-    detRP->set_double_param("size_z",0.03);
+    detRP->set_double_param("radius",0);
+    detRP->set_double_param("thickness",25);  // This is intentionally made large 25cm radius
+    detRP->set_double_param("length", 0.03);
     detRP->set_string_param("material","G4_Si");
+
     detRP->SetActive();
     if(verbosity)
       detRP->Verbosity(verbosity);
@@ -354,7 +378,8 @@ void hFarFwdDefineDetectorsIP8(PHG4Reco* g4Reco){
   const double rp_xCent[rpDetNr]={  75,   75,   75,   75};
   for(int i=0;i<rpDetNr;i++){
     auto *detRP = new PHG4BlockSubsystem(Form("rpTruth_%d",i));
-    //detRP->SuperDetector("RomanPots");
+//    detRP->SuperDetector("RomanPots");
+    detRP->SuperDetector(Form("RomanPots_%d",i));
     detRP->set_double_param("place_x",rp_xCent[i]);
     detRP->set_double_param("place_y",0);
     detRP->set_double_param("place_z",rp_zCent[i]);
