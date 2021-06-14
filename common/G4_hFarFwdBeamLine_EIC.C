@@ -336,8 +336,6 @@ void hFarFwdDefineDetectorsIP8(PHG4Reco* g4Reco){
     detOM->set_double_param("place_y",0);
     detOM->set_double_param("place_z",om_zCent[i]);
     detOM->set_double_param("rot_y",-0.029*TMath::RadToDeg());
-//    detOM->set_double_param("rot_x",90);
-//    detOM->set_double_param("rot_y",90);
     detOM->set_double_param("size_x",100);
     detOM->set_double_param("size_y",100);
     detOM->set_double_param("size_z",0.03);
@@ -354,7 +352,7 @@ void hFarFwdDefineDetectorsIP8(PHG4Reco* g4Reco){
   detZDCsurrogate->set_double_param("place_x",127.8);
   detZDCsurrogate->set_double_param("place_y",0);
   detZDCsurrogate->set_double_param("place_z",3650);
-  detZDCsurrogate->set_double_param("rot_y", -0.035*TMath::RadToDeg());
+  detZDCsurrogate->set_double_param("rot_y",-0.035*TMath::RadToDeg());
   detZDCsurrogate->set_double_param("size_x",60);
   detZDCsurrogate->set_double_param("size_y",60);
   detZDCsurrogate->set_double_param("size_z",detZDCsurrogate_size_z);
@@ -426,7 +424,7 @@ void hFarFwdDefineBeamPipe(PHG4Reco* g4Reco){
   exitWin->set_double_param("radius"   ,3.2);
   exitWin->set_double_param("thickness",11.8);
   exitWin->set_double_param("length"   ,0.15);
-  exitWin->set_double_param("rot_y"    ,-0.025);
+  exitWin->set_double_param("rot_y"    ,-0.025*TMath::RadToDeg());
   exitWin->set_string_param("material" ,"G4_STAINLESS-STEEL");
   exitWin->set_double_param("place_x"  ,12.5);
   exitWin->set_double_param("place_y"  ,0);
