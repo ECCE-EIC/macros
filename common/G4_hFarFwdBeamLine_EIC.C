@@ -34,18 +34,30 @@ namespace Enable
   bool HFARFWD_MAGNETS_IP8 = false;
 
   //enabled automatically in hFarFwdBeamLineInit(), unless overridden by user
-  bool HFARFWD_VIRTUAL_DETECTORS_IP8 = false;
   bool HFARFWD_VIRTUAL_DETECTORS_IP6 = false;
+  bool HFARFWD_VIRTUAL_DETECTORS_IP8 = false;
 
 }  // namespace Enable
+
+namespace hFarFwdBeamLine
+{
+  double starting_z = 450;  //cm as center-forward interface
+  double enclosure_z_max = NAN;
+  double enclosure_r_max = NAN;
+  double enclosure_center = NAN;
+
+  PHG4CylinderSubsystem *hFarFwdBeamLineEnclosure(nullptr);
+
+  BeamLineMagnetSubsystem *B0Magnet = (nullptr);
+}  // namespace hFarFwdBeamLine
 
 void hFarFwdBeamLineInit()
 {
   Enable::HFARFWD_MAGNETS_IP6 |= Enable::HFARFWD_MAGNETS and Enable::IP6;
   Enable::HFARFWD_MAGNETS_IP8 |= Enable::HFARFWD_MAGNETS and Enable::IP8;
 
-  Enable::HFARFWD_VIRTUAL_DETECTORS_IP8 |= Enable::HFARFWD_VIRTUAL_DETECTORS and Enable::IP6;
-  Enable::HFARFWD_VIRTUAL_DETECTORS_IP6 |= Enable::HFARFWD_VIRTUAL_DETECTORS and Enable::IP8;
+  Enable::HFARFWD_VIRTUAL_DETECTORS_IP6 |= Enable::HFARFWD_VIRTUAL_DETECTORS and Enable::IP6;
+  Enable::HFARFWD_VIRTUAL_DETECTORS_IP8 |= Enable::HFARFWD_VIRTUAL_DETECTORS and Enable::IP8;
 
   if (Enable::HFARFWD_MAGNETS_IP6 && Enable::HFARFWD_MAGNETS_IP8)
   {
@@ -55,23 +67,40 @@ void hFarFwdBeamLineInit()
 
   if (Enable::HFARFWD_MAGNETS_IP6)
   {
-    BlackHoleGeometry::max_z = std::max(BlackHoleGeometry::max_z, 4500.);
+    hFarFwdBeamLine::enclosure_z_max = 4500.;
     BlackHoleGeometry::min_z = std::min(BlackHoleGeometry::min_z, 0.);
-    BlackHoleGeometry::max_radius = std::max(BlackHoleGeometry::max_radius, 180.0);
+    hFarFwdBeamLine::enclosure_r_max = 200.;
   }
 
   if (Enable::HFARFWD_MAGNETS_IP8)
   {
-    BlackHoleGeometry::max_z = std::max(BlackHoleGeometry::max_z, 4800.);
+    hFarFwdBeamLine::enclosure_z_max = 4800.;
     BlackHoleGeometry::min_z = std::min(BlackHoleGeometry::min_z, -2050.);
-    BlackHoleGeometry::max_radius = std::max(BlackHoleGeometry::max_radius, 150.0);
+    hFarFwdBeamLine::enclosure_r_max = 150.;
   }
+
+  hFarFwdBeamLine::enclosure_center = 0.5 * (hFarFwdBeamLine::starting_z + hFarFwdBeamLine::enclosure_z_max);
+
+  BlackHoleGeometry::max_z = std::max(BlackHoleGeometry::max_z, hFarFwdBeamLine::enclosure_z_max);
+  BlackHoleGeometry::max_radius = std::max(BlackHoleGeometry::max_radius, hFarFwdBeamLine::enclosure_r_max);
 }
 
 void hFarFwdDefineMagnets(PHG4Reco *g4Reco)
 {
   bool overlapCheck = Enable::OVERLAPCHECK || Enable::HFARFWD_OVERLAPCHECK;
   int verbosity = std::max(Enable::VERBOSITY, Enable::HFARFWD_VERBOSITY);
+
+  hFarFwdBeamLine::hFarFwdBeamLineEnclosure = new PHG4CylinderSubsystem("hFarFwdBeamLineEnclosure");
+  hFarFwdBeamLine::hFarFwdBeamLineEnclosure->set_double_param("place_z", hFarFwdBeamLine::enclosure_center);
+  hFarFwdBeamLine::hFarFwdBeamLineEnclosure->set_double_param("radius", 0);
+  hFarFwdBeamLine::hFarFwdBeamLineEnclosure->set_double_param("thickness", hFarFwdBeamLine::enclosure_r_max);  // This is intentionally made large 25cm radius
+  hFarFwdBeamLine::hFarFwdBeamLineEnclosure->set_double_param("length", hFarFwdBeamLine::enclosure_z_max - hFarFwdBeamLine::starting_z);
+  hFarFwdBeamLine::hFarFwdBeamLineEnclosure->set_string_param("material", "G4_Galactic");
+  hFarFwdBeamLine::hFarFwdBeamLineEnclosure->set_color(.5, .5, .5, 0.2);
+  hFarFwdBeamLine::hFarFwdBeamLineEnclosure->OverlapCheck(overlapCheck);
+  if (verbosity)
+    hFarFwdBeamLine::hFarFwdBeamLineEnclosure->Verbosity(verbosity);
+  g4Reco->registerSubsystem(hFarFwdBeamLine::hFarFwdBeamLineEnclosure);
 
   string magFile;
   if (Enable::HFARFWD_MAGNETS_IP6)
@@ -185,12 +214,13 @@ void hFarFwdDefineMagnets(PHG4Reco *g4Reco)
             bl->set_double_param("length", length);
             bl->set_double_param("place_x", x);
             bl->set_double_param("place_y", y);
-            bl->set_double_param("place_z", z);
+            bl->set_double_param("place_z", z - hFarFwdBeamLine::enclosure_center);
             bl->set_double_param("rot_y", angle);
             bl->set_double_param("inner_radius", inner_radius_zin);
             bl->set_double_param("outer_radius", outer_magnet_diameter / 2.);
             bl->SetActive(magnet_active);
-            // bl->BlackHole(); disabling the black-hole absorbtion of the forward magnet due to bug in blackhole handling of `BeamLineMagnetSubsystem`
+            bl->BlackHole();
+            bl->SetMotherSubsystem(hFarFwdBeamLine::hFarFwdBeamLineEnclosure);
             if (absorberactive)
             {
               bl->SetAbsorberActive();
@@ -200,6 +230,10 @@ void hFarFwdDefineMagnets(PHG4Reco *g4Reco)
             if (verbosity)
               bl->Verbosity(verbosity);
             g4Reco->registerSubsystem(bl);
+
+            // rag the B0 magnet
+            if (imagnet == 0)
+              hFarFwdBeamLine::B0Magnet = bl;
           }
           imagnet++;
           if (fabs(z) + length > biggest_z)
@@ -229,7 +263,7 @@ void hFarFwdDefineDetectorsIP6(PHG4Reco *g4Reco)
   detZDCsurrogate->SuperDetector("ZDCsurrogate");
   detZDCsurrogate->set_double_param("place_x", 96.24);
   detZDCsurrogate->set_double_param("place_y", 0);
-  detZDCsurrogate->set_double_param("place_z", 3750);
+  detZDCsurrogate->set_double_param("place_z", 3750 - hFarFwdBeamLine::enclosure_center);
   detZDCsurrogate->set_double_param("rot_y", -0.025 * TMath::RadToDeg());
   detZDCsurrogate->set_double_param("size_x", 60);
   detZDCsurrogate->set_double_param("size_y", 60);
@@ -241,14 +275,16 @@ void hFarFwdDefineDetectorsIP6(PHG4Reco *g4Reco)
   if (!Enable::ZDC_DISABLE_BLACKHOLE) detZDCsurrogate->BlackHole();
   if (verbosity)
     detZDCsurrogate->Verbosity(verbosity);
+  detZDCsurrogate->SetMotherSubsystem(hFarFwdBeamLine::hFarFwdBeamLineEnclosure);
   g4Reco->registerSubsystem(detZDCsurrogate);
 
   EICG4ZDCSubsystem *detZDC = new EICG4ZDCSubsystem("EICG4ZDC");
   detZDC->SetActive();
-  detZDC->set_double_param("place_z", 3750. + detZDCsurrogate_size_z);
+  detZDC->set_double_param("place_z", 3750. + detZDCsurrogate_size_z - hFarFwdBeamLine::enclosure_center);
   detZDC->set_double_param("place_x", 96.24);
   detZDC->set_double_param("rot_y", -0.025);
   detZDC->OverlapCheck(overlapCheck);
+  detZDC->SetMotherSubsystem(hFarFwdBeamLine::hFarFwdBeamLineEnclosure);
   g4Reco->registerSubsystem(detZDC);
 
   const int offMomDetNr = 2;
@@ -256,10 +292,11 @@ void hFarFwdDefineDetectorsIP6(PHG4Reco *g4Reco)
   const double om_xCent[offMomDetNr] = {162, 171};
   for (int i = 0; i < offMomDetNr; i++)
   {
-    auto *detOM = new PHG4BlockSubsystem(Form("offMomTruth_%d", i));
+    auto *detOM = new PHG4BlockSubsystem(Form("offMomTruth_%d", i), i);
+    detOM->SuperDetector("offMomTruth");
     detOM->set_double_param("place_x", om_xCent[i]);
     detOM->set_double_param("place_y", 0);
-    detOM->set_double_param("place_z", om_zCent[i]);
+    detOM->set_double_param("place_z", om_zCent[i] - hFarFwdBeamLine::enclosure_center);
     detOM->set_double_param("rot_y", -0.045 * TMath::RadToDeg());
     detOM->set_double_param("size_x", 50);
     detOM->set_double_param("size_y", 35);
@@ -268,6 +305,8 @@ void hFarFwdDefineDetectorsIP6(PHG4Reco *g4Reco)
     detOM->SetActive();
     if (verbosity)
       detOM->Verbosity(verbosity);
+    detOM->OverlapCheck(overlapCheck);
+    detOM->SetMotherSubsystem(hFarFwdBeamLine::hFarFwdBeamLineEnclosure);
     g4Reco->registerSubsystem(detOM);
   }
 
@@ -296,16 +335,18 @@ void hFarFwdDefineDetectorsIP6(PHG4Reco *g4Reco)
     //// Disk design
     //// 50 cm in x
 
-    auto *detRP = new PHG4CylinderSubsystem(Form("rpTruth_%d", i));
-    detRP->SuperDetector(Form("RomanPots_%d", i));
+    auto *detRP = new PHG4CylinderSubsystem(Form("rpTruth_%d", i), i);
+    detRP->SuperDetector("rpTruth");
     detRP->set_double_param("place_x", rp_xCent[i]);
     detRP->set_double_param("place_y", 0);
-    detRP->set_double_param("place_z", rp_zCent[i]);
+    detRP->set_double_param("place_z", rp_zCent[i] - hFarFwdBeamLine::enclosure_center);
     detRP->set_double_param("rot_y", -0.025 * TMath::RadToDeg());
     detRP->set_double_param("radius", 0);
     detRP->set_double_param("thickness", 25);  // This is intentionally made large 25cm radius
     detRP->set_double_param("length", 0.03);
     detRP->set_string_param("material", "G4_Si");
+    detRP->OverlapCheck(overlapCheck);
+    detRP->SetMotherSubsystem(hFarFwdBeamLine::hFarFwdBeamLineEnclosure);
 
     detRP->SetActive();
     if (verbosity)
@@ -318,24 +359,27 @@ void hFarFwdDefineDetectorsIP6(PHG4Reco *g4Reco)
   const double b0Mag_zLen = 120;
   for (int i = 0; i < b0DetNr; i++)
   {
-    auto *detB0 = new PHG4CylinderSubsystem(Form("b0Truth_%d", i), 0);
-    //detB0->SuperDetector("B0detectors");
+    auto *detB0 = new PHG4CylinderSubsystem(Form("b0Truth_%d", i), i);
+    detB0->SuperDetector("b0Truth");
     detB0->set_double_param("radius", 0);
     detB0->set_double_param("thickness", 20);
     detB0->set_double_param("length", 0.1);
     detB0->set_string_param("material", "G4_Si");
-    detB0->set_double_param("place_x", 13.2);
-    detB0->set_double_param("place_y", 0);
-    detB0->set_double_param("place_z", (b0Mag_zCent - b0Mag_zLen / 2) + b0Mag_zLen / (b0DetNr - 1) * i);
+    detB0->set_double_param("place_z", b0Mag_zLen / (b0DetNr + 1) * (i - b0DetNr / 2));  // relative to B0 magnet
     detB0->SetActive(true);
     if (verbosity)
       detB0->Verbosity(verbosity);
+    detB0->OverlapCheck(overlapCheck);
+    detB0->SetMotherSubsystem(hFarFwdBeamLine::B0Magnet);
     g4Reco->registerSubsystem(detB0);
   }
 }
 
 void hFarFwdDefineDetectorsIP8(PHG4Reco *g4Reco)
 {
+  cout << __PRETTY_FUNCTION__ << " : IP8 setup is not yet validated!" << endl;
+  gSystem->Exit(1);
+
   bool overlapCheck = Enable::OVERLAPCHECK || Enable::HFARFWD_OVERLAPCHECK;
   if (Enable::HFARFWD_VIRTUAL_DETECTORS_IP6 && Enable::HFARFWD_VIRTUAL_DETECTORS_IP8)
   {

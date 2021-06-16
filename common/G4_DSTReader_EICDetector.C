@@ -195,9 +195,12 @@ void G4DSTreader_EICDetector(const string &outputFile = "G4sPHENIXCells.root")
       ana->AddNode("BH_FORWARD_NEG");
     }
 
-    if  (Enable::HFARFWD_MAGNETS_IP6 && Enable::HFARFWD_MAGNETS_IP8)
+    if  (Enable::HFARFWD_VIRTUAL_DETECTORS_IP6 or Enable::HFARFWD_VIRTUAL_DETECTORS_IP8)
     {
-      ana->AddNode("ZDC");
+      ana->AddNode("ZDCsurrogate");
+      ana->AddNode("rpTruth");
+      ana->AddNode("b0Truth");
+      ana->AddNode("offMomTruth");
     }
 
   }
