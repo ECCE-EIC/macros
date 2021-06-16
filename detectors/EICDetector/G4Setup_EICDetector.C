@@ -27,6 +27,7 @@
 #include <G4_User.C>
 #include <G4_World.C>
 #include <G4_hFarFwdBeamLine_EIC.C>
+#include <G4_mRICH.C>
 
 #include <g4detectors/PHG4CylinderSubsystem.h>
 
@@ -98,6 +99,7 @@ void G4Init()
   if (Enable::EEMC) EEMCInit();
   if (Enable::DIRC) DIRCInit();
   if (Enable::RICH) RICHInit();
+  if (Enable::mRICH) mRICHInit();
   if (Enable::AEROGEL) AerogelInit();
   if (Enable::USER) UserInit();
   if (Enable::BLACKHOLE) BlackHoleInit();
@@ -174,6 +176,7 @@ int G4Setup()
 
   if (Enable::DIRC) DIRCSetup(g4Reco);
   if (Enable::RICH) RICHSetup(g4Reco);
+  if (Enable::mRICH) mRICHSetup(g4Reco);
   if (Enable::AEROGEL) AerogelSetup(g4Reco);
 
   //----------------------------------------
