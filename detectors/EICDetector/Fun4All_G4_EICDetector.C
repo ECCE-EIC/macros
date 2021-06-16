@@ -36,7 +36,7 @@ int Fun4All_G4_EICDetector(
   // Fun4All server
   //---------------
   Fun4AllServer *se = Fun4AllServer::instance();
-  se->Verbosity(0);
+  se->Verbosity(01);
   //Opt to print all random seed used for debugging reproducibility. Comment out to reduce stdout prints.
   //PHRandomSeed::Verbosity(1);
 
@@ -231,14 +231,14 @@ int Fun4All_G4_EICDetector(
 //  Enable::DSTREADER = true;
 
   // turn the display on (default off)
-  Enable::DISPLAY = false;
+  Enable::DISPLAY = true;
 
   //======================
   // What to run
   //======================
   // Global options (enabled for all subsystems - if implemented)
   //  Enable::ABSORBER = true;
-  //  Enable::OVERLAPCHECK = true;
+  Enable::OVERLAPCHECK = true;
   //  Enable::VERBOSITY = 1;
 
   //  Enable::BBC = true;
@@ -247,7 +247,7 @@ int Fun4All_G4_EICDetector(
   // whether to simulate the Be section of the beam pipe
   Enable::PIPE = true;
   // EIC beam pipe extension beyond the Be-section:
-  G4PIPE::use_forward_pipes = false;
+  G4PIPE::use_forward_pipes = true;
   //EIC hadron far forward magnets and detectors. IP6 and IP8 are incompatible (pick either or);
   Enable::HFARFWD_MAGNETS_IP6=true;
   Enable::HFARFWD_VIRTUAL_DETECTORS_IP6=true;
@@ -255,21 +255,21 @@ int Fun4All_G4_EICDetector(
   Enable::HFARFWD_VIRTUAL_DETECTORS_IP8=false;
 
   // gems
-  Enable::EGEM = true;
-  Enable::FGEM = true;
+  Enable::EGEM = false;
+  Enable::FGEM = false;
   Enable::FGEM_ORIG = false; //5 forward gems; cannot be used with FST
   // barrel tracker
   Enable::BARREL = false;
   //G4BARREL::SETTING::BARRELV6=true;
   // fst
-  Enable::FST = true;
-  G4FST::SETTING::FST_TPC = true;
+  Enable::FST = false;
+  G4FST::SETTING::FST_TPC = false;
   // mvtx/tpc tracker
-  Enable::MVTX = true;
-  Enable::TPC = true;
+  Enable::MVTX = false;
+  Enable::TPC = false;
   //  Enable::TPC_ENDCAP = true;
 
-  Enable::TRACKING = true;
+  Enable::TRACKING = false;
   Enable::TRACKING_EVAL = Enable::TRACKING && true;
   G4TRACKING::DISPLACED_VERTEX = false;  // this option exclude vertex in the track fitting and use RAVE to reconstruct primary and 2ndary vertexes
                                          // projections to calorimeters
@@ -278,14 +278,14 @@ int Fun4All_G4_EICDetector(
   G4TRACKING::PROJECTION_FEMC = true;
   G4TRACKING::PROJECTION_FHCAL = true;
 
-  Enable::CEMC = true;
+  Enable::CEMC = false;
   //  Enable::CEMC_ABSORBER = true;
   Enable::CEMC_CELL = Enable::CEMC && true;
   Enable::CEMC_TOWER = Enable::CEMC_CELL && true;
   Enable::CEMC_CLUSTER = Enable::CEMC_TOWER && true;
   Enable::CEMC_EVAL = Enable::CEMC_CLUSTER && true;
 
-  Enable::HCALIN = true;
+  Enable::HCALIN = false;
   //  Enable::HCALIN_ABSORBER = true;
   Enable::HCALIN_CELL = Enable::HCALIN && true;
   Enable::HCALIN_TOWER = Enable::HCALIN_CELL && true;
@@ -302,31 +302,31 @@ int Fun4All_G4_EICDetector(
   Enable::HCALOUT_EVAL = Enable::HCALOUT_CLUSTER && true;
 
   // EICDetector geometry - barrel
-  Enable::DIRC = true;
+  Enable::DIRC = false;
 
   // EICDetector geometry - 'hadron' direction
-  Enable::RICH = true;
-  Enable::AEROGEL = true;
+  Enable::RICH = false;
+  Enable::AEROGEL = false;
 
-  Enable::FEMC = true;
+  Enable::FEMC = false;
   //  Enable::FEMC_ABSORBER = true;
   Enable::FEMC_TOWER = Enable::FEMC && true;
   Enable::FEMC_CLUSTER = Enable::FEMC_TOWER && true;
   Enable::FEMC_EVAL = Enable::FEMC_CLUSTER && true;
 
-  Enable::FHCAL = true;
+  Enable::FHCAL = false;
   //  Enable::FHCAL_ABSORBER = true;
   Enable::FHCAL_TOWER = Enable::FHCAL && true;
   Enable::FHCAL_CLUSTER = Enable::FHCAL_TOWER && true;
   Enable::FHCAL_EVAL = Enable::FHCAL_CLUSTER && true;
 
   // EICDetector geometry - 'electron' direction
-  Enable::EEMC = true;
+  Enable::EEMC = false;
   Enable::EEMC_TOWER = Enable::EEMC && true;
   Enable::EEMC_CLUSTER = Enable::EEMC_TOWER && true;
   Enable::EEMC_EVAL = Enable::EEMC_CLUSTER && true;
 
-  Enable::PLUGDOOR = true;
+  Enable::PLUGDOOR = false;
 
   // Other options
   Enable::GLOBAL_RECO = true;
@@ -334,7 +334,7 @@ int Fun4All_G4_EICDetector(
 
   // Select only one jet reconstruction- they currently use the same
   // output collections on the node tree!
-  Enable::JETS = true;
+  Enable::JETS = false;
   Enable::JETS_EVAL = Enable::JETS && true;
 
   Enable::FWDJETS = true;
