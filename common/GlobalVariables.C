@@ -32,6 +32,10 @@ namespace Enable
   bool DSTOUT = false;
   bool DSTOUT_COMPRESS = false;
   int VERBOSITY = 0;
+
+  // IP selection require explicit choice in the main macros
+  bool IP6 = false;
+  bool IP8 = false;
 }  // namespace Enable
 
 // every G4 subsystem needs to implement this

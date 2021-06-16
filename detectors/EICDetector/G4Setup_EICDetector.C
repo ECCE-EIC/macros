@@ -49,6 +49,17 @@ void G4Init()
 {
   // First some check for subsystems which do not go together
 
+  if (Enable::IP6 and Enable::IP8)
+  {
+    cout << "Can not enable Enable::IP6 and Enable::IP8 at the same time!" << endl;
+    gSystem->Exit(1);
+  }
+  if (Enable::IP6 == false and Enable::IP8 == false)
+  {
+    cout << "None of the possible EIC IPs were selected: Enable::IP6 and Enable::IP8 !" << endl;
+    gSystem->Exit(1);
+  }
+
   if (Enable::TPC && Enable::FST && !G4FST::SETTING::FST_TPC)
   {
     cout << "FST setup cannot fit in the TPC" << endl;
@@ -59,18 +70,19 @@ void G4Init()
     cout << "MVTX and BARREL cannot be enabled together" << endl;
     gSystem->Exit(1);
   }
-  else if (Enable::TPC && Enable::BARREL && !G4BARREL::SETTING::BARRELV6) {
+  else if (Enable::TPC && Enable::BARREL && !G4BARREL::SETTING::BARRELV6)
+  {
     cout << "Barrel setup cannot fit in the TPC" << endl;
     gSystem->Exit(1);
   }
 
-  if(Enable::FGEM_ORIG && Enable::FST)
+  if (Enable::FGEM_ORIG && Enable::FST)
   {
     cout << "FST cannot be enabled with 5 FGEM setup" << endl;
     gSystem->Exit(1);
   }
 
-  if(Enable::FGEM_ORIG && Enable::FST)
+  if (Enable::FGEM_ORIG && Enable::FST)
   {
     cout << "FST cannot be enabled with 5 FGEM setup" << endl;
     gSystem->Exit(1);
@@ -91,7 +103,7 @@ void G4Init()
   if (Enable::CEMC) CEmcInit(72);  // make it 2*2*2*3*3 so we can try other combinations
   if (Enable::HCALIN) HCalInnerInit(1);
   if (Enable::MAGNET) MagnetInit();
-  MagnetFieldInit(); // We want the field - even if the magnet volume is disabled
+  MagnetFieldInit();  // We want the field - even if the magnet volume is disabled
   if (Enable::HCALOUT) HCalOuterInit();
   if (Enable::FEMC) FEMCInit();
   if (Enable::FHCAL) FHCALInit();
@@ -146,8 +158,8 @@ int G4Setup()
   }
   g4Reco->set_field_rescale(G4MAGNET::magfield_rescale);
 
-// the radius is an older protection against overlaps, it is not
-// clear how well this works nowadays but it doesn't hurt either
+  // the radius is an older protection against overlaps, it is not
+  // clear how well this works nowadays but it doesn't hurt either
   double radius = 0.;
 
   if (Enable::PIPE) radius = Pipe(g4Reco, radius);
@@ -181,7 +193,7 @@ int G4Setup()
   if (Enable::PLUGDOOR) PlugDoor(g4Reco);
 
   if (Enable::USER) UserDetector(g4Reco);
-  
+
   //----------------------------------------
   // BLACKHOLE if enabled, needs info from all previous sub detectors for dimensions
   if (Enable::BLACKHOLE) BlackHole(g4Reco, radius);
@@ -202,13 +214,13 @@ void ShowerCompress()
   PHG4DstCompressReco *compress = new PHG4DstCompressReco("PHG4DstCompressReco");
   compress->AddHitContainer("G4HIT_PIPE");
 
-////------------------
-//// Disabling these option during the compression, 
-//// until ZDC, Romanpots, and B0 have real design.
-//
-//  compress->AddHitContainer("G4HIT_ZDC");
-//  compress->AddHitContainer("G4HIT_RomanPots");
-//  compress->AddHitContainer("G4HIT_B0detector");
+  ////------------------
+  //// Disabling these option during the compression,
+  //// until ZDC, Romanpots, and B0 have real design.
+  //
+  //  compress->AddHitContainer("G4HIT_ZDC");
+  //  compress->AddHitContainer("G4HIT_RomanPots");
+  //  compress->AddHitContainer("G4HIT_B0detector");
   compress->AddHitContainer("G4HIT_FIELDCAGE");
   compress->AddHitContainer("G4HIT_CEMC_ELECTRONICS");
   compress->AddHitContainer("G4HIT_CEMC");
@@ -267,13 +279,13 @@ void DstCompress(Fun4AllDstOutputManager *out)
   {
     out->StripNode("G4HIT_PIPE");
 
-////------------------
-//// Disabling these option during the compression, 
-//// until ZDC, Romanpots, and B0 have real design.
-//
-//    out->StripNode("G4HIT_ZDC");
-//    out->StripNode("G4HIT_RomanPots");
-//    out->StripNode("G4HIT_B0detectors");
+    ////------------------
+    //// Disabling these option during the compression,
+    //// until ZDC, Romanpots, and B0 have real design.
+    //
+    //    out->StripNode("G4HIT_ZDC");
+    //    out->StripNode("G4HIT_RomanPots");
+    //    out->StripNode("G4HIT_B0detectors");
     out->StripNode("G4HIT_SVTXSUPPORT");
     out->StripNode("G4HIT_CEMC_ELECTRONICS");
     out->StripNode("G4HIT_CEMC");
