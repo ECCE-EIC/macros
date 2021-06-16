@@ -292,7 +292,7 @@ namespace INPUTEMBED
 
 namespace PYTHIA6
 {
-  string config_file = string(getenv("CALIBRATIONROOT")) + "/Generators/phpythia6.cfg";
+  string config_file = string(getenv("CALIBRATIONROOT")) + "/Generators/phpythia6_e18p275_MinPartonP10GeV.cfg";
 }
 
 namespace PYTHIA8

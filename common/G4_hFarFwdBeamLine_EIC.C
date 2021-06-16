@@ -24,20 +24,29 @@ namespace Enable
   bool HFARFWD_MAGNETS = false;
   bool HFARFWD_VIRTUAL_DETECTORS = false;
 
-  bool HFARFWD_MAGNETS_IP6 = HFARFWD_MAGNETS and Enable::IP6;
-  bool HFARFWD_MAGNETS_IP8 = HFARFWD_MAGNETS and Enable::IP8;
-
-  bool HFARFWD_VIRTUAL_DETECTORS_IP8 = HFARFWD_VIRTUAL_DETECTORS and Enable::IP6;
-  bool HFARFWD_VIRTUAL_DETECTORS_IP6 = HFARFWD_VIRTUAL_DETECTORS and Enable::IP8;
-
   bool HFARFWD_PIPE = false;
   bool HFARFWD_OVERLAPCHECK = false;
   int HFARFWD_VERBOSITY = 0;
   bool ZDC_DISABLE_BLACKHOLE = false;
+
+  //enabled automatically in hFarFwdBeamLineInit(), unless overridden by user
+  bool HFARFWD_MAGNETS_IP6 = false;
+  bool HFARFWD_MAGNETS_IP8 = false;
+
+  //enabled automatically in hFarFwdBeamLineInit(), unless overridden by user
+  bool HFARFWD_VIRTUAL_DETECTORS_IP8 = false;
+  bool HFARFWD_VIRTUAL_DETECTORS_IP6 = false;
+
 }  // namespace Enable
 
 void hFarFwdBeamLineInit()
 {
+  Enable::HFARFWD_MAGNETS_IP6 |= Enable::HFARFWD_MAGNETS and Enable::IP6;
+  Enable::HFARFWD_MAGNETS_IP8 |= Enable::HFARFWD_MAGNETS and Enable::IP8;
+
+  Enable::HFARFWD_VIRTUAL_DETECTORS_IP8 |= Enable::HFARFWD_VIRTUAL_DETECTORS and Enable::IP6;
+  Enable::HFARFWD_VIRTUAL_DETECTORS_IP6 |= Enable::HFARFWD_VIRTUAL_DETECTORS and Enable::IP8;
+
   if (Enable::HFARFWD_MAGNETS_IP6 && Enable::HFARFWD_MAGNETS_IP8)
   {
     cout << "You cannot have magnets for both IP6 and IP8 ON at the same time" << endl;
@@ -238,7 +247,7 @@ void hFarFwdDefineDetectorsIP6(PHG4Reco *g4Reco)
   detZDC->SetActive();
   detZDC->set_double_param("place_z", 3750. + detZDCsurrogate_size_z);
   detZDC->set_double_param("place_x", 96.24);
-  detZDC->set_double_param("rot_y", -0.025 * TMath::RadToDeg());
+  detZDC->set_double_param("rot_y", -0.025);
   detZDC->OverlapCheck(overlapCheck);
   g4Reco->registerSubsystem(detZDC);
 
@@ -379,7 +388,7 @@ void hFarFwdDefineDetectorsIP8(PHG4Reco *g4Reco)
   detZDC->SetActive();
   detZDC->set_double_param("place_z", 3650. + detZDCsurrogate_size_z);
   detZDC->set_double_param("place_x", 40);
-  detZDC->set_double_param("rot_y", -0.035 * TMath::RadToDeg());
+  detZDC->set_double_param("rot_y", -0.035);
   detZDC->OverlapCheck(overlapCheck);
   g4Reco->registerSubsystem(detZDC);
 
