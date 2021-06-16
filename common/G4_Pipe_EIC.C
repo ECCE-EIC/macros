@@ -55,7 +55,7 @@ double Pipe(PHG4Reco* g4Reco,
             double radius)
 {
   bool AbsorberActive = Enable::ABSORBER || Enable::PIPE_ABSORBER;
-  bool OverlapCheck = Enable::OVERLAPCHECK || Enable::PIPE_OVERLAPCHECK;
+  bool OverlapCheck = Enable::PIPE_OVERLAPCHECK; // detach from Enable::OVERLAPCHECK ||  to suppress GDML validation messages
   int verbosity = std::max(Enable::VERBOSITY, Enable::PIPE_VERBOSITY);
   // process pipe extentions?
   const bool do_pipe_hadron_forward_extension = G4PIPE::use_forward_pipes && true;
@@ -103,7 +103,7 @@ double Pipe(PHG4Reco* g4Reco,
   if (do_pipe_electron_forward_extension)
   {
     PHG4GDMLSubsystem* gdml = new PHG4GDMLSubsystem("ElectronForwardEnvelope");
-    gdml->set_string_param("GDMPath", string(getenv("CALIBRATIONROOT")) + "/Beam/Detector_chamber_3-20-20.G4Import.gdml");
+    gdml->set_string_param("GDMPath", string(getenv("CALIBRATIONROOT")) + "/Beam/Detector_chamber_3-20-20.G4Import.v2.gdml");
     gdml->set_string_param("TopVolName", "ElectronForwardEnvelope");
     gdml->set_int_param("skip_DST_geometry_export", 1);  // do not export extended beam pipe as it is not supported by TGeo and outside Kalman filter acceptance
     gdml->OverlapCheck(OverlapCheck);
@@ -113,7 +113,7 @@ double Pipe(PHG4Reco* g4Reco,
   if (do_pipe_hadron_forward_extension)
   {
     PHG4GDMLSubsystem* gdml = new PHG4GDMLSubsystem("HadronForwardEnvelope");
-    gdml->set_string_param("GDMPath", string(getenv("CALIBRATIONROOT")) + "/Beam/Detector_chamber_3-20-20.G4Import.gdml");
+    gdml->set_string_param("GDMPath", string(getenv("CALIBRATIONROOT")) + "/Beam/Detector_chamber_3-20-20.G4Import.v2.gdml");
     gdml->set_string_param("TopVolName", "HadronForwardEnvelope");
     gdml->set_int_param("skip_DST_geometry_export", 1);  // do not export extended beam pipe as it is not supported by TGeo and outside Kalman filter acceptance
     gdml->OverlapCheck(OverlapCheck);
