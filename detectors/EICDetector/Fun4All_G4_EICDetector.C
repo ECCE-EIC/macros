@@ -303,6 +303,9 @@ int Fun4All_G4_EICDetector(
   Enable::RICH = true;
   Enable::AEROGEL = false;
 
+  // EICDetector geometry - 'electron' direction
+  Enable::mRICH = true;  //-m/s- added mRICH
+
   Enable::FEMC = false;
   //  Enable::FEMC_ABSORBER = true;
   Enable::FEMC_TOWER = Enable::FEMC && true;
@@ -316,7 +319,6 @@ int Fun4All_G4_EICDetector(
   Enable::FHCAL_EVAL = Enable::FHCAL_CLUSTER && true;
 
   // EICDetector geometry - 'electron' direction
-  Enable::mRICH = false;  //-m/s- added mRICH
   Enable::EEMC = false;
   Enable::EEMC_TOWER = Enable::EEMC && true;
   Enable::EEMC_CLUSTER = Enable::EEMC_TOWER && true;
