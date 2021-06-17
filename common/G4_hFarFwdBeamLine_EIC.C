@@ -278,14 +278,17 @@ void hFarFwdDefineDetectorsIP6(PHG4Reco *g4Reco)
   detZDCsurrogate->SetMotherSubsystem(hFarFwdBeamLine::hFarFwdBeamLineEnclosure);
   g4Reco->registerSubsystem(detZDCsurrogate);
 
-  EICG4ZDCSubsystem *detZDC = new EICG4ZDCSubsystem("EICG4ZDC");
-  detZDC->SetActive();
-  detZDC->set_double_param("place_z", 3750. + detZDCsurrogate_size_z - hFarFwdBeamLine::enclosure_center);
-  detZDC->set_double_param("place_x", 96.24);
-  detZDC->set_double_param("rot_y", -0.025);
-  detZDC->OverlapCheck(overlapCheck);
-  detZDC->SetMotherSubsystem(hFarFwdBeamLine::hFarFwdBeamLineEnclosure);
-  g4Reco->registerSubsystem(detZDC);
+  if (Enable::ZDC_DISABLE_BLACKHOLE)
+  {
+    EICG4ZDCSubsystem *detZDC = new EICG4ZDCSubsystem("EICG4ZDC");
+    detZDC->SetActive();
+    detZDC->set_double_param("place_z", 3750. + detZDCsurrogate_size_z - hFarFwdBeamLine::enclosure_center);
+    detZDC->set_double_param("place_x", 96.24);
+    detZDC->set_double_param("rot_y", -0.025);
+    detZDC->OverlapCheck(overlapCheck);
+    detZDC->SetMotherSubsystem(hFarFwdBeamLine::hFarFwdBeamLineEnclosure);
+    g4Reco->registerSubsystem(detZDC);
+  }
 
   const int offMomDetNr = 2;
   const double om_zCent[offMomDetNr] = {3450, 3650};

@@ -53,21 +53,11 @@ void FGEMSetup(PHG4Reco *g4Reco, const int N_Sector = 8,  //
                const double min_eta = 1.245               //
 )
 {
-  const double tilt = .1;
-
-  double etamax;
-  double zpos;
-  PHG4SectorSubsystem *gem;
+  ///////////////////////////////////////////////////////////////////////////
+  make_GEM_station("FGEM_0", g4Reco, 160.0, min_eta, 3.5, N_Sector);
 
   ///////////////////////////////////////////////////////////////////////////
-  etamax = 3.3;
-  make_GEM_station("FGEM_2", g4Reco, 134.0, 2, etamax, N_Sector);
-  ///////////////////////////////////////////////////////////////////////////
-  make_GEM_station("FGEM_3", g4Reco, 157.0, min_eta, etamax, N_Sector, tilt, true);
-
-  ///////////////////////////////////////////////////////////////////////////
-  make_GEM_station("FGEM_4", g4Reco, 271.0, 2, 3.5, N_Sector);
-  make_GEM_station("FGEM_4_LowerEta", g4Reco, 271.0, min_eta, 2, N_Sector, tilt, true);
+  make_GEM_station("FGEM_1", g4Reco, 285.0, min_eta, 3.5, N_Sector);
 }
 
 //! Add drift layers to mini TPC

@@ -18,7 +18,7 @@
 #include <G4_Mvtx_EIC.C>
 #include <G4_Pipe_EIC.C>
 #include <G4_PlugDoor_EIC.C>
-#include <G4_RICH.C>
+#include <G4_dRICH.C>
 
 #include <G4_Barrel_EIC.C>
 #include <G4_FST_EIC.C>

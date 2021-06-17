@@ -45,7 +45,7 @@ int Fun4All_G4_EICDetector(
   // PHRandomSeed() which reads /dev/urandom to get its seed
   // if the RANDOMSEED flag is set its value is taken as initial seed
   // which will produce identical results so you can debug your code
-  rc->set_IntFlag("RANDOMSEED", 12345);
+  rc->set_IntFlag("RANDOMSEED", 1234);
 
   //===============
   // Input options
@@ -232,10 +232,10 @@ int Fun4All_G4_EICDetector(
   Enable::DSTOUT_COMPRESS = true;  // Compress DST files
 
   //Option to convert DST to human command readable TTree for quick poke around the outputs
-    Enable::DSTREADER = true;
+  Enable::DSTREADER = true;
 
   // turn the display on (default off)
-//  Enable::DISPLAY = true;
+  Enable::DISPLAY = true;
 
   //======================
   // What to run
@@ -261,12 +261,7 @@ int Fun4All_G4_EICDetector(
   Enable::BARREL = false;
   //G4BARREL::SETTING::BARRELV6=true;
   // fst
-  Enable::FST = false;
-  G4FST::SETTING::FST_TPC = false;
-  // mvtx/tpc tracker
-  Enable::MVTX = false;
-  Enable::TPC = false;
-  //  Enable::TPC_ENDCAP = true;
+  Enable::FST = true;
 
   Enable::TRACKING = true;
   Enable::TRACKING_EVAL = Enable::TRACKING && true;
@@ -320,7 +315,7 @@ int Fun4All_G4_EICDetector(
   Enable::FHCAL_EVAL = Enable::FHCAL_CLUSTER && true;
 
   // EICDetector geometry - 'electron' direction
-  Enable::mRICH = false; //-m/s- added mRICH
+  Enable::mRICH = false;  //-m/s- added mRICH
   Enable::EEMC = false;
   Enable::EEMC_TOWER = Enable::EEMC && true;
   Enable::EEMC_CLUSTER = Enable::EEMC_TOWER && true;
