@@ -7,12 +7,12 @@
 #include <G4Setup_EICDetector.C>
 #include <G4_Bbc.C>
 #include <G4_DSTReader_EICDetector.C>
+#include <G4_EventEvaluator.C>
 #include <G4_FwdJets.C>
 #include <G4_Global.C>
 #include <G4_Input.C>
 #include <G4_Jets.C>
 #include <G4_Production.C>
-#include <G4_EventEvaluator.C>
 #include <G4_User.C>
 
 #include <TROOT.h>
@@ -46,11 +46,16 @@ int Fun4All_G4_EICDetector(
   // PHRandomSeed() which reads /dev/urandom to get its seed
   // if the RANDOMSEED flag is set its value is taken as initial seed
   // which will produce identical results so you can debug your code
-  // rc->set_IntFlag("RANDOMSEED", 12345);
+  rc->set_IntFlag("RANDOMSEED", 12345);
 
   //===============
   // Input options
   //===============
+
+  // switching IPs by comment/uncommenting the following lines
+  // used for both beamline setting and for the event generator crossing boost
+  Enable::IP6 = true;
+  // Enable::IP8 = true;
 
   // Either:
   // read previously generated g4-hits files, in this case it opens a DST and skips
@@ -73,16 +78,16 @@ int Fun4All_G4_EICDetector(
   //INPUTEMBED::listfile[0] = embed_input_file;
 
   // Use Pythia 8
-  //  Input::PYTHIA8 = true;
+  // Input::PYTHIA8 = true;
 
   // Use Pythia 6
-  //   Input::PYTHIA6 = true;
+  Input::PYTHIA6 = true;
 
   // Use Sartre
   //   Input::SARTRE = true;
 
   // Simple multi particle generator in eta/phi/pt ranges
-  Input::SIMPLE = true;
+  // Input::SIMPLE = true;
   // Input::SIMPLE_NUMBER = 2; // if you need 2 of them
   // Input::SIMPLE_VERBOSITY = 1;
 
@@ -194,7 +199,7 @@ int Fun4All_G4_EICDetector(
     Input::ApplyEICBeamParameter(INPUTMANAGER::HepMCInputManager);
     // optional overriding beam parameters
     //INPUTMANAGER::HepMCInputManager->set_vertex_distribution_width(100e-4, 100e-4, 30, 0);  //optional collision smear in space, time
-                                                                                            //    INPUTMANAGER::HepMCInputManager->set_vertex_distribution_mean(0,0,0,0);//optional collision central position shift in space, time
+    //    INPUTMANAGER::HepMCInputManager->set_vertex_distribution_mean(0,0,0,0);//optional collision central position shift in space, time
     // //optional choice of vertex distribution function in space, time
     // INPUTMANAGER::HepMCInputManager->set_vertex_distribution_function(PHHepMCGenHelper::Gaus, PHHepMCGenHelper::Gaus, PHHepMCGenHelper::Gaus, PHHepMCGenHelper::Gaus);
     //! embedding ID for the event
@@ -228,10 +233,10 @@ int Fun4All_G4_EICDetector(
   Enable::DSTOUT_COMPRESS = false;  // Compress DST files
 
   //Option to convert DST to human command readable TTree for quick poke around the outputs
-//  Enable::DSTREADER = true;
+    Enable::DSTREADER = true;
 
   // turn the display on (default off)
-  Enable::DISPLAY = true;
+//  Enable::DISPLAY = true;
 
   //======================
   // What to run
@@ -242,22 +247,20 @@ int Fun4All_G4_EICDetector(
   //  Enable::VERBOSITY = 1;
 
   //  Enable::BBC = true;
-  Enable::BBCFAKE = true; // Smeared vtx and t0, use if you don't want real BBC in simulation
+  Enable::BBCFAKE = true;  // Smeared vtx and t0, use if you don't want real BBC in simulation
 
   // whether to simulate the Be section of the beam pipe
   Enable::PIPE = true;
-  // EIC beam pipe extension beyond the Be-section:
-  G4PIPE::use_forward_pipes = true;
+  // If need to disable EIC beam pipe extension beyond the Be-section:
+  // G4PIPE::use_forward_pipes = false;
   //EIC hadron far forward magnets and detectors. IP6 and IP8 are incompatible (pick either or);
-  Enable::HFARFWD_MAGNETS_IP6=true;
-  Enable::HFARFWD_VIRTUAL_DETECTORS_IP6=true;
-  Enable::HFARFWD_MAGNETS_IP8=false;
-  Enable::HFARFWD_VIRTUAL_DETECTORS_IP8=false;
+  Enable::HFARFWD_MAGNETS = true;
+  Enable::HFARFWD_VIRTUAL_DETECTORS = true;
 
   // gems
   Enable::EGEM = false;
   Enable::FGEM = false;
-  Enable::FGEM_ORIG = false; //5 forward gems; cannot be used with FST
+  Enable::FGEM_ORIG = false;  //5 forward gems; cannot be used with FST
   // barrel tracker
   Enable::BARREL = false;
   //G4BARREL::SETTING::BARRELV6=true;
@@ -292,9 +295,9 @@ int Fun4All_G4_EICDetector(
   Enable::HCALIN_CLUSTER = Enable::HCALIN_TOWER && true;
   Enable::HCALIN_EVAL = Enable::HCALIN_CLUSTER && true;
 
-  Enable::MAGNET = true;
+  Enable::MAGNET = false;
 
-  Enable::HCALOUT = true;
+  Enable::HCALOUT = false;
   //  Enable::HCALOUT_ABSORBER = true;
   Enable::HCALOUT_CELL = Enable::HCALOUT && true;
   Enable::HCALOUT_TOWER = Enable::HCALOUT_CELL && true;
@@ -449,7 +452,7 @@ int Fun4All_G4_EICDetector(
   {
     Global_FastSim();
   }
-    
+
   //---------
   // Jet reco
   //---------

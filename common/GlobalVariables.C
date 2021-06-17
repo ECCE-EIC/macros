@@ -58,7 +58,10 @@ namespace G4P6DECAYER
 // our various tracking macro
 namespace TRACKING
 {
-  string TrackNodeName = "SvtxTrackMap";
+  string TrackNodeName = "TrackMap";
+
+  class PHG4TrackFastSim;
+  PHG4TrackFastSim * FastKalmanFilter(nullptr);
 }
 
 namespace G4MAGNET
