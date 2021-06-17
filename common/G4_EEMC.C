@@ -96,7 +96,7 @@ void EEMCSetup(PHG4Reco *g4Reco)
   /* Use non-projective geometry */
   if (!G4EEMC::use_projective_geometry)
   {
-    mapping_eemc << getenv("CALIBRATIONROOT") << "/CrystalCalorimeter/mapping/towerMap_EEMC_v006.txt";
+    mapping_eemc << getenv("CALIBRATIONROOT") << "/CrystalCalorimeter/mapping/towerMap_EEMC_v007.txt";
     eemc->set_string_param("mappingtower", mapping_eemc.str());
   }
 

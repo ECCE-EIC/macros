@@ -181,7 +181,7 @@ double HCalInner(PHG4Reco *g4Reco,
 
   radius = hcal->get_double_param("outer_radius");
 
-  HCalInner_SupportRing(g4Reco);
+  // HCalInner_SupportRing(g4Reco); disabling the support ring until hasing a design for ECCE
 
   radius += no_overlapp;
   return radius;
