@@ -13,6 +13,7 @@
 
 #include <g4detectors/PHG4CylinderSubsystem.h>
 #include <g4detectors/PHG4SectorSubsystem.h>
+#include <g4trackfastsim/PHG4TrackFastSim.h>
 
 #include <g4main/PHG4Reco.h>
 
@@ -21,7 +22,7 @@
 R__LOAD_LIBRARY(libg4detectors.so)
 
 int make_LANL_FST_station(string name, PHG4Reco *g4Reco, double zpos, double Rmin,
-                          double Rmax, double tSilicon);
+                          double Rmax, double tSilicon, double pitch);
 int make_supportCyl(string name, PHG4Reco *g4Reco,
                     double r, double t, double length);
 //-----------------------------------------------------------------------------------//
@@ -64,34 +65,35 @@ void FSTSetup(PHG4Reco *g4Reco, const double min_eta = 1.245)
   //bool OverlapCheck = Enable::OVERLAPCHECK || Enable::FST_OVERLAPCHECK;
 
   //Design from Xuan Li @LANL
-  if (G4FST::SETTING::FST_TPC)  // this ver. fits in the TPC
-  {
-    make_LANL_FST_station("FST_0", g4Reco, 35, 4, 17, 35 * um);  //cm
-    make_LANL_FST_station("FST_1", g4Reco, 53, 4.5, 17, 35 * um);
-    make_LANL_FST_station("FST_2", g4Reco, 77, 5, 17, 35 * um);
-    make_LANL_FST_station("FST_3", g4Reco, 101, 7.5, 17, 85 * um);
-    make_LANL_FST_station("FST_4", g4Reco, 125, 9.5, 45, 85 * um);
-  }
-  else
-  {
-    make_LANL_FST_station("FST_0", g4Reco, 35, 4, 22, 35 * um);  //cm
-    make_LANL_FST_station("FST_1", g4Reco, 57.5, 4.5, 42, 35 * um);
-    make_LANL_FST_station("FST_2", g4Reco, 80, 6, 43.5, 35 * um);
-    make_LANL_FST_station("FST_3", g4Reco, 115, 9.3, 46.8, 85 * um);
-    make_LANL_FST_station("FST_4", g4Reco, 125, 9.6, 47.1, 85 * um);
+  make_LANL_FST_station("FST_0", g4Reco, 35, 4, 22, 35 * um, 20e-4);  //cm
+  make_LANL_FST_station("FST_1", g4Reco, 57.5, 4.5, 42, 35 * um, 20e-4);
+  make_LANL_FST_station("FST_2", g4Reco, 80, 6, 43.5, 35 * um, 20e-4);
+  make_LANL_FST_station("FST_3", g4Reco, 115, 9.3, 46.8, 85 * um, 36.4e-4);
+  make_LANL_FST_station("FST_4", g4Reco, 125, 9.6, 47.1, 85 * um, 36.4e-4);
 
-    if (G4FST::SETTING::SUPPORTCYL)
-    {
-      double gap = 8;                                                               //cm
-      double tSupport = 0.5;                                                        //cm
-      make_supportCyl("FSTSupportCyl", g4Reco, 50.1 + gap, tSupport, 125.0 * 2.0);  //cm
-    }
+
+  //mirror for e-going FST
+  make_LANL_FST_station("EFST_0", g4Reco, -35, 4, 22, 35 * um, 20e-4);  //cm
+  make_LANL_FST_station("EFST_1", g4Reco, -57.5, 4.5, 42, 35 * um, 20e-4);
+  make_LANL_FST_station("EFST_2", g4Reco, -80, 6, 43.5, 35 * um, 20e-4);
+  make_LANL_FST_station("EFST_3", g4Reco, -115, 9.3, 46.8, 85 * um, 36.4e-4);
+  make_LANL_FST_station("EFST_4", g4Reco, -125, 9.6, 47.1, 85 * um, 36.4e-4);
+
+  if (G4FST::SETTING::SUPPORTCYL)
+  {
+    double gap = 8;                                                               //cm
+    double tSupport = 0.5;                                                        //cm
+    make_supportCyl("FSTSupportCyl", g4Reco, 50.1 + gap, tSupport, 125.0 * 2.0);  //cm
   }
 }
 //-----------------------------------------------------------------------------------//
 int make_LANL_FST_station(string name, PHG4Reco *g4Reco,
-                          double zpos, double Rmin, double Rmax, double tSilicon)  //silicon thickness
+                          double zpos, double Rmin, double Rmax, double tSilicon, double pitch)  //silicon thickness
 {
+
+  double min_polar_angle =atan2(Rmin, zpos) ;
+  double max_polar_angle = atan2(Rmax, zpos);
+
   // always facing the interaction point
   double polar_angle = 0;
   if (zpos < 0)
@@ -99,10 +101,6 @@ int make_LANL_FST_station(string name, PHG4Reco *g4Reco,
     zpos = -zpos;
     polar_angle = M_PI;
   }
-
-  double min_polar_angle = atan2(Rmin, zpos);
-  double max_polar_angle = atan2(Rmax, zpos);
-
   if (max_polar_angle < min_polar_angle)
   {
     double t = max_polar_angle;
@@ -139,6 +137,16 @@ int make_LANL_FST_station(string name, PHG4Reco *g4Reco,
 
   g4Reco->registerSubsystem(fst);
 
+  if (TRACKING::FastKalmanFilter)
+  {
+    TRACKING::FastKalmanFilter->add_phg4hits(string("G4HIT_") + name,           //      const std::string& phg4hitsNames,
+                                             PHG4TrackFastSim::Vertical_Plane,  //      const DETECTOR_TYPE phg4dettype,
+                                             pitch / sqrt(12.),                 //      const float radres,
+                                             pitch / sqrt(12.),                 //      const float phires,
+                                             50e-4 / sqrt(12.),                 //      const float lonres, *ignored in plane detector*
+                                             1,                                 //      const float eff,
+                                             0);                                //      const float noise
+  }
   return 0;
 }
 //-----------------------------------------------------------------------------------//
