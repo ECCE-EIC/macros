@@ -45,7 +45,7 @@ int Fun4All_G4_EICDetector(
   // PHRandomSeed() which reads /dev/urandom to get its seed
   // if the RANDOMSEED flag is set its value is taken as initial seed
   // which will produce identical results so you can debug your code
-  rc->set_IntFlag("RANDOMSEED", 1234);
+  rc->set_IntFlag("RANDOMSEED", 123);
 
   //===============
   // Input options
@@ -232,7 +232,7 @@ int Fun4All_G4_EICDetector(
   Enable::DSTOUT_COMPRESS = true;  // Compress DST files
 
   //Option to convert DST to human command readable TTree for quick poke around the outputs
-  Enable::DSTREADER = true;
+  // Enable::DSTREADER = true;
 
   // turn the display on (default off)
   Enable::DISPLAY = true;
@@ -242,7 +242,7 @@ int Fun4All_G4_EICDetector(
   //======================
   // Global options (enabled for all subsystems - if implemented)
   //  Enable::ABSORBER = true;
-  Enable::OVERLAPCHECK = true;
+  // Enable::OVERLAPCHECK = true;
   //  Enable::VERBOSITY = 1;
 
   // whether to simulate the Be section of the beam pipe
@@ -258,11 +258,11 @@ int Fun4All_G4_EICDetector(
   Enable::FGEM = true;
   Enable::BGEM = true;
   // barrel tracker
-  Enable::BARREL = false;
-  //G4BARREL::SETTING::BARRELV6=true;
+  Enable::BARREL = true;
+  G4BARREL::SETTING::BARRELV6 = true;
   // fst
   Enable::FST = true;
-  G4FST::SETTING::SUPPORTCYL=true;
+  G4FST::SETTING::SUPPORTCYL = true;
 
   Enable::TRACKING = true;
   Enable::TRACKING_EVAL = Enable::TRACKING && true;
@@ -273,23 +273,23 @@ int Fun4All_G4_EICDetector(
   G4TRACKING::PROJECTION_FEMC = true;
   G4TRACKING::PROJECTION_FHCAL = true;
 
-  Enable::CEMC = false;
+  Enable::CEMC = true;
   //  Enable::CEMC_ABSORBER = true;
   Enable::CEMC_CELL = Enable::CEMC && true;
   Enable::CEMC_TOWER = Enable::CEMC_CELL && true;
   Enable::CEMC_CLUSTER = Enable::CEMC_TOWER && true;
   Enable::CEMC_EVAL = Enable::CEMC_CLUSTER && true;
 
-  Enable::HCALIN = false;
+  Enable::HCALIN = true;
   //  Enable::HCALIN_ABSORBER = true;
   Enable::HCALIN_CELL = Enable::HCALIN && true;
   Enable::HCALIN_TOWER = Enable::HCALIN_CELL && true;
   Enable::HCALIN_CLUSTER = Enable::HCALIN_TOWER && true;
   Enable::HCALIN_EVAL = Enable::HCALIN_CLUSTER && true;
 
-  Enable::MAGNET = false;
+  Enable::MAGNET = true;
 
-  Enable::HCALOUT = false;
+  Enable::HCALOUT = true;
   //  Enable::HCALOUT_ABSORBER = true;
   Enable::HCALOUT_CELL = Enable::HCALOUT && true;
   Enable::HCALOUT_TOWER = Enable::HCALOUT_CELL && true;
@@ -297,29 +297,28 @@ int Fun4All_G4_EICDetector(
   Enable::HCALOUT_EVAL = Enable::HCALOUT_CLUSTER && true;
 
   // EICDetector geometry - barrel
-  Enable::DIRC = false;
+  Enable::DIRC = true;
 
   // EICDetector geometry - 'hadron' direction
   Enable::RICH = true;
-  Enable::AEROGEL = false;
 
   // EICDetector geometry - 'electron' direction
   Enable::mRICH = true;  //-m/s- added mRICH
 
-  Enable::FEMC = false;
+  Enable::FEMC = true;
   //  Enable::FEMC_ABSORBER = true;
   Enable::FEMC_TOWER = Enable::FEMC && true;
   Enable::FEMC_CLUSTER = Enable::FEMC_TOWER && true;
   Enable::FEMC_EVAL = Enable::FEMC_CLUSTER && true;
 
-  Enable::FHCAL = false;
+  Enable::FHCAL = true;
   //  Enable::FHCAL_ABSORBER = true;
   Enable::FHCAL_TOWER = Enable::FHCAL && true;
   Enable::FHCAL_CLUSTER = Enable::FHCAL_TOWER && true;
   Enable::FHCAL_EVAL = Enable::FHCAL_CLUSTER && true;
 
   // EICDetector geometry - 'electron' direction
-  Enable::EEMC = false;
+  Enable::EEMC = true;
   Enable::EEMC_TOWER = Enable::EEMC && true;
   Enable::EEMC_CLUSTER = Enable::EEMC_TOWER && true;
   Enable::EEMC_EVAL = Enable::EEMC_CLUSTER && true;

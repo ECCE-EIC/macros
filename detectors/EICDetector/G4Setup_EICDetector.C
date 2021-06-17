@@ -3,7 +3,6 @@
 
 #include <GlobalVariables.C>
 
-#include <G4_Aerogel.C>
 #include <G4_BlackHole.C>
 
 #include <G4_CEmc_EIC.C>
@@ -84,7 +83,6 @@ void G4Init()
   if (Enable::DIRC) DIRCInit();
   if (Enable::RICH) RICHInit();
   if (Enable::mRICH) mRICHInit();
-  if (Enable::AEROGEL) AerogelInit();
   if (Enable::USER) UserInit();
   if (Enable::BLACKHOLE) BlackHoleInit();
 }
@@ -158,7 +156,6 @@ int G4Setup()
   if (Enable::DIRC) DIRCSetup(g4Reco);
   if (Enable::RICH) RICHSetup(g4Reco);
   if (Enable::mRICH) mRICHSetup(g4Reco);
-  if (Enable::AEROGEL) AerogelSetup(g4Reco);
 
   //----------------------------------------
   // sPHENIX forward flux return door
