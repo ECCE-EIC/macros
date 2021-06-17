@@ -324,6 +324,7 @@ int Fun4All_G4_EICDetector(
   Enable::FHCAL_EVAL = Enable::FHCAL_CLUSTER && true;
 
   // EICDetector geometry - 'electron' direction
+  Enable::mRICH = false; //-m/s- added mRICH
   Enable::EEMC = false;
   Enable::EEMC_TOWER = Enable::EEMC && true;
   Enable::EEMC_CLUSTER = Enable::EEMC_TOWER && true;

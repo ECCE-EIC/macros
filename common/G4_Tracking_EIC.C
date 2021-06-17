@@ -37,12 +37,13 @@ namespace G4TRACKING
   bool PROJECTION_CEMC = false;
   bool PROJECTION_FEMC = false;
   bool PROJECTION_FHCAL = false;
+
+  PHG4TrackFastSim *
 }  // namespace G4TRACKING
 
 //-----------------------------------------------------------------------------//
 void TrackingInit()
 {
-  TRACKING::TrackNodeName = "TrackMap";
 }
 //-----------------------------------------------------------------------------//
 void Tracking_Reco()
