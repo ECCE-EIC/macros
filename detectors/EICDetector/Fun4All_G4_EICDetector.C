@@ -306,7 +306,7 @@ int Fun4All_G4_EICDetector(
 
   // EICDetector geometry - 'hadron' direction
   Enable::RICH = true;
-  Enable::mRICH = true; //-m/s- added mRICH
+  Enable::mRICH = false;
   Enable::AEROGEL = true;
 
   Enable::FEMC = true;
