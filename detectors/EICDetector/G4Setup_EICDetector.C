@@ -8,6 +8,7 @@
 #include <G4_CEmc_EIC.C>
 #include <G4_DIRC.C>
 #include <G4_EEMC.C>
+#include <G4_EHCAL.C>
 #include <G4_FEMC_EIC.C>
 #include <G4_FHCAL.C>
 #include <G4_HcalIn_ref.C>
@@ -80,6 +81,7 @@ void G4Init()
   if (Enable::FEMC) FEMCInit();
   if (Enable::FHCAL) FHCALInit();
   if (Enable::EEMC) EEMCInit();
+  if (Enable::EHCAL) EHCALInit();
   if (Enable::DIRC) DIRCInit();
   if (Enable::RICH) RICHInit();
   if (Enable::mRICH) mRICHInit();
@@ -149,6 +151,7 @@ int G4Setup()
   if (Enable::FEMC) FEMCSetup(g4Reco);
   if (Enable::FHCAL) FHCALSetup(g4Reco);
   if (Enable::EEMC) EEMCSetup(g4Reco);
+  if (Enable::EHCAL) EHCALSetup(g4Reco);
 
   //----------------------------------------
   // PID
@@ -221,6 +224,8 @@ void ShowerCompress()
   compress->AddHitContainer("G4HIT_ABSORBER_FEMC");
   compress->AddHitContainer("G4HIT_FHCAL");
   compress->AddHitContainer("G4HIT_ABSORBER_FHCAL");
+  compress->AddHitContainer("G4HIT_EHCAL");
+  compress->AddHitContainer("G4HIT_ABSORBER_EHCAL");
   compress->AddCellContainer("G4CELL_FEMC");
   compress->AddCellContainer("G4CELL_FHCAL");
   compress->AddTowerContainer("TOWER_SIM_FEMC");
@@ -236,6 +241,9 @@ void ShowerCompress()
   compress->AddTowerContainer("TOWER_SIM_EEMC");
   compress->AddTowerContainer("TOWER_RAW_EEMC");
   compress->AddTowerContainer("TOWER_CALIB_EEMC");
+  compress->AddTowerContainer("TOWER_SIM_EHCAL");
+  compress->AddTowerContainer("TOWER_RAW_EHCAL");
+  compress->AddTowerContainer("TOWER_CALIB_EHCAL");
 
   se->registerSubsystem(compress);
 
@@ -283,6 +291,9 @@ void DstCompress(Fun4AllDstOutputManager *out)
     out->StripNode("G4HIT_EEMC");
     out->StripNode("G4HIT_ABSORBER_EEMC");
     out->StripNode("G4CELL_EEMC");
+    out->StripNode("G4HIT_EHCAL");
+    out->StripNode("G4HIT_ABSORBER_EHCAL");
+    out->StripNode("G4CELL_EHCAL");
   }
 }
 #endif
