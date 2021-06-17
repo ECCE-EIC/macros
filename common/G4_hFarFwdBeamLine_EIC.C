@@ -227,7 +227,7 @@ void hFarFwdDefineDetectorsIP6(PHG4Reco* g4Reco){
   detZDC->SetActive();
   detZDC->set_double_param("place_z",3750. + detZDCsurrogate_size_z);
   detZDC->set_double_param("place_x",96.24);
-  detZDC->set_double_param("rot_y",-0.025*TMath::RadToDeg());
+  detZDC->set_double_param("rot_y",-0.025);
   detZDC->OverlapCheck(overlapCheck);
   g4Reco->registerSubsystem(detZDC);
 
@@ -349,7 +349,7 @@ void hFarFwdDefineDetectorsIP8(PHG4Reco* g4Reco){
   auto *detZDCsurrogate = new PHG4BlockSubsystem("zdcTruth");
   const double detZDCsurrogate_size_z = 0.1;
   detZDCsurrogate->SuperDetector("ZDCsurrogate");
-  detZDCsurrogate->set_double_param("place_x",40);
+  detZDCsurrogate->set_double_param("place_x",127.8);
   detZDCsurrogate->set_double_param("place_y",0);
   detZDCsurrogate->set_double_param("place_z",3650);
   detZDCsurrogate->set_double_param("rot_y",-0.035*TMath::RadToDeg());
@@ -368,8 +368,8 @@ void hFarFwdDefineDetectorsIP8(PHG4Reco* g4Reco){
   EICG4ZDCSubsystem *detZDC = new EICG4ZDCSubsystem("EICG4ZDC");
   detZDC->SetActive();
   detZDC->set_double_param("place_z",3650. + detZDCsurrogate_size_z);
-  detZDC->set_double_param("place_x",40);
-  detZDC->set_double_param("rot_y",-0.035*TMath::RadToDeg());
+  detZDC->set_double_param("place_x",127.8);
+  detZDC->set_double_param("rot_y",-0.035);
   detZDC->OverlapCheck(overlapCheck);
   g4Reco->registerSubsystem(detZDC);
 
@@ -466,6 +466,7 @@ void hFarFwdDefineBeamPipe(PHG4Reco* g4Reco){
     pipe->set_double_param("place_y",qyC[i]);
     pipe->set_double_param("place_z",qzC[i]);
     pipe->SetActive(false);
+//    pipe->SetActive(true);
     g4Reco->registerSubsystem(pipe);
   }
 
@@ -493,6 +494,7 @@ void hFarFwdDefineBeamPipe(PHG4Reco* g4Reco){
   pipeZDC->set_double_param("place_y",0);
   pipeZDC->set_double_param("place_z",2041.59);
   pipeZDC->SetActive(false);
+//  pipeZDC->SetActive(true);
   g4Reco->registerSubsystem(pipeZDC);
 
   //Roman Pot pipe
@@ -516,7 +518,7 @@ void hFarFwdDefineBeamPipe(PHG4Reco* g4Reco){
     pipe->set_double_param("rmin2",ir2[i]);
     pipe->set_double_param("rmax1",or1[i]);
     pipe->set_double_param("rmax2",or2[i]);
-    pipe->set_double_param("rot_y",-0.027*TMath::RadToDeg());
+    pipe->set_double_param("rot_y",-0.047*TMath::RadToDeg());
     g4Reco->registerSubsystem(pipe);
   }
 }
