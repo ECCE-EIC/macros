@@ -262,6 +262,7 @@ int Fun4All_G4_EICDetector(
   //G4BARREL::SETTING::BARRELV6=true;
   // fst
   Enable::FST = true;
+  G4FST::SETTING::SUPPORTCYL=true;
 
   Enable::TRACKING = true;
   Enable::TRACKING_EVAL = Enable::TRACKING && true;
