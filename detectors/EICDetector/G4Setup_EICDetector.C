@@ -4,16 +4,13 @@
 #include <GlobalVariables.C>
 
 #include <G4_Aerogel.C>
-#include <G4_Barrel_EIC.C>
-#include <G4_Bbc.C>
 #include <G4_BlackHole.C>
+
 #include <G4_CEmc_EIC.C>
 #include <G4_DIRC.C>
 #include <G4_EEMC.C>
 #include <G4_FEMC_EIC.C>
 #include <G4_FHCAL.C>
-#include <G4_FST_EIC.C>
-#include <G4_GEM_EIC.C>
 #include <G4_HcalIn_ref.C>
 #include <G4_HcalOut_ref.C>
 #include <G4_Input.C>
@@ -22,8 +19,12 @@
 #include <G4_Pipe_EIC.C>
 #include <G4_PlugDoor_EIC.C>
 #include <G4_RICH.C>
-#include <G4_TPC_EIC.C>
+
+#include <G4_Barrel_EIC.C>
+#include <G4_FST_EIC.C>
+#include <G4_GEM_EIC.C>
 #include <G4_Tracking_EIC.C>
+
 #include <G4_User.C>
 #include <G4_World.C>
 #include <G4_hFarFwdBeamLine_EIC.C>
@@ -61,46 +62,17 @@ void G4Init()
     gSystem->Exit(1);
   }
 
-  if (Enable::TPC && Enable::FST && !G4FST::SETTING::FST_TPC)
-  {
-    cout << "FST setup cannot fit in the TPC" << endl;
-    gSystem->Exit(1);
-  }
-  else if (Enable::MVTX && Enable::BARREL)
-  {
-    cout << "MVTX and BARREL cannot be enabled together" << endl;
-    gSystem->Exit(1);
-  }
-  else if (Enable::TPC && Enable::BARREL && !G4BARREL::SETTING::BARRELV6)
-  {
-    cout << "Barrel setup cannot fit in the TPC" << endl;
-    gSystem->Exit(1);
-  }
-
-  if (Enable::FGEM_ORIG && Enable::FST)
-  {
-    cout << "FST cannot be enabled with 5 FGEM setup" << endl;
-    gSystem->Exit(1);
-  }
-
-  if (Enable::FGEM_ORIG && Enable::FST)
-  {
-    cout << "FST cannot be enabled with 5 FGEM setup" << endl;
-    gSystem->Exit(1);
-  }
-
   // load detector/material macros and execute Init() function
   if (Enable::PIPE) PipeInit();
   if (Enable::HFARFWD_MAGNETS) hFarFwdBeamLineInit();
   if (Enable::PLUGDOOR) PlugDoorInit();
+
+  if (Enable::TRACKING) TrackingInit();
   if (Enable::EGEM) EGEM_Init();
   if (Enable::FGEM || Enable::FGEM_ORIG) FGEM_Init();
   if (Enable::FST) FST_Init();
   if (Enable::BARREL) BarrelInit();
-  if (Enable::MVTX) MvtxInit();
-  if (Enable::TPC) TPCInit();
-  if (Enable::TRACKING) TrackingInit();
-  if (Enable::BBC) BbcInit();
+
   if (Enable::CEMC) CEmcInit(72);  // make it 2*2*2*3*3 so we can try other combinations
   if (Enable::HCALIN) HCalInnerInit(1);
   if (Enable::MAGNET) MagnetInit();
@@ -172,9 +144,6 @@ int G4Setup()
   if (Enable::FGEM || Enable::FGEM_ORIG) FGEMSetup(g4Reco);
   if (Enable::FST) FSTSetup(g4Reco);
   if (Enable::BARREL) Barrel(g4Reco, radius);
-  if (Enable::MVTX) radius = Mvtx(g4Reco, radius);
-  if (Enable::TPC) radius = TPC(g4Reco, radius);
-  if (Enable::BBC) Bbc(g4Reco);
   if (Enable::CEMC) radius = CEmc(g4Reco, radius);
   if (Enable::HCALIN) radius = HCalInner(g4Reco, radius, 4);
   if (Enable::MAGNET) radius = Magnet(g4Reco, radius);

@@ -5,7 +5,6 @@
 
 #include <DisplayOn.C>
 #include <G4Setup_EICDetector.C>
-#include <G4_Bbc.C>
 #include <G4_DSTReader_EICDetector.C>
 #include <G4_EventEvaluator.C>
 #include <G4_FwdJets.C>
@@ -227,10 +226,10 @@ int Fun4All_G4_EICDetector(
   // Write the DST
   //======================
 
-  Enable::DSTOUT = false;
+  Enable::DSTOUT = true;
   DstOut::OutputDir = outdir;
   DstOut::OutputFile = outputFile;
-  Enable::DSTOUT_COMPRESS = false;  // Compress DST files
+  Enable::DSTOUT_COMPRESS = true;  // Compress DST files
 
   //Option to convert DST to human command readable TTree for quick poke around the outputs
     Enable::DSTREADER = true;
@@ -245,9 +244,6 @@ int Fun4All_G4_EICDetector(
   //  Enable::ABSORBER = true;
   Enable::OVERLAPCHECK = true;
   //  Enable::VERBOSITY = 1;
-
-  //  Enable::BBC = true;
-  Enable::BBCFAKE = true;  // Smeared vtx and t0, use if you don't want real BBC in simulation
 
   // whether to simulate the Be section of the beam pipe
   Enable::PIPE = true;
@@ -341,7 +337,7 @@ int Fun4All_G4_EICDetector(
   Enable::JETS = false;
   Enable::JETS_EVAL = Enable::JETS && true;
 
-  Enable::FWDJETS = true;
+  Enable::FWDJETS = false;
   Enable::FWDJETS_EVAL = Enable::FWDJETS && true;
 
   // new settings using Enable namespace in GlobalVariables.C
@@ -394,9 +390,6 @@ int Fun4All_G4_EICDetector(
   //------------------
   // Detector Division
   //------------------
-
-  if (Enable::BBC || Enable::BBCFAKE) Bbc_Reco();
-
   if (Enable::CEMC_CELL) CEMC_Cells();
 
   if (Enable::HCALIN_CELL) HCALInner_Cells();

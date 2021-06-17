@@ -56,11 +56,11 @@ namespace G4P6DECAYER
 }
 
 // our various tracking macro
+class PHG4TrackFastSim;
 namespace TRACKING
 {
   string TrackNodeName = "TrackMap";
 
-  class PHG4TrackFastSim;
   PHG4TrackFastSim * FastKalmanFilter(nullptr);
 }
 
