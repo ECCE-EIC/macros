@@ -254,9 +254,9 @@ int Fun4All_G4_EICDetector(
   Enable::HFARFWD_VIRTUAL_DETECTORS = true;
 
   // gems
-  Enable::EGEM = false;
-  Enable::FGEM = false;
-  Enable::FGEM_ORIG = false;  //5 forward gems; cannot be used with FST
+  Enable::EGEM = true;
+  Enable::FGEM = true;
+  Enable::BGEM = true;
   // barrel tracker
   Enable::BARREL = false;
   //G4BARREL::SETTING::BARRELV6=true;
@@ -268,7 +268,7 @@ int Fun4All_G4_EICDetector(
   Enable::TPC = false;
   //  Enable::TPC_ENDCAP = true;
 
-  Enable::TRACKING = false;
+  Enable::TRACKING = true;
   Enable::TRACKING_EVAL = Enable::TRACKING && true;
   G4TRACKING::DISPLACED_VERTEX = false;  // this option exclude vertex in the track fitting and use RAVE to reconstruct primary and 2ndary vertexes
                                          // projections to calorimeters
@@ -304,7 +304,7 @@ int Fun4All_G4_EICDetector(
   Enable::DIRC = false;
 
   // EICDetector geometry - 'hadron' direction
-  Enable::RICH = false;
+  Enable::RICH = true;
   Enable::AEROGEL = false;
 
   Enable::FEMC = false;

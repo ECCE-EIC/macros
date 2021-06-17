@@ -193,13 +193,6 @@ void Tracking_Reco()
 //    // GEM2, 70um azimuthal resolution, 1cm radial strips
 //    for (int i = first_gem; i < 5; i++)
 //    {
-//      TRACKING::FastKalmanFilter->add_phg4hits(Form("G4HIT_FGEM_%d", i),          //      const std::string& phg4hitsNames,
-//                           PHG4TrackFastSim::Vertical_Plane,  //      const DETECTOR_TYPE phg4dettype,
-//                           1. / sqrt(12.),                    //      const float radres,
-//                           70e-4,                             //      const float phires,
-//                           100e-4,                            //      const float lonres,
-//                           1,                                 //      const float eff,
-//                           0);                                //      const float noise
 //    }
 //  }
 //  //-------------------------
