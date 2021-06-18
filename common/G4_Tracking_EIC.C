@@ -80,48 +80,25 @@ void Tracking_Reco()
 //  //-------------------------
 //  // Barrel
 //  //-------------------------
-//  if (Enable::BARREL)
-//  {
-//    double pitch = 20e-4 / sqrt(12);
+// if (Enable::BARREL)
+// {
+//    float pixel_size=10e-4; //10 um
+//    char nodename[100];
+//      int nBarrel = 6;
 //
-//    if (G4BARREL::SETTING::BARRELV5 || G4BARREL::SETTING::BARRELV6)
-//    {
-//      int nLayer1 = 3;                               //barrel 1
-//      int nLayer2 = 2;                               //barrel 2
-//      if (G4BARREL::SETTING::BARRELV6) nLayer2 = 1;  //compactible w/ TPC
-//      int nLayer[2] = {nLayer1, nLayer2};
-//
-//      for (int n = 0; n < 2; n++)
-//      {
-//        if (n == 1) pitch = 36.4e-4 / sqrt(12);
-//        for (int i = 0; i < nLayer[n]; i++)
+//      for (int i=10; i<10+nBarrel; i++) // CENTRAL BARREL
 //        {
-//          TRACKING::FastKalmanFilter->add_phg4hits(Form("G4HIT_BARREL%d_%d", n, i),  // const std::string& phg4hitsNames,
-//                               PHG4TrackFastSim::Cylinder,       // const DETECTOR_TYPE phg4dettype,
-//                               5e-4,                             // const float radres,   *ignored in cylindrical detector*
-//                               pitch,                            // const float phires,
-//                               pitch,                            // const float lonres,
-//                               0.95,                             // const float eff,
-//                               0);                               // const float noise
+//          sprintf(nodename,"G4HIT_LBLVTX_CENTRAL_%d", i);
+//          kalman->add_phg4hits(nodename,                      // const std::string& phg4hitsNames
+//                               PHG4TrackFastSim::Cylinder,    // const DETECTOR_TYPE phg4dettype
+//                               999.,                          // (this number is not used in cylindrical geometry)
+//                               pixel_size/sqrt(12.), // azimuthal (arc-length) resolution [cm]
+//                               pixel_size/sqrt(12.), // longitudinal (z) resolution [cm]
+//                               1,                             // efficiency (fraction)
+//                               0);                            // hit noise
 //        }
-//      }
 //    }
-//    else
-//    {
-//      int nLayer = 5;
-//      if (G4BARREL::SETTING::BARRELV4) nLayer = 6;
-//      for (int i = 0; i < nLayer; i++)
-//      {
-//        TRACKING::FastKalmanFilter->add_phg4hits(Form("G4HIT_BARREL_%d", i),  // const std::string& phg4hitsNames,
-//                             PHG4TrackFastSim::Cylinder,  // const DETECTOR_TYPE phg4dettype,
-//                             5e-4,                        // const float radres,   *ignored in cylindrical detector*
-//                             pitch,                       // const float phires,
-//                             pitch,                       // const float lonres,
-//                             0.95,                        // const float eff,
-//                             0);                          // const float noise
-//      }
-//    }
-//  }
+//
 //  //-------------------------
 //  // MVTX
 //  //-------------------------

@@ -259,7 +259,6 @@ int Fun4All_G4_EICDetector(
   Enable::BGEM = true;
   // barrel tracker
   Enable::BARREL = true;
-  G4BARREL::SETTING::BARRELV6 = true;
   // fst
   Enable::FST = true;
   G4FST::SETTING::SUPPORTCYL = true;
