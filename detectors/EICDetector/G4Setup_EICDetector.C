@@ -143,7 +143,7 @@ int G4Setup()
   if (Enable::EGEM) EGEMSetup(g4Reco);
   if (Enable::FGEM) FGEMSetup(g4Reco);
   if (Enable::FST) FSTSetup(g4Reco);
-  if (Enable::BARREL) Barrel(g4Reco, radius);
+  if (Enable::BARREL) Barrel(g4Reco);
   if (Enable::CEMC) radius = CEmc(g4Reco, radius);
   if (Enable::HCALIN) radius = HCalInner(g4Reco, radius, 4);
   if (Enable::MAGNET) radius = Magnet(g4Reco, radius);
