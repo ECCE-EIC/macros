@@ -39,8 +39,8 @@ namespace G4DIRC
 // -~16-18% of a radiation length at normal incidence
 
   double radiator_R = 70;
-  double z_start = +168;
-  double z_end = -287;
+  double z_end = +168;
+  double z_start = -287;
   double length = z_end - z_start;
   double z_shift = 0.5*(z_end + z_start);
   double outer_skin_radius = 78;
