@@ -32,6 +32,10 @@ namespace Enable
   bool DSTOUT = false;
   bool DSTOUT_COMPRESS = false;
   int VERBOSITY = 0;
+
+  // IP selection require explicit choice in the main macros
+  bool IP6 = false;
+  bool IP8 = false;
 }  // namespace Enable
 
 // every G4 subsystem needs to implement this
@@ -52,9 +56,12 @@ namespace G4P6DECAYER
 }
 
 // our various tracking macro
+class PHG4TrackFastSim;
 namespace TRACKING
 {
-  string TrackNodeName = "SvtxTrackMap";
+  string TrackNodeName = "TrackMap";
+
+  PHG4TrackFastSim * FastKalmanFilter(nullptr);
 }
 
 namespace G4MAGNET
