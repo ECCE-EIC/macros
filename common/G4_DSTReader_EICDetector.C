@@ -3,22 +3,6 @@
 
 #include <GlobalVariables.C>
 
-#include <G4_Barrel_EIC.C>
-#include <G4_CEmc_EIC.C>
-#include <G4_DIRC.C>
-#include <G4_EEMC.C>
-#include <G4_FEMC_EIC.C>
-#include <G4_FHCAL.C>
-#include <G4_FST_EIC.C>
-#include <G4_GEM_EIC.C>
-#include <G4_HcalIn_ref.C>
-#include <G4_HcalOut_ref.C>
-#include <G4_Magnet.C>
-#include <G4_Mvtx_EIC.C>
-#include <G4_RICH.C>
-#include <G4_TPC_EIC.C>
-#include <G4_hFarFwdBeamLine_EIC.C>
-
 #include <g4eval/PHG4DSTReader.h>
 
 #include <fun4all/Fun4AllServer.h>
@@ -69,51 +53,26 @@ void G4DSTreader_EICDetector(const string &outputFile = "G4sPHENIXCells.root")
     }
     if (Enable::BARREL)
     {
-      if (G4BARREL::SETTING::BARRELV5 ||G4BARREL::SETTING::BARRELV6) {
-	int nLayer1 = 3;   //barrel 1                                                                                                      
-	int nLayer2 = 2;   //barrel 2                                                                                                      
-	if (G4BARREL::SETTING::BARRELV6) nLayer2 = 1;  //compactible w/ TPC                                                                
-	int nLayer[2]={nLayer1,nLayer2};
-
-	for (int n=0;n<2;n++) 
+      int nBarrel=6;
+      for (int i = 10; i < 10+nBarrel; i++)
 	{
-	  for (int i;i<nLayer[n];i++) 
-	  {
-	    ana->AddNode(Form("BARREL%d_%d",n,i));
-	  }
+	  ana->AddNode(Form("LBLVTX_CENTRAL_%d", i));
 	}
-      }
-      else
-      {
-	int nLayer=5;
-	if (G4BARREL::SETTING::BARRELV4) nLayer=6;
-	for (int i;i<nLayer;i++)
-	{
-	  ana->AddNode(Form("BARREL%d",i));
-	}
-      }
-    }	
+    }
     if (Enable::MVTX)
     {
       ana->AddNode("MVTX");
-    }
-    if (Enable::TPC)
-    {
-      ana->AddNode("TPC");
     }
 
     if (Enable::EGEM)
     {
       ana->AddNode("EGEM_0");
       ana->AddNode("EGEM_1");
-      ana->AddNode("EGEM_2");
-      ana->AddNode("EGEM_3");
     }
     if (Enable::FGEM)
     {
-      ana->AddNode("FGEM_2");
-      ana->AddNode("FGEM_3");
-      ana->AddNode("FGEM_4");
+      ana->AddNode("FGEM_0");
+      ana->AddNode("FGEM_1");
     }
     if (Enable::FST)
     {
@@ -122,10 +81,7 @@ void G4DSTreader_EICDetector(const string &outputFile = "G4sPHENIXCells.root")
       ana->AddNode("FST_2");
       ana->AddNode("FST_3");
       ana->AddNode("FST_4");
-      if (G4FST::SETTING::FSTV4 || G4FST::SETTING::FSTV5)
-      {
-	ana->AddNode("FST_5");
-      }
+      ana->AddNode("FST_5");
     }
 
     if (Enable::CEMC)
@@ -195,11 +151,13 @@ void G4DSTreader_EICDetector(const string &outputFile = "G4sPHENIXCells.root")
       ana->AddNode("BH_FORWARD_NEG");
     }
 
-    if  (Enable::HFARFWD_MAGNETS_IP6 && Enable::HFARFWD_MAGNETS_IP8)
+    if (Enable::HFARFWD_VIRTUAL_DETECTORS_IP6 or Enable::HFARFWD_VIRTUAL_DETECTORS_IP8)
     {
-      ana->AddNode("ZDC");
+      ana->AddNode("ZDCsurrogate");
+      ana->AddNode("rpTruth");
+      ana->AddNode("b0Truth");
+      ana->AddNode("offMomTruth");
     }
-
   }
 
   ana->set_tower_zero_sup(G4DSTREADER::tower_zero_supp);
