@@ -45,8 +45,8 @@ void BGEM_Init()
 
 void EGEMSetup(PHG4Reco *g4Reco)
 {
-  make_GEM_station("EGEM_0", g4Reco, -160.0, -1.55, -3.5);
-  make_GEM_station("EGEM_1", g4Reco, -190.0, -1.7, -3.6);
+  make_GEM_station("EGEM_0", g4Reco, -160.0, -1.5, -3.5);
+  make_GEM_station("EGEM_1", g4Reco, -190.0, -1.65, -3.6);
 }
 
 void FGEMSetup(PHG4Reco *g4Reco, const int N_Sector = 8)

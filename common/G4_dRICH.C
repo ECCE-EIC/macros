@@ -57,7 +57,7 @@ void RICHSetup(PHG4Reco* g4Reco)
   dz = 5;
   PHG4ConeSubsystem* coneGas = new PHG4ConeSubsystem("dRICHconeGas", 1);
   coneGas->SetR1(11, 120);
-  coneGas->SetR2(11, 210);
+  coneGas->SetR2(11, 170); // <- reduce from 210cm to avoid overlap with the HCal
   coneGas->SetZlength(dz * 0.5);
   coneGas->SetPlaceZ(z + dz * 0.5);
   coneGas->set_string_param("material", "C4F10");
@@ -70,8 +70,8 @@ void RICHSetup(PHG4Reco* g4Reco)
   z += dz;
   dz = 75;
   coneGas = new PHG4ConeSubsystem("dRICHconeGas", 2);
-  coneGas->SetR1(11, 210);
-  coneGas->SetR2(15, 210);
+  coneGas->SetR1(11, 170);
+  coneGas->SetR2(15, 170);
   coneGas->SetZlength(dz * 0.5);
   coneGas->SetPlaceZ(z + dz * 0.5);
   coneGas->set_string_param("material", "C4F10");
