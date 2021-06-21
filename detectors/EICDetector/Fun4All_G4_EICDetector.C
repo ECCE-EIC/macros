@@ -264,6 +264,11 @@ int Fun4All_G4_EICDetector(
   Enable::FST = true;
   // G4FST::SETTING::SUPPORTCYL = false; // if want to disable support
 
+  // TOFs
+  Enable::FTTL = true;
+  Enable::ETTL = true;
+  Enable::CTTL = true;
+
   Enable::TRACKING = true;
   Enable::TRACKING_EVAL = Enable::TRACKING && true;
   G4TRACKING::DISPLACED_VERTEX = false;  // this option exclude vertex in the track fitting and use RAVE to reconstruct primary and 2ndary vertexes

@@ -37,7 +37,7 @@ void RICHSetup(PHG4Reco* g4Reco)
 {
   bool OverlapCheck = Enable::OVERLAPCHECK || Enable::RICH_OVERLAPCHECK;
 
-  double z = 180;
+  double z = 185;
   double dz = 0;
 
   dz = 20;

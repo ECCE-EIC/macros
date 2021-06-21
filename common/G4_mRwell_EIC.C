@@ -366,13 +366,13 @@ double RWellSetup(PHG4Reco* g4Reco,
     // (usually it is in between 40-60 microns depending on the angle of incidence of
     // primary tracks when mRwell are used in microTPC mode i.e drift gap of 3-4 mm) .
     if (TRACKING::FastKalmanFilter)
-      TRACKING::FastKalmanFilter->add_phg4hits(string("G4HIT_") + string(Form("RWELL_%d", index)),  //      const std::string& phg4hitsNames,
-                                               PHG4TrackFastSim::Cylinder,                          //      const DETECTOR_TYPE phg4dettype,
-                                               1. / sqrt(12.),                                      //      const float radres,
-                                               55e-4,                                               //      const float phires,
-                                               55e-4,                                               //      const float lonres,
-                                               1,                                                   //      const float eff,
-                                               0);                                                  //      const float noise
+      TRACKING::FastKalmanFilter->add_phg4hits(string("G4HIT_") + string(Form("RWELL_%d", ilyr)),  //      const std::string& phg4hitsNames,
+                                               PHG4TrackFastSim::Cylinder,                         //      const DETECTOR_TYPE phg4dettype,
+                                               1. / sqrt(12.),                                     //      const float radres,
+                                               55e-4,                                              //      const float phires,
+                                               55e-4,                                              //      const float lonres,
+                                               1,                                                  //      const float eff,
+                                               0);                                                 //      const float noise
   }
   return radius;  //cm
 }
