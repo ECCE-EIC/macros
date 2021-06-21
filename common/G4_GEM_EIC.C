@@ -39,6 +39,9 @@ void FGEM_Init()
 
 void BGEM_Init()
 {
+  cout << __PRETTY_FUNCTION__ << ": BGEM not yet defined" << endl;
+  exit(1);
+
   BlackHoleGeometry::max_radius = std::max(BlackHoleGeometry::max_radius, 150.);
   BlackHoleGeometry::max_z = std::max(BlackHoleGeometry::max_z, 150.);
 }

@@ -242,7 +242,7 @@ int Fun4All_G4_EICDetector(
   //======================
   // Global options (enabled for all subsystems - if implemented)
   //  Enable::ABSORBER = true;
-   Enable::OVERLAPCHECK = true;
+  Enable::OVERLAPCHECK = true;
   //  Enable::VERBOSITY = 1;
 
   // whether to simulate the Be section of the beam pipe
@@ -256,12 +256,13 @@ int Fun4All_G4_EICDetector(
   // gems
   Enable::EGEM = true;
   Enable::FGEM = true;
-  Enable::BGEM = true;
+  // Enable::BGEM = true; // not yet defined in this model
+  Enable::RWELL = true;
   // barrel tracker
   Enable::BARREL = true;
   // fst
   Enable::FST = true;
-  G4FST::SETTING::SUPPORTCYL = true;
+  // G4FST::SETTING::SUPPORTCYL = false; // if want to disable support
 
   Enable::TRACKING = true;
   Enable::TRACKING_EVAL = Enable::TRACKING && true;

@@ -23,6 +23,7 @@
 #include <G4_Barrel_EIC.C>
 #include <G4_FST_EIC.C>
 #include <G4_GEM_EIC.C>
+#include <G4_mRwell_EIC.C>
 #include <G4_Tracking_EIC.C>
 
 #include <G4_User.C>
@@ -70,6 +71,7 @@ void G4Init()
   if (Enable::TRACKING) TrackingInit();
   if (Enable::EGEM) EGEM_Init();
   if (Enable::FGEM) FGEM_Init();
+  if (Enable::RWELL) RWellInit();
   if (Enable::FST) FST_Init();
   if (Enable::BARREL) BarrelInit();
 
@@ -142,6 +144,7 @@ int G4Setup()
   if (Enable::HFARFWD_VIRTUAL_DETECTORS_IP8) hFarFwdDefineDetectorsIP8(g4Reco);
   if (Enable::EGEM) EGEMSetup(g4Reco);
   if (Enable::FGEM) FGEMSetup(g4Reco);
+  if (Enable::RWELL) RWellSetup(g4Reco);
   if (Enable::FST) FSTSetup(g4Reco);
   if (Enable::BARREL) Barrel(g4Reco);
   if (Enable::CEMC) radius = CEmc(g4Reco, radius);
