@@ -81,19 +81,12 @@ void FSTSetup(PHG4Reco *g4Reco, const double min_eta = 1.245)
   const double mm = .1 * cm;
   const double um = 1e-3 * mm;
 
-  if (!Enable::FST_OVERLAPCHECK)
-  {
-    Enable::FST_OVERLAPCHECK = Enable::OVERLAPCHECK;
-  }
-  //bool OverlapCheck = Enable::OVERLAPCHECK || Enable::FST_OVERLAPCHECK;
-
   //Design from Xuan Li @LANL
   make_LANL_FST_station("FST_0", g4Reco, 35, 4, 22, 35 * um, 20e-4);  //cm
   make_LANL_FST_station("FST_1", g4Reco, 57.5, 4.5, 42, 35 * um, 20e-4);
   make_LANL_FST_station("FST_2", g4Reco, 80, 6, 43.5, 35 * um, 20e-4);
   make_LANL_FST_station("FST_3", g4Reco, 115, 9.3, 46.8, 85 * um, 36.4e-4);
   make_LANL_FST_station("FST_4", g4Reco, 125, 9.6, 47.1, 85 * um, 36.4e-4);
-
 
   //mirror for e-going FST
   make_LANL_FST_station("EFST_0", g4Reco, -35, 4, 22, 35 * um, 20e-4);  //cm
@@ -117,8 +110,9 @@ void FSTSetup(PHG4Reco *g4Reco, const double min_eta = 1.245)
 int make_LANL_FST_station(string name, PHG4Reco *g4Reco,
                           double zpos, double Rmin, double Rmax, double tSilicon, double pitch)  //silicon thickness
 {
+  bool OverlapCheck = Enable::OVERLAPCHECK || Enable::FST_OVERLAPCHECK;
 
-  double min_polar_angle =atan2(Rmin, zpos) ;
+  double min_polar_angle = atan2(Rmin, zpos);
   double max_polar_angle = atan2(Rmax, zpos);
 
   // always facing the interaction point
@@ -147,7 +141,7 @@ int make_LANL_FST_station(string name, PHG4Reco *g4Reco,
   fst->get_geometry().set_min_polar_edge(PHG4Sector::Sector_Geometry::ConeEdge());
   fst->get_geometry().set_N_Sector(1);
   fst->get_geometry().set_material("G4_AIR");
-  fst->OverlapCheck(Enable::FST_OVERLAPCHECK);  //true);//overlapcheck);
+  fst->OverlapCheck(OverlapCheck);  //true);//overlapcheck);
 
   const double cm = PHG4Sector::Sector_Geometry::Unit_cm();
   const double mm = .1 * cm;
@@ -179,14 +173,17 @@ int make_LANL_FST_station(string name, PHG4Reco *g4Reco,
 //-----------------------------------------------------------------------------------//
 int make_supportCyl(string name, PHG4Reco *g4Reco, double r, double t, double length)
 {
+  bool OverlapCheck = Enable::OVERLAPCHECK || Enable::FST_OVERLAPCHECK;
+
   PHG4CylinderSubsystem *cyl = new PHG4CylinderSubsystem(name, 5);
   cyl->set_double_param("radius", r);
   cyl->set_double_param("length", length);
-  cyl->set_string_param("material", "G4_GRAPHITE");
+  cyl->set_string_param("material", "CFRP_INTT");  // borrow carbon fiber reinforced polymer used in sPHENIX silicon tracker support
   cyl->set_double_param("thickness", t);
   cyl->set_double_param("place_x", 0.);
   cyl->set_double_param("place_y", 0.);
   cyl->set_double_param("place_z", 0);
+  cyl->OverlapCheck(OverlapCheck);  //true);//overlapcheck);
   cyl->SetActive(0);
   //cyl->SuperDetector("");
   cyl->OverlapCheck(Enable::FST_OVERLAPCHECK);  //OverlapCheck);

@@ -242,7 +242,7 @@ int Fun4All_G4_EICDetector(
   //======================
   // Global options (enabled for all subsystems - if implemented)
   //  Enable::ABSORBER = true;
-  // Enable::OVERLAPCHECK = true;
+  Enable::OVERLAPCHECK = true;
   //  Enable::VERBOSITY = 1;
 
   // whether to simulate the Be section of the beam pipe
@@ -256,12 +256,18 @@ int Fun4All_G4_EICDetector(
   // gems
   Enable::EGEM = true;
   Enable::FGEM = true;
-  Enable::BGEM = true;
+  // Enable::BGEM = true; // not yet defined in this model
+  Enable::RWELL = true;
   // barrel tracker
   Enable::BARREL = true;
   // fst
   Enable::FST = true;
-  G4FST::SETTING::SUPPORTCYL = true;
+  // G4FST::SETTING::SUPPORTCYL = false; // if want to disable support
+
+  // TOFs
+  Enable::FTTL = true;
+  Enable::ETTL = true;
+  Enable::CTTL = true;
 
   Enable::TRACKING = true;
   Enable::TRACKING_EVAL = Enable::TRACKING && true;
@@ -272,14 +278,14 @@ int Fun4All_G4_EICDetector(
   G4TRACKING::PROJECTION_FEMC = true;
   G4TRACKING::PROJECTION_FHCAL = true;
 
-  Enable::CEMC = true;
+  Enable::CEMC = false;
   //  Enable::CEMC_ABSORBER = true;
   Enable::CEMC_CELL = Enable::CEMC && true;
   Enable::CEMC_TOWER = Enable::CEMC_CELL && true;
   Enable::CEMC_CLUSTER = Enable::CEMC_TOWER && true;
   Enable::CEMC_EVAL = Enable::CEMC_CLUSTER && true;
 
-  Enable::HCALIN = true;
+  Enable::HCALIN = false;
   //  Enable::HCALIN_ABSORBER = true;
   Enable::HCALIN_CELL = Enable::HCALIN && true;
   Enable::HCALIN_TOWER = Enable::HCALIN_CELL && true;
@@ -288,7 +294,7 @@ int Fun4All_G4_EICDetector(
 
   Enable::MAGNET = true;
 
-  Enable::HCALOUT = true;
+  Enable::HCALOUT = false;
   //  Enable::HCALOUT_ABSORBER = true;
   Enable::HCALOUT_CELL = Enable::HCALOUT && true;
   Enable::HCALOUT_TOWER = Enable::HCALOUT_CELL && true;
@@ -304,25 +310,25 @@ int Fun4All_G4_EICDetector(
   // EICDetector geometry - 'electron' direction
   Enable::mRICH = true;  //-m/s- added mRICH
 
-  Enable::FEMC = true;
+  Enable::FEMC = false;
   //  Enable::FEMC_ABSORBER = true;
   Enable::FEMC_TOWER = Enable::FEMC && true;
   Enable::FEMC_CLUSTER = Enable::FEMC_TOWER && true;
   Enable::FEMC_EVAL = Enable::FEMC_CLUSTER && true;
 
-  Enable::FHCAL = true;
+  Enable::FHCAL = false;
   //  Enable::FHCAL_ABSORBER = true;
   Enable::FHCAL_TOWER = Enable::FHCAL && true;
   Enable::FHCAL_CLUSTER = Enable::FHCAL_TOWER && true;
   Enable::FHCAL_EVAL = Enable::FHCAL_CLUSTER && true;
 
   // EICDetector geometry - 'electron' direction
-  Enable::EEMC = true;
+  Enable::EEMC = false;
   Enable::EEMC_TOWER = Enable::EEMC && true;
   Enable::EEMC_CLUSTER = Enable::EEMC_TOWER && true;
   Enable::EEMC_EVAL = Enable::EEMC_CLUSTER && true;
 
-  Enable::EHCAL = true;
+  Enable::EHCAL = false;
   Enable::EHCAL_CELL = Enable::EHCAL && true;
   Enable::EHCAL_TOWER = Enable::EHCAL_CELL && true;
   Enable::EHCAL_CLUSTER = Enable::EHCAL_TOWER && true;
