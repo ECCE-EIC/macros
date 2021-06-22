@@ -55,7 +55,7 @@ namespace G4HCALIN
   //true - default Choose if you want Aluminum
   bool inner_hcal_material_Al = true;
 
-  int inner_hcal_eic = 0;
+  int inner_hcal_eic = 1;
 
   // Digitization (default photon digi):
   RawTowerDigitizer::enu_digi_algorithm TowerDigi = RawTowerDigitizer::kSimple_photon_digitization;
@@ -181,7 +181,7 @@ double HCalInner(PHG4Reco *g4Reco,
 
   radius = hcal->get_double_param("outer_radius");
 
-  // HCalInner_SupportRing(g4Reco); disabling the support ring until hasing a design for ECCE
+   HCalInner_SupportRing(g4Reco);
 
   radius += no_overlapp;
   return radius;
@@ -205,6 +205,7 @@ void HCalInner_SupportRing(PHG4Reco *g4Reco)
     double innerradius = innerradius_sphenix;
     if (z_rings[i] > 0 && G4HCALIN::inner_hcal_eic == 1)
     {
+      continue; // skip positive support rings for now
       innerradius = innerradius_ephenix_hadronside;
     }
     cyl = new PHG4CylinderSubsystem("HCALIN_SPT_N1", i);

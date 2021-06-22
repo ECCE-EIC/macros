@@ -10,7 +10,6 @@
 #include <G4_FwdJets.C>
 #include <G4_Global.C>
 #include <G4_Input.C>
-#include <G4_Jets.C>
 #include <G4_Production.C>
 #include <G4_User.C>
 
@@ -80,13 +79,13 @@ int Fun4All_G4_EICDetector(
   // Input::PYTHIA8 = true;
 
   // Use Pythia 6
-//  Input::PYTHIA6 = true;
+  Input::PYTHIA6 = true;
 
   // Use Sartre
   //   Input::SARTRE = true;
 
   // Simple multi particle generator in eta/phi/pt ranges
-   Input::SIMPLE = true;
+  //   Input::SIMPLE = true;
   // Input::SIMPLE_NUMBER = 2; // if you need 2 of them
   // Input::SIMPLE_VERBOSITY = 1;
 
@@ -278,14 +277,14 @@ int Fun4All_G4_EICDetector(
   G4TRACKING::PROJECTION_FEMC = true;
   G4TRACKING::PROJECTION_FHCAL = true;
 
-  Enable::CEMC = false;
+  Enable::CEMC = true;
   //  Enable::CEMC_ABSORBER = true;
   Enable::CEMC_CELL = Enable::CEMC && true;
   Enable::CEMC_TOWER = Enable::CEMC_CELL && true;
   Enable::CEMC_CLUSTER = Enable::CEMC_TOWER && true;
   Enable::CEMC_EVAL = Enable::CEMC_CLUSTER && true;
 
-  Enable::HCALIN = false;
+  Enable::HCALIN = true;
   //  Enable::HCALIN_ABSORBER = true;
   Enable::HCALIN_CELL = Enable::HCALIN && true;
   Enable::HCALIN_TOWER = Enable::HCALIN_CELL && true;
@@ -294,7 +293,7 @@ int Fun4All_G4_EICDetector(
 
   Enable::MAGNET = true;
 
-  Enable::HCALOUT = false;
+  Enable::HCALOUT = true;
   //  Enable::HCALOUT_ABSORBER = true;
   Enable::HCALOUT_CELL = Enable::HCALOUT && true;
   Enable::HCALOUT_TOWER = Enable::HCALOUT_CELL && true;
@@ -308,27 +307,27 @@ int Fun4All_G4_EICDetector(
   Enable::RICH = true;
 
   // EICDetector geometry - 'electron' direction
-  Enable::mRICH = true;  //-m/s- added mRICH
+  Enable::mRICH = true;
 
-  Enable::FEMC = false;
+  Enable::FEMC = true;
   //  Enable::FEMC_ABSORBER = true;
   Enable::FEMC_TOWER = Enable::FEMC && true;
   Enable::FEMC_CLUSTER = Enable::FEMC_TOWER && true;
   Enable::FEMC_EVAL = Enable::FEMC_CLUSTER && true;
 
-  Enable::FHCAL = false;
+  Enable::FHCAL = true;
   //  Enable::FHCAL_ABSORBER = true;
   Enable::FHCAL_TOWER = Enable::FHCAL && true;
   Enable::FHCAL_CLUSTER = Enable::FHCAL_TOWER && true;
   Enable::FHCAL_EVAL = Enable::FHCAL_CLUSTER && true;
 
   // EICDetector geometry - 'electron' direction
-  Enable::EEMC = false;
+  Enable::EEMC = true;
   Enable::EEMC_TOWER = Enable::EEMC && true;
   Enable::EEMC_CLUSTER = Enable::EEMC_TOWER && true;
   Enable::EEMC_EVAL = Enable::EEMC_CLUSTER && true;
 
-  Enable::EHCAL = false;
+  Enable::EHCAL = true;
   Enable::EHCAL_CELL = Enable::EHCAL && true;
   Enable::EHCAL_TOWER = Enable::EHCAL_CELL && true;
   Enable::EHCAL_CLUSTER = Enable::EHCAL_TOWER && true;
@@ -340,12 +339,8 @@ int Fun4All_G4_EICDetector(
   Enable::GLOBAL_RECO = true;
   Enable::GLOBAL_FASTSIM = true;
 
-  // Select only one jet reconstruction- they currently use the same
-  // output collections on the node tree!
-  Enable::JETS = false;
-  Enable::JETS_EVAL = Enable::JETS && true;
-
-  Enable::FWDJETS = false;
+  // jet reconstruction
+  Enable::FWDJETS = true;
   Enable::FWDJETS_EVAL = Enable::FWDJETS && true;
 
   // new settings using Enable namespace in GlobalVariables.C
@@ -462,8 +457,6 @@ int Fun4All_G4_EICDetector(
   // Jet reco
   //---------
 
-  if (Enable::JETS) Jet_Reco();
-
   if (Enable::FWDJETS) Jet_FwdReco();
 
   string outputroot = outputFile;
@@ -495,8 +488,6 @@ int Fun4All_G4_EICDetector(
   if (Enable::FHCAL_EVAL) FHCAL_Eval(outputroot + "_g4fhcal_eval.root");
 
   if (Enable::EEMC_EVAL) EEMC_Eval(outputroot + "_g4eemc_eval.root");
-
-  if (Enable::JETS_EVAL) Jet_Eval(outputroot + "_g4jet_eval.root");
 
   if (Enable::FWDJETS_EVAL) Jet_FwdEval();
 
