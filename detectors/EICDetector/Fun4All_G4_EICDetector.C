@@ -336,7 +336,7 @@ int Fun4All_G4_EICDetector(
   Enable::PLUGDOOR = false;
 
   // Other options
-  Enable::GLOBAL_RECO = true;
+  Enable::GLOBAL_RECO = G4TRACKING::DISPLACED_VERTEX; // use reco vertex for global event vertex
   Enable::GLOBAL_FASTSIM = true;
 
   // jet reconstruction
