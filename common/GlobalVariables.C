@@ -3,6 +3,7 @@
 
 #include <g4decayer/EDecayType.hh>
 #include <set>
+#include <string>
 
 double no_overlapp = 0.0001;
 
@@ -62,6 +63,8 @@ namespace TRACKING
   string TrackNodeName = "TrackMap";
 
   PHG4TrackFastSim * FastKalmanFilter(nullptr);
+
+  std::set<std::string> ProjectionNames;
 }
 
 namespace G4MAGNET

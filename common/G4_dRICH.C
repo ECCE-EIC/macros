@@ -11,6 +11,7 @@
 #include <GlobalVariables.C>
 
 #include <g4detectors/PHG4ConeSubsystem.h>
+#include <g4trackfastsim/PHG4TrackFastSim.h>
 
 #include <g4main/PHG4Reco.h>
 
@@ -82,5 +83,14 @@ void RICHSetup(PHG4Reco* g4Reco)
   g4Reco->registerSubsystem(coneGas);
 
   z += dz;
+
+
+  if (TRACKING::FastKalmanFilter)
+  {
+    // project to an reference plane at z=170 cm
+    TRACKING::FastKalmanFilter-> add_zplane_state("RICH", 185);
+    TRACKING::ProjectionNames.insert("RICH");
+  }
+
 }
 #endif

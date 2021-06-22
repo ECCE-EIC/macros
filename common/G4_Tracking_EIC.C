@@ -49,7 +49,7 @@ void Tracking_Reco()
 
   if (TRACKING::FastKalmanFilter == nullptr)
   {
-    cout <<__PRETTY_FUNCTION__<<" : missing the expected initialization for TRACKING::FastKalmanFilter."<<endl;
+    cout << __PRETTY_FUNCTION__ << " : missing the expected initialization for TRACKING::FastKalmanFilter." << endl;
     exit(1);
   }
 
@@ -76,127 +76,6 @@ void Tracking_Reco()
   TRACKING::FastKalmanFilter->set_sub_top_node_name("TRACKS");
   TRACKING::FastKalmanFilter->set_trackmap_out_name(TRACKING::TrackNodeName);
 
-
-//  //-------------------------
-//  // Barrel
-//  //-------------------------
-// if (Enable::BARREL)
-// {
-//    float pixel_size=10e-4; //10 um
-//    char nodename[100];
-//      int nBarrel = 6;
-//
-//      for (int i=10; i<10+nBarrel; i++) // CENTRAL BARREL
-//        {
-//          sprintf(nodename,"G4HIT_LBLVTX_CENTRAL_%d", i);
-//          kalman->add_phg4hits(nodename,                      // const std::string& phg4hitsNames
-//                               PHG4TrackFastSim::Cylinder,    // const DETECTOR_TYPE phg4dettype
-//                               999.,                          // (this number is not used in cylindrical geometry)
-//                               pixel_size/sqrt(12.), // azimuthal (arc-length) resolution [cm]
-//                               pixel_size/sqrt(12.), // longitudinal (z) resolution [cm]
-//                               1,                             // efficiency (fraction)
-//                               0);                            // hit noise
-//        }
-//    }
-//
-//  //-------------------------
-//  // MVTX
-//  //-------------------------
-//  if (Enable::MVTX)
-//  {
-//    //   MAPS
-//    TRACKING::FastKalmanFilter->add_phg4hits(
-//        "G4HIT_MVTX",                //      const std::string& phg4hitsNames,
-//        PHG4TrackFastSim::Cylinder,  //      const DETECTOR_TYPE phg4dettype,
-//        5e-4,                        //      const float radres,
-//        5e-4,                        //      const float phires,
-//        5e-4,                        //      const float lonres,
-//        1,                           //      const float eff,
-//        0                            //      const float noise
-//    );
-//  }
-//  //-------------------------
-//  // TPC
-//  //-------------------------
-//  if (Enable::TPC)
-//  {
-//    TRACKING::FastKalmanFilter->add_phg4hits(
-//        "G4HIT_TPC",                 //      const std::string& phg4hitsNames,
-//        PHG4TrackFastSim::Cylinder,  //      const DETECTOR_TYPE phg4dettype,
-//        1,                           //      const float radres,
-//        200e-4,                      //      const float phires,
-//        500e-4,                      //      const float lonres,
-//        1,                           //      const float eff,
-//        0                            //      const float noise
-//    );
-//  }
-//  //-------------------------
-//  // EGEM
-//  //-------------------------
-//  if (Enable::EGEM || Enable::EGEM_FULL)
-//  {
-//    int first_gem = 0;
-//    if (Enable::EGEM)
-//    {
-//      first_gem = 2;
-//    }
-//    // GEM, 70um azimuthal resolution, 1cm radial strips
-//    for (int i = first_gem; i < 4; i++)
-//    {
-//      TRACKING::FastKalmanFilter->add_phg4hits(
-//          Form("G4HIT_EGEM_%d", i),          //      const std::string& phg4hitsNames,
-//          PHG4TrackFastSim::Vertical_Plane,  //      const DETECTOR_TYPE phg4dettype,
-//          1. / sqrt(12.),                    //      const float radres,
-//          70e-4,                             //      const float phires,
-//          100e-4,                            //      const float lonres,
-//          1,                                 //      const float eff,
-//          0                                  //      const float noise
-//      );
-//    }
-//  }
-//  //-------------------------
-//  // FGEM
-//  //-------------------------
-//  if (Enable::FGEM || Enable::FGEM_ORIG)
-//  {
-//    int first_gem(0);
-//    if (Enable::FGEM_ORIG)
-//    {
-//      first_gem = 0;
-//    }
-//    else
-//    {
-//      first_gem = 2;
-//    }
-//    // GEM2, 70um azimuthal resolution, 1cm radial strips
-//    for (int i = first_gem; i < 5; i++)
-//    {
-//    }
-//  }
-//  //-------------------------
-//  // FST
-//  //-------------------------
-//  if (Enable::FST)
-//  {
-//    float pitch = 20e-4;
-//    int nPlane = 5;
-//    if (G4FST::SETTING::FSTV4 || G4FST::SETTING::FSTV5)
-//    {
-//      nPlane = 6;
-//    }
-//
-//    for (int i = 0; i < nPlane; i++)
-//    {
-//      if (i >= 3) pitch = 36.4e-4;
-//      TRACKING::FastKalmanFilter->add_phg4hits(Form("G4HIT_FST_%d", i),           //      const std::string& phg4hitsNames,
-//                           PHG4TrackFastSim::Vertical_Plane,  //      const DETECTOR_TYPE phg4dettype,
-//                           pitch,                             //      const float radres,
-//                           pitch,                             //      const float phires,
-//                           50e-4 / sqrt(12.),                 //      const float lonres, *ignored in plane detector*
-//                           1,                                 //      const float eff,
-//                           0);                                //      const float noise
-//    }
-//  }
   //-------------------------
   // FEMC
   //-------------------------
@@ -281,6 +160,9 @@ void Tracking_Eval(const std::string &outputfile)
   {
     fast_sim_eval->AddProjection("EEMC");
   }
+
+  for (const string & proj : TRACKING::ProjectionNames)
+    fast_sim_eval->AddProjection(proj);
 
   se->registerSubsystem(fast_sim_eval);
 }

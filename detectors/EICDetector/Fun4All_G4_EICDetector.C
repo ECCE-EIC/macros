@@ -80,13 +80,13 @@ int Fun4All_G4_EICDetector(
   // Input::PYTHIA8 = true;
 
   // Use Pythia 6
-  Input::PYTHIA6 = true;
+//  Input::PYTHIA6 = true;
 
   // Use Sartre
   //   Input::SARTRE = true;
 
   // Simple multi particle generator in eta/phi/pt ranges
-  // Input::SIMPLE = true;
+   Input::SIMPLE = true;
   // Input::SIMPLE_NUMBER = 2; // if you need 2 of them
   // Input::SIMPLE_VERBOSITY = 1;
 

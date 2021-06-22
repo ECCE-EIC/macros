@@ -5,6 +5,7 @@
 
 #include <g4detectors/PHG4CylinderSubsystem.h>
 #include <g4detectors/PHG4SectorSubsystem.h>
+#include <g4trackfastsim/PHG4TrackFastSim.h>
 
 #include <g4main/PHG4Reco.h>
 
@@ -110,6 +111,12 @@ double DIRCSetup(PHG4Reco *g4Reco)
 
   g4Reco->registerSubsystem(cyl);
 
+  if (TRACKING::FastKalmanFilter)
+  {
+    TRACKING::FastKalmanFilter -> add_cylinder_state("DIRC", G4DIRC::radiator_R);
+    TRACKING::ProjectionNames.insert("DIRC");
+
+  }
   // Done
   return G4DIRC::outer_skin_radius;
 }

@@ -5,6 +5,7 @@
 #include <g4main/PHG4Reco.h>
 
 #include <g4mrich/PHG4mRICHSubsystem.h>
+#include <g4trackfastsim/PHG4TrackFastSim.h>
 //#include <g4rich/PHG4mRICHSubsystem.h>
 /*!
  * \file G4_mRICH.C
@@ -47,6 +48,13 @@ void mRICHSetup(PHG4Reco *g4Reco, const int detectorSetup = 1,  //1: full setup;
   //  mRICH->Verbosity(5);
 
   g4Reco->registerSubsystem(mRICH);
+
+  if (TRACKING::FastKalmanFilter)
+  {
+    // project to an reference plane at z=170 cm
+    TRACKING::FastKalmanFilter-> add_zplane_state("mRICH", -170);
+    TRACKING::ProjectionNames.insert("mRICH");
+  }
 }
 
 void mRICH_Eval(std::string outputfile, int verbosity = 0)
