@@ -234,14 +234,14 @@ int Fun4All_G4_EICDetector(
   // Enable::DSTREADER = true;
 
   // turn the display on (default off)
-  Enable::DISPLAY = true;
+  //  Enable::DISPLAY = true;
 
   //======================
   // What to run
   //======================
   // Global options (enabled for all subsystems - if implemented)
   //  Enable::ABSORBER = true;
-  Enable::OVERLAPCHECK = true;
+  // Enable::OVERLAPCHECK = true;
   //  Enable::VERBOSITY = 1;
 
   // whether to simulate the Be section of the beam pipe
