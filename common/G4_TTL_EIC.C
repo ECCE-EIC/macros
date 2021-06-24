@@ -5,6 +5,7 @@
 
 #include <g4detectors/PHG4CylinderSubsystem.h>
 #include <g4detectors/PHG4SectorSubsystem.h>
+#include <g4trackfastsim/PHG4TrackFastSim.h>
 
 #include <g4main/PHG4Reco.h>
 
@@ -137,6 +138,8 @@ int make_forward_station(string name, PHG4Reco *g4Reco,
                                              tSilicon / sqrt(12.),              //      const float lonres, *ignored in plane detector*
                                              1,                                 //      const float eff,
                                              0);                                //      const float noise
+    TRACKING::FastKalmanFilter-> add_zplane_state(name, zpos);
+    TRACKING::ProjectionNames.insert(name);
   }
 
   return 0;
@@ -192,6 +195,9 @@ int make_barrel_layer(string name, PHG4Reco *g4Reco,
                                              TTL::PositionResolution,     //      const float lonres,
                                              1,                           //      const float eff,
                                              0);                          //      const float noise
+    TRACKING::FastKalmanFilter -> add_cylinder_state(name, radius);
+
+    TRACKING::ProjectionNames.insert(name);
   }
   return 0;
 }

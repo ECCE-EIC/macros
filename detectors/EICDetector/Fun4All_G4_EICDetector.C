@@ -10,7 +10,6 @@
 #include <G4_FwdJets.C>
 #include <G4_Global.C>
 #include <G4_Input.C>
-#include <G4_Jets.C>
 #include <G4_Production.C>
 #include <G4_User.C>
 
@@ -80,7 +79,7 @@ int Fun4All_G4_EICDetector(
   // Input::PYTHIA8 = true;
 
   // Use Pythia 6
-  Input::PYTHIA6 = true;
+  // Input::PYTHIA6 = true;
 
   // Use Sartre
   //   Input::SARTRE = true;
@@ -226,7 +225,7 @@ int Fun4All_G4_EICDetector(
   // Write the DST
   //======================
 
-  Enable::DSTOUT = true;
+  // Enable::DSTOUT = true;
   DstOut::OutputDir = outdir;
   DstOut::OutputFile = outputFile;
   Enable::DSTOUT_COMPRESS = true;  // Compress DST files
@@ -235,7 +234,7 @@ int Fun4All_G4_EICDetector(
   // Enable::DSTREADER = true;
 
   // turn the display on (default off)
-  Enable::DISPLAY = true;
+  //  Enable::DISPLAY = true;
 
   //======================
   // What to run
@@ -308,6 +307,9 @@ int Fun4All_G4_EICDetector(
   Enable::RICH = true;
 
   // EICDetector geometry - 'electron' direction
+  Enable::mRICH = true;
+
+  // EICDetector geometry - 'electron' direction
   Enable::mRICH = true;  //-m/s- added mRICH
 
   Enable::FEMC = false;
@@ -328,7 +330,7 @@ int Fun4All_G4_EICDetector(
   Enable::EEMC_CLUSTER = Enable::EEMC_TOWER && true;
   Enable::EEMC_EVAL = Enable::EEMC_CLUSTER && true;
 
-  Enable::EHCAL = false;
+  Enable::EHCAL = true;
   Enable::EHCAL_CELL = Enable::EHCAL && true;
   Enable::EHCAL_TOWER = Enable::EHCAL_CELL && true;
   Enable::EHCAL_CLUSTER = Enable::EHCAL_TOWER && true;
@@ -337,15 +339,11 @@ int Fun4All_G4_EICDetector(
   Enable::PLUGDOOR = false;
 
   // Other options
-  Enable::GLOBAL_RECO = true;
+  Enable::GLOBAL_RECO = G4TRACKING::DISPLACED_VERTEX; // use reco vertex for global event vertex
   Enable::GLOBAL_FASTSIM = true;
 
-  // Select only one jet reconstruction- they currently use the same
-  // output collections on the node tree!
-  Enable::JETS = false;
-  Enable::JETS_EVAL = Enable::JETS && true;
-
-  Enable::FWDJETS = false;
+  // jet reconstruction
+  Enable::FWDJETS = true;
   Enable::FWDJETS_EVAL = Enable::FWDJETS && true;
 
   // new settings using Enable namespace in GlobalVariables.C
@@ -462,8 +460,6 @@ int Fun4All_G4_EICDetector(
   // Jet reco
   //---------
 
-  if (Enable::JETS) Jet_Reco();
-
   if (Enable::FWDJETS) Jet_FwdReco();
 
   string outputroot = outputFile;
@@ -495,8 +491,6 @@ int Fun4All_G4_EICDetector(
   if (Enable::FHCAL_EVAL) FHCAL_Eval(outputroot + "_g4fhcal_eval.root");
 
   if (Enable::EEMC_EVAL) EEMC_Eval(outputroot + "_g4eemc_eval.root");
-
-  if (Enable::JETS_EVAL) Jet_Eval(outputroot + "_g4jet_eval.root");
 
   if (Enable::FWDJETS_EVAL) Jet_FwdEval();
 

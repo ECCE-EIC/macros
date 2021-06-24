@@ -7,6 +7,7 @@
 #include <g4detectors/PHG4CylinderSubsystem.h>
 #include <g4detectors/PHG4SectorSubsystem.h>
 #include <g4main/PHG4Reco.h>
+#include <g4trackfastsim/PHG4TrackFastSim.h>
 
 R__LOAD_LIBRARY(libfun4all.so)
 R__LOAD_LIBRARY(libg4testbench.so)
