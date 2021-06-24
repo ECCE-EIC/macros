@@ -83,6 +83,7 @@ void Tracking_Reco()
   if (Enable::FEMC && G4TRACKING::PROJECTION_FEMC)
   {
     TRACKING::FastKalmanFilter->add_state_name("FEMC");
+    TRACKING::ProjectionNames.insert("FEMC");
   }
 
   //-------------------------
@@ -91,6 +92,7 @@ void Tracking_Reco()
   if (Enable::FHCAL && G4TRACKING::PROJECTION_FHCAL)
   {
     TRACKING::FastKalmanFilter->add_state_name("FHCAL");
+    TRACKING::ProjectionNames.insert("FHCAL");
   }
   //-------------------------
   // CEMC
@@ -98,6 +100,7 @@ void Tracking_Reco()
   if (Enable::CEMC && G4TRACKING::PROJECTION_CEMC)
   {
     TRACKING::FastKalmanFilter->add_state_name("CEMC");
+    TRACKING::ProjectionNames.insert("CEMC");
   }
   //-------------------------
   // EEMC
@@ -105,6 +108,7 @@ void Tracking_Reco()
   if (Enable::EEMC && G4TRACKING::PROJECTION_EEMC)
   {
     TRACKING::FastKalmanFilter->add_state_name("EEMC");
+    TRACKING::ProjectionNames.insert("EEMC");
   }
 
   se->registerSubsystem(TRACKING::FastKalmanFilter);
@@ -133,36 +137,21 @@ void Tracking_Eval(const std::string &outputfile)
   //-------------------------
   // FEMC
   //-------------------------
-  // Saved track states (projections)
-  if (Enable::FEMC && G4TRACKING::PROJECTION_FEMC)
-  {
-    fast_sim_eval->AddProjection("FEMC");
-  }
 
-  //-------------------------
-  // FHCAL
-  //-------------------------
-  if (Enable::FHCAL && G4TRACKING::PROJECTION_FHCAL)
+  cout << "Tracking_Eval(): configuration of track projections in PHG4TrackFastSimEval" << endl;
+  cout << "/*std::set<std::string>*/ TRACKING::ProjectionNames = {";
+  bool first = true;
+  for (const string &proj : TRACKING::ProjectionNames)
   {
-    fast_sim_eval->AddProjection("FHCAL");
-  }
-  //-------------------------
-  // CEMC
-  //-------------------------
-  if (Enable::CEMC && G4TRACKING::PROJECTION_CEMC)
-  {
-    fast_sim_eval->AddProjection("CEMC");
-  }
-  //-------------------------
-  // EEMC
-  //-------------------------
-  if (Enable::EEMC && G4TRACKING::PROJECTION_EEMC)
-  {
-    fast_sim_eval->AddProjection("EEMC");
-  }
+    if (first)
+      first = false;
+    else
+      cout << ", ";
+    cout << "\"" << proj << "\"";
 
-  for (const string & proj : TRACKING::ProjectionNames)
     fast_sim_eval->AddProjection(proj);
+  }
+  cout << "};" << endl;  // override the TRACKING::ProjectionNames in eval macros
 
   se->registerSubsystem(fast_sim_eval);
 }
