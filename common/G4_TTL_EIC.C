@@ -139,6 +139,7 @@ int make_forward_station(string name, PHG4Reco *g4Reco,
                                              1,                                 //      const float eff,
                                              0);                                //      const float noise
     TRACKING::FastKalmanFilter-> add_zplane_state(name, zpos);
+    TRACKING::ProjectionNames.insert(name);
   }
 
   return 0;
