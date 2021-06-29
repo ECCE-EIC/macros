@@ -123,17 +123,20 @@ double HCalInner(PHG4Reco *g4Reco,
   }
 
   // ECCE Inner HCAL paremeters
-  // First pass - JGL - 06/14/2021
-  // adjust inner radius to make the inner HCAL less deep, 
-  // but keep the tilt angle and tiles the same shape. 
-  // NOTES: 
-  // (1) Inner and Outer radii from Sketchup, but very likely too
-  //     close to cryostat. 
+  
+  double z_end = G4HCALIN::support_ring_z_ring2 - 13.5 + (G4HCALIN::dz/2.0);
+  double z_start = -287; // DIRC prizm end
+  double length = z_end - z_start;
+  double z_shift = 0.5 * (z_end + z_start);
 
   hcal->set_double_param("outer_radius", 138.5);
   hcal->set_double_param("scinti_outer_radius", 138.0);
   hcal->set_double_param("inner_radius", 134.0);
   hcal->set_double_param("tilt_angle", 36.15);
+  hcal->set_double_param("size_z", length);
+  hcal->set_int_param("n_scinti_tiles", 12);
+  hcal->set_double_param("place_z", z_shift);
+  hcal->set_double_param("scinti_eta_coverage", 1.1);
 
   // hcal->set_double_param("inner_radius", 117.27);
   //-----------------------------------------
@@ -193,10 +196,10 @@ void HCalInner_SupportRing(PHG4Reco *g4Reco)
   bool AbsorberActive = Enable::ABSORBER || Enable::HCALIN_ABSORBER;
 
   const double z_ring1 = (2025 + 2050) / 2. / 10.;
-  const double innerradius_sphenix = 116.;
-  const double innerradius_ephenix_hadronside = 138.;
+  const double innerradius_sphenix = 138.6;
+  const double innerradius_ephenix_hadronside = 138.6;
   const double z_rings[] =
-      {-G4HCALIN::support_ring_z_ring2, -z_ring1, z_ring1, G4HCALIN::support_ring_z_ring2};
+      {-G4HCALIN::support_ring_z_ring2, -z_ring1, z_ring1 - 13.5, G4HCALIN::support_ring_z_ring2 - 13.5};
 
   PHG4CylinderSubsystem *cyl;
 
@@ -205,7 +208,7 @@ void HCalInner_SupportRing(PHG4Reco *g4Reco)
     double innerradius = innerradius_sphenix;
     if (z_rings[i] > 0 && G4HCALIN::inner_hcal_eic == 1)
     {
-      continue; // skip positive support rings for now
+      //continue; // skip positive support rings for now
       innerradius = innerradius_ephenix_hadronside;
     }
     cyl = new PHG4CylinderSubsystem("HCALIN_SPT_N1", i);
