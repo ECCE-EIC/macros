@@ -68,7 +68,7 @@ void hFarFwdBeamLineInit()
   if (Enable::HFARFWD_MAGNETS_IP6)
   {
     hFarFwdBeamLine::enclosure_z_max = 4500.;
-    BlackHoleGeometry::min_z = std::min(BlackHoleGeometry::min_z, 0.);
+    BlackHoleGeometry::min_z = std::min(BlackHoleGeometry::min_z, hFarFwdBeamLine::starting_z);
     hFarFwdBeamLine::enclosure_r_max = 200.;
   }
 
@@ -208,14 +208,17 @@ void hFarFwdDefineMagnets(PHG4Reco *g4Reco)
           {
             bl = new BeamLineMagnetSubsystem("BEAMLINEMAGNET", imagnet);
             bl->set_double_param("field_y", dipole_field_x);
-            bl->set_double_param("field_x", 0.);
             bl->set_double_param("fieldgradient", fieldgradient);
             bl->set_string_param("magtype", magtype);
             bl->set_double_param("length", length);
-            bl->set_double_param("place_x", x);
-            bl->set_double_param("place_y", y);
-            bl->set_double_param("place_z", z - hFarFwdBeamLine::enclosure_center);
+            bl->set_double_param("place_x", x);// relative position to mother vol.
+            bl->set_double_param("place_y", y);// relative position to mother vol.
+            bl->set_double_param("place_z", z - hFarFwdBeamLine::enclosure_center);// relative position to mother vol.
+            bl->set_double_param("field_global_position_x", x);// abs. position to world for field manager
+            bl->set_double_param("field_global_position_y", y);// abs. position to world for field manager
+            bl->set_double_param("field_global_position_z", z);// abs. position to world for field manager
             bl->set_double_param("rot_y", angle);
+            bl->set_double_param("field_global_rot_y", angle);// abs. rotation to world for field manager
             bl->set_double_param("inner_radius", inner_radius_zin);
             bl->set_double_param("outer_radius", outer_magnet_diameter / 2.);
             bl->SetActive(magnet_active);

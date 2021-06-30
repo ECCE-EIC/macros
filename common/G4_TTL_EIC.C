@@ -24,6 +24,7 @@ namespace Enable
   bool FTTL = false;
   bool ETTL = false;
   bool CTTL = false;
+  bool TTL_OVERLAPCHECK = false;
 }  // namespace Enable
 
 namespace TTL
@@ -81,9 +82,7 @@ int make_forward_station(string name, PHG4Reco *g4Reco,
                          double zpos, double etamin, double etamax,
                          double tSilicon)  //silicon thickness
 {
-  //  cout
-  //      << "make_GEM_station - GEM construction with PHG4SectorSubsystem - make_GEM_station_EdgeReadout  of "
-  //      << name << endl;
+  bool OverlapCheck = Enable::OVERLAPCHECK || Enable::TTL_OVERLAPCHECK;
 
   // always facing the interaction point
   double polar_angle = 0;
@@ -112,7 +111,7 @@ int make_forward_station(string name, PHG4Reco *g4Reco,
   ttl->get_geometry().set_min_polar_edge(PHG4Sector::Sector_Geometry::ConeEdge());
   ttl->get_geometry().set_N_Sector(1);
   ttl->get_geometry().set_material("G4_AIR");
-  ttl->OverlapCheck(true);
+  ttl->OverlapCheck(OverlapCheck);
 
   const double cm = PHG4Sector::Sector_Geometry::Unit_cm();
   const double mm = .1 * cm;
@@ -138,7 +137,7 @@ int make_forward_station(string name, PHG4Reco *g4Reco,
                                              tSilicon / sqrt(12.),              //      const float lonres, *ignored in plane detector*
                                              1,                                 //      const float eff,
                                              0);                                //      const float noise
-    TRACKING::FastKalmanFilter-> add_zplane_state(name, zpos);
+    TRACKING::FastKalmanFilter->add_zplane_state(name, zpos);
     TRACKING::ProjectionNames.insert(name);
   }
 
@@ -149,6 +148,7 @@ int make_forward_station(string name, PHG4Reco *g4Reco,
 int make_barrel_layer(string name, PHG4Reco *g4Reco,
                       double radius, double halflength, double tSilicon)
 {
+  bool OverlapCheck = Enable::OVERLAPCHECK || Enable::TTL_OVERLAPCHECK;
   //---------------------------------
   //build barrel layer
   //---------------------------------
@@ -180,7 +180,7 @@ int make_barrel_layer(string name, PHG4Reco *g4Reco,
     cyl->set_string_param("material", material[l]);
     cyl->set_double_param("thickness", thickness[l]);
     if (l == 0) cyl->SetActive();  //only the Silicon Sensor is active
-    cyl->OverlapCheck(true);
+    cyl->OverlapCheck(OverlapCheck);
     g4Reco->registerSubsystem(cyl);
     currRadius = currRadius + thickness[l];
     //     cout << currRadius << endl;
@@ -195,7 +195,7 @@ int make_barrel_layer(string name, PHG4Reco *g4Reco,
                                              TTL::PositionResolution,     //      const float lonres,
                                              1,                           //      const float eff,
                                              0);                          //      const float noise
-    TRACKING::FastKalmanFilter -> add_cylinder_state(name, radius);
+    TRACKING::FastKalmanFilter->add_cylinder_state(name, radius);
 
     TRACKING::ProjectionNames.insert(name);
   }
