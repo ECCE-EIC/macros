@@ -30,8 +30,6 @@ namespace Enable
 {
   static bool FST = false;
   bool FST_OVERLAPCHECK = false;
-  bool FST_ABSORBER = false;
-  int FST_VERBOSITY = 0;
 }  // namespace Enable
 
 namespace G4FST
@@ -80,9 +78,6 @@ void FSTSetup(PHG4Reco *g4Reco, const double min_eta = 1.245)
     double tSupport = 0.2;                                                        //cm
     make_supportCyl("FSTSupportCyl", g4Reco, 50.1 + gap, tSupport, 125.0 * 2.0);  //cm
   }
-
-
-  
 }
 //-----------------------------------------------------------------------------------//
 int make_LANL_FST_station(string name, PHG4Reco *g4Reco,
