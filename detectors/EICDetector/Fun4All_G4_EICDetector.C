@@ -309,9 +309,6 @@ int Fun4All_G4_EICDetector(
   // EICDetector geometry - 'electron' direction
   Enable::mRICH = true;
 
-  // EICDetector geometry - 'electron' direction
-  Enable::mRICH = true;  //-m/s- added mRICH
-
   Enable::FEMC = true;
   //  Enable::FEMC_ABSORBER = true;
   Enable::FEMC_TOWER = Enable::FEMC && true;
