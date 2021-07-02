@@ -37,6 +37,7 @@ namespace Enable
   bool HFARFWD_VIRTUAL_DETECTORS_IP6 = false;
   bool HFARFWD_VIRTUAL_DETECTORS_IP8 = false;
 
+  float HFARFWD_ION_ENERGY = 0;
 }  // namespace Enable
 
 namespace hFarFwdBeamLine
@@ -74,9 +75,9 @@ void hFarFwdBeamLineInit()
 
   if (Enable::HFARFWD_MAGNETS_IP8)
   {
-    hFarFwdBeamLine::enclosure_z_max = 4800.;
-    BlackHoleGeometry::min_z = std::min(BlackHoleGeometry::min_z, -2050.);
-    hFarFwdBeamLine::enclosure_r_max = 150.;
+    hFarFwdBeamLine::enclosure_z_max = 4500.;
+    BlackHoleGeometry::min_z = std::min(BlackHoleGeometry::min_z, hFarFwdBeamLine::starting_z);
+    hFarFwdBeamLine::enclosure_r_max = 200.;
   }
 
   hFarFwdBeamLine::enclosure_center = 0.5 * (hFarFwdBeamLine::starting_z + hFarFwdBeamLine::enclosure_z_max);
@@ -153,6 +154,11 @@ void hFarFwdDefineMagnets(PHG4Reco *g4Reco)
         }
         else
         {
+	  //------------------------
+	  //Select only the magnet component in the far forward region
+	  if (z < 0.0)
+		continue;
+
           string magtype;
           if (inner_radius_zin != inner_radius_zout)
           {
@@ -203,6 +209,13 @@ void hFarFwdDefineMagnets(PHG4Reco *g4Reco)
           inner_radius_zin *= 100.;
           outer_magnet_diameter *= 100.;
           angle = (angle / TMath::Pi() * 180.) / 1000.;  // given in mrad
+
+	  //------------------------
+	  // Linearly scaling down the magnetic field for lower energy proton
+	  if( Enable::HFARFWD_ION_ENERGY != 275 ) {
+             float scaleFactor = Enable::HFARFWD_ION_ENERGY / 275. ;
+	     dipole_field_x = dipole_field_x*scaleFactor;
+   	  }
 
           if (magnetlist.empty() || magnetlist.find(imagnet) != magnetlist.end())
           {
@@ -383,8 +396,8 @@ void hFarFwdDefineDetectorsIP6(PHG4Reco *g4Reco)
 
 void hFarFwdDefineDetectorsIP8(PHG4Reco *g4Reco)
 {
-  cout << __PRETTY_FUNCTION__ << " : IP8 setup is not yet validated!" << endl;
-  gSystem->Exit(1);
+//  cout << __PRETTY_FUNCTION__ << " : IP8 setup is not yet validated!" << endl;
+//  gSystem->Exit(1);
 
   bool overlapCheck = Enable::OVERLAPCHECK || Enable::HFARFWD_OVERLAPCHECK;
   if (Enable::HFARFWD_VIRTUAL_DETECTORS_IP6 && Enable::HFARFWD_VIRTUAL_DETECTORS_IP8)
