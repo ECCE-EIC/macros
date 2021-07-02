@@ -45,6 +45,8 @@ void Event_Eval(const std::string &filename)
     eval->set_do_CLUSTERS(true);
 
   eval->set_do_MCPARTICLES(true);
+  eval->set_do_HEPMC(true);
+  eval->set_do_store_event_level_info(true);
   se->registerSubsystem(eval);
 
   return;
