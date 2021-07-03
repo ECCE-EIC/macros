@@ -18,6 +18,10 @@
 
 R__LOAD_LIBRARY(libg4detectors.so)
 
+float PosFlip(float pos);
+float AngleFlip(float angle);
+float MagFieldFlip(float Bfield);
+
 // This creates the Enable Flag to be used in the main steering macro
 namespace Enable
 {
@@ -220,18 +224,18 @@ void hFarFwdDefineMagnets(PHG4Reco *g4Reco)
           if (magnetlist.empty() || magnetlist.find(imagnet) != magnetlist.end())
           {
             bl = new BeamLineMagnetSubsystem("BEAMLINEMAGNET", imagnet);
-            bl->set_double_param("field_y", dipole_field_x);
-            bl->set_double_param("fieldgradient", fieldgradient);
+            bl->set_double_param("field_y", MagFieldFlip(dipole_field_x));
+            bl->set_double_param("fieldgradient", MagFieldFlip(fieldgradient));
             bl->set_string_param("magtype", magtype);
             bl->set_double_param("length", length);
-            bl->set_double_param("place_x", x);// relative position to mother vol.
+            bl->set_double_param("place_x", PosFlip(x));// relative position to mother vol.
             bl->set_double_param("place_y", y);// relative position to mother vol.
             bl->set_double_param("place_z", z - hFarFwdBeamLine::enclosure_center);// relative position to mother vol.
-            bl->set_double_param("field_global_position_x", x);// abs. position to world for field manager
+            bl->set_double_param("field_global_position_x", PosFlip(x));// abs. position to world for field manager
             bl->set_double_param("field_global_position_y", y);// abs. position to world for field manager
             bl->set_double_param("field_global_position_z", z);// abs. position to world for field manager
-            bl->set_double_param("rot_y", angle);
-            bl->set_double_param("field_global_rot_y", angle);// abs. rotation to world for field manager
+            bl->set_double_param("rot_y", AngleFlip(angle));
+            bl->set_double_param("field_global_rot_y", AngleFlip(angle));// abs. rotation to world for field manager
             bl->set_double_param("inner_radius", inner_radius_zin);
             bl->set_double_param("outer_radius", outer_magnet_diameter / 2.);
             bl->SetActive(magnet_active);
@@ -277,10 +281,10 @@ void hFarFwdDefineDetectorsIP6(PHG4Reco *g4Reco)
   auto *detZDCsurrogate = new PHG4BlockSubsystem("zdcTruth");
   const double detZDCsurrogate_size_z = 0.1;
   detZDCsurrogate->SuperDetector("ZDCsurrogate");
-  detZDCsurrogate->set_double_param("place_x", 96.24);
+  detZDCsurrogate->set_double_param("place_x", PosFlip(96.24));
   detZDCsurrogate->set_double_param("place_y", 0);
   detZDCsurrogate->set_double_param("place_z", 3750 - hFarFwdBeamLine::enclosure_center);
-  detZDCsurrogate->set_double_param("rot_y", -0.025 * TMath::RadToDeg());
+  detZDCsurrogate->set_double_param("rot_y", AngleFlip(-0.025 * TMath::RadToDeg()));
   detZDCsurrogate->set_double_param("size_x", 60);
   detZDCsurrogate->set_double_param("size_y", 60);
   detZDCsurrogate->set_double_param("size_z", detZDCsurrogate_size_z);
@@ -299,8 +303,8 @@ void hFarFwdDefineDetectorsIP6(PHG4Reco *g4Reco)
     EICG4ZDCSubsystem *detZDC = new EICG4ZDCSubsystem("EICG4ZDC");
     detZDC->SetActive();
     detZDC->set_double_param("place_z", 3750. + detZDCsurrogate_size_z - hFarFwdBeamLine::enclosure_center);
-    detZDC->set_double_param("place_x", 96.24);
-    detZDC->set_double_param("rot_y", -0.025);
+    detZDC->set_double_param("place_x", PosFlip(96.24));
+    detZDC->set_double_param("rot_y", AngleFlip(-0.025));
     detZDC->OverlapCheck(overlapCheck);
     detZDC->SetMotherSubsystem(hFarFwdBeamLine::hFarFwdBeamLineEnclosure);
     g4Reco->registerSubsystem(detZDC);
@@ -313,10 +317,10 @@ void hFarFwdDefineDetectorsIP6(PHG4Reco *g4Reco)
   {
     auto *detOM = new PHG4BlockSubsystem(Form("offMomTruth_%d", i), i);
     detOM->SuperDetector("offMomTruth");
-    detOM->set_double_param("place_x", om_xCent[i]);
+    detOM->set_double_param("place_x", PosFlip(om_xCent[i]));
     detOM->set_double_param("place_y", 0);
     detOM->set_double_param("place_z", om_zCent[i] - hFarFwdBeamLine::enclosure_center);
-    detOM->set_double_param("rot_y", -0.045 * TMath::RadToDeg());
+    detOM->set_double_param("rot_y", AngleFlip(-0.045 * TMath::RadToDeg()));
     detOM->set_double_param("size_x", 50);
     detOM->set_double_param("size_y", 35);
     detOM->set_double_param("size_z", 0.03);
@@ -356,10 +360,10 @@ void hFarFwdDefineDetectorsIP6(PHG4Reco *g4Reco)
 
     auto *detRP = new PHG4CylinderSubsystem(Form("rpTruth_%d", i), i);
     detRP->SuperDetector("rpTruth");
-    detRP->set_double_param("place_x", rp_xCent[i]);
+    detRP->set_double_param("place_x", PosFlip(rp_xCent[i]));
     detRP->set_double_param("place_y", 0);
     detRP->set_double_param("place_z", rp_zCent[i] - hFarFwdBeamLine::enclosure_center);
-    detRP->set_double_param("rot_y", -0.025 * TMath::RadToDeg());
+    detRP->set_double_param("rot_y", AngleFlip(-0.025 * TMath::RadToDeg()));
     detRP->set_double_param("radius", 0);
     detRP->set_double_param("thickness", 25);  // This is intentionally made large 25cm radius
     detRP->set_double_param("length", 0.03);
@@ -414,10 +418,10 @@ void hFarFwdDefineDetectorsIP8(PHG4Reco *g4Reco)
   for (int i = 0; i < offMomDetNr; i++)
   {
     auto *detOM = new PHG4BlockSubsystem(Form("offMomTruth_%d", i));
-    detOM->set_double_param("place_x", om_xCent[i]);
+    detOM->set_double_param("place_x", PosFlip(om_xCent[i]));
     detOM->set_double_param("place_y", 0);
     detOM->set_double_param("place_z", om_zCent[i]);
-    detOM->set_double_param("rot_y", -0.029 * TMath::RadToDeg());
+    detOM->set_double_param("rot_y", AngleFlip(-0.029 * TMath::RadToDeg()));
     detOM->set_double_param("size_x", 100);
     detOM->set_double_param("size_y", 100);
     detOM->set_double_param("size_z", 0.03);
@@ -431,10 +435,10 @@ void hFarFwdDefineDetectorsIP8(PHG4Reco *g4Reco)
   auto *detZDCsurrogate = new PHG4BlockSubsystem("zdcTruth");
   const double detZDCsurrogate_size_z = 0.1;
   detZDCsurrogate->SuperDetector("ZDCsurrogate");
-  detZDCsurrogate->set_double_param("place_x", 127.8);
+  detZDCsurrogate->set_double_param("place_x", PosFlip(127.8));
   detZDCsurrogate->set_double_param("place_y", 0);
   detZDCsurrogate->set_double_param("place_z", 3650);
-  detZDCsurrogate->set_double_param("rot_y", -0.035 * TMath::RadToDeg());
+  detZDCsurrogate->set_double_param("rot_y", AngleFlip(-0.035 * TMath::RadToDeg()));
   detZDCsurrogate->set_double_param("size_x", 60);
   detZDCsurrogate->set_double_param("size_y", 60);
   detZDCsurrogate->set_double_param("size_z", detZDCsurrogate_size_z);
@@ -450,8 +454,8 @@ void hFarFwdDefineDetectorsIP8(PHG4Reco *g4Reco)
   EICG4ZDCSubsystem *detZDC = new EICG4ZDCSubsystem("EICG4ZDC");
   detZDC->SetActive();
   detZDC->set_double_param("place_z", 3650. + detZDCsurrogate_size_z);
-  detZDC->set_double_param("place_x", 127.8);
-  detZDC->set_double_param("rot_y", -0.035);
+  detZDC->set_double_param("place_x", PosFlip(127.8));
+  detZDC->set_double_param("rot_y", AngleFlip(-0.035));
   detZDC->OverlapCheck(overlapCheck);
   g4Reco->registerSubsystem(detZDC);
 
@@ -463,10 +467,10 @@ void hFarFwdDefineDetectorsIP8(PHG4Reco *g4Reco)
     auto *detRP = new PHG4BlockSubsystem(Form("rpTruth_%d", i));
     //    detRP->SuperDetector("RomanPots");
     detRP->SuperDetector(Form("RomanPots_%d", i));
-    detRP->set_double_param("place_x", rp_xCent[i]);
+    detRP->set_double_param("place_x", PosFlip(rp_xCent[i]));
     detRP->set_double_param("place_y", 0);
     detRP->set_double_param("place_z", rp_zCent[i]);
-    detRP->set_double_param("rot_y", -0.0215 * TMath::RadToDeg());
+    detRP->set_double_param("rot_y", AngleFlip(-0.0215 * TMath::RadToDeg()));
     detRP->set_double_param("size_x", 100);
     detRP->set_double_param("size_y", 100);
     detRP->set_double_param("size_z", 0.03);
@@ -488,7 +492,7 @@ void hFarFwdDefineDetectorsIP8(PHG4Reco *g4Reco)
     detB0->set_double_param("thickness", 20);
     detB0->set_double_param("length", 0.1);
     detB0->set_string_param("material", "G4_Si");
-    detB0->set_double_param("place_x", 21.2);
+    detB0->set_double_param("place_x", PosFlip(21.2));
     detB0->set_double_param("place_y", 0);
     detB0->set_double_param("place_z", (b0Mag_zCent - b0Mag_zLen / 2) + b0Mag_zLen / (b0DetNr - 1) * i);
     detB0->SetActive(true);
@@ -506,9 +510,9 @@ void hFarFwdDefineBeamPipe(PHG4Reco *g4Reco)
   exitWin->set_double_param("radius", 3.2);
   exitWin->set_double_param("thickness", 11.8);
   exitWin->set_double_param("length", 0.15);
-  exitWin->set_double_param("rot_y", -0.025 * TMath::RadToDeg());
+  exitWin->set_double_param("rot_y", AngleFlip(-0.025 * TMath::RadToDeg()));
   exitWin->set_string_param("material", "G4_STAINLESS-STEEL");
-  exitWin->set_double_param("place_x", 12.5);
+  exitWin->set_double_param("place_x", PosFlip(12.5));
   exitWin->set_double_param("place_y", 0);
   exitWin->set_double_param("place_z", 500);
   exitWin->SetActive(false);
@@ -519,9 +523,9 @@ void hFarFwdDefineBeamPipe(PHG4Reco *g4Reco)
   pipeB0->set_double_param("radius", 2.8);
   pipeB0->set_double_param("thickness", 0.25);
   pipeB0->set_double_param("length", 195);
-  pipeB0->set_double_param("rot_y", -0.025 * TMath::RadToDeg());
+  pipeB0->set_double_param("rot_y", AngleFlip(-0.025 * TMath::RadToDeg()));
   pipeB0->set_string_param("material", "G4_Al");
-  pipeB0->set_double_param("place_x", 14.748);
+  pipeB0->set_double_param("place_x", PosFlip(14.748));
   pipeB0->set_double_param("place_y", 0);
   pipeB0->set_double_param("place_z", 590);
   pipeB0->SetActive(false);
@@ -543,9 +547,9 @@ void hFarFwdDefineBeamPipe(PHG4Reco *g4Reco)
     pipe->set_double_param("radius", qir[i]);
     pipe->set_double_param("thickness", qor[i] - qir[i]);
     pipe->set_double_param("length", qlen[i]);
-    pipe->set_double_param("rot_y", -qrot[i] / 1000 * TMath::RadToDeg());
+    pipe->set_double_param("rot_y", AngleFlip(-qrot[i] / 1000 * TMath::RadToDeg()));
     pipe->set_string_param("material", "G4_Al");
-    pipe->set_double_param("place_x", qxC[i]);
+    pipe->set_double_param("place_x", PosFlip(qxC[i]));
     pipe->set_double_param("place_y", qyC[i]);
     pipe->set_double_param("place_z", qzC[i]);
     pipe->SetActive(false);
@@ -558,9 +562,9 @@ void hFarFwdDefineBeamPipe(PHG4Reco *g4Reco)
   pipeElectron->set_double_param("radius", 1);
   pipeElectron->set_double_param("thickness", 1);
   pipeElectron->set_double_param("length", 3000);
-  pipeElectron->set_double_param("rot_y", -0.025 * TMath::RadToDeg());
+  pipeElectron->set_double_param("rot_y", AngleFlip(-0.025 * TMath::RadToDeg()));
   pipeElectron->set_string_param("material", "G4_Al");
-  pipeElectron->set_double_param("place_x", 0);
+  pipeElectron->set_double_param("place_x", PosFlip(0));
   pipeElectron->set_double_param("place_y", 0);
   pipeElectron->set_double_param("place_z", 2000);
   pipeElectron->SetActive(false);
@@ -571,9 +575,9 @@ void hFarFwdDefineBeamPipe(PHG4Reco *g4Reco)
   pipeZDC->set_double_param("radius", 16.5);
   pipeZDC->set_double_param("thickness", 0.1);
   pipeZDC->set_double_param("length", 170);
-  pipeZDC->set_double_param("rot_y", -0.025 * TMath::RadToDeg());
+  pipeZDC->set_double_param("rot_y", AngleFlip(-0.025 * TMath::RadToDeg()));
   pipeZDC->set_string_param("material", "G4_Al");
-  pipeZDC->set_double_param("place_x", 59);
+  pipeZDC->set_double_param("place_x", PosFlip(59));
   pipeZDC->set_double_param("place_y", 0);
   pipeZDC->set_double_param("place_z", 2041.59);
   pipeZDC->SetActive(false);
@@ -594,7 +598,7 @@ void hFarFwdDefineBeamPipe(PHG4Reco *g4Reco)
   {
     PHG4ConeSubsystem *pipe = new PHG4ConeSubsystem(Form("beamPipeRP%d", i), 0);
     pipe->set_string_param("material", "G4_STAINLESS-STEEL");
-    pipe->set_double_param("place_x", xC[i]);
+    pipe->set_double_param("place_x", PosFlip(xC[i]));
     pipe->set_double_param("place_y", yC[i]);
     pipe->set_double_param("place_z", zC[i]);
     pipe->set_double_param("length", len[i] / 2);
@@ -602,9 +606,37 @@ void hFarFwdDefineBeamPipe(PHG4Reco *g4Reco)
     pipe->set_double_param("rmin2", ir2[i]);
     pipe->set_double_param("rmax1", or1[i]);
     pipe->set_double_param("rmax2", or2[i]);
-    pipe->set_double_param("rot_y", -0.047 * TMath::RadToDeg());
+    pipe->set_double_param("rot_y", AngleFlip(-0.047 * TMath::RadToDeg()));
     g4Reco->registerSubsystem(pipe);
   }
 }
+
+float PosFlip(float pos) {
+  if(Enable::HFARFWD_MAGNETS_IP6) {
+  	return -pos;
+  } else {
+  	return pos;
+  }
+}
+
+float AngleFlip(float angle){
+  if(Enable::HFARFWD_MAGNETS_IP6) {
+  	return -angle;
+  } else {
+  	return angle;
+  }
+}
+
+float MagFieldFlip(float Bfield){
+  if(Enable::HFARFWD_MAGNETS_IP6) {
+  	return -Bfield;
+  } else {
+  	return Bfield;
+  }
+}
+
+
+
+
 
 #endif
