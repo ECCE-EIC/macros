@@ -126,7 +126,7 @@ namespace Input
 
     HepMCGen->set_beam_direction_theta_phi(
         EIC_hadron_crossing_angle,  // beamA_theta
-        0,                          // beamA_phi
+        M_PI,                          // beamA_phi
         M_PI,                       // beamB_theta
         0                           // beamB_phi
     );
