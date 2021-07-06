@@ -134,9 +134,13 @@ double HCalInner(PHG4Reco *g4Reco,
   hcal->set_double_param("inner_radius", 134.0);
   hcal->set_double_param("tilt_angle", 36.15);
   hcal->set_double_param("size_z", length);
-  hcal->set_int_param("n_scinti_tiles", 12);
+  hcal->set_int_param("n_scinti_tiles", 0);
+  hcal->set_int_param("n_scinti_tiles_pos", 12);
+  hcal->set_int_param("n_scinti_tiles_neg", 15);
   hcal->set_double_param("place_z", z_shift);
-  hcal->set_double_param("scinti_eta_coverage", 1.1);
+  hcal->set_double_param("scinti_eta_coverage", 0.0);
+  hcal->set_double_param("scinti_eta_coverage_pos", 1.15);
+  hcal->set_double_param("scinti_eta_coverage_neg", 1.45);
 
   // hcal->set_double_param("inner_radius", 117.27);
   //-----------------------------------------
@@ -154,7 +158,13 @@ double HCalInner(PHG4Reco *g4Reco,
   // hcal->set_double_param("rot_x", 0.);
   // hcal->set_double_param("rot_y", 0.);
   // hcal->set_double_param("rot_z", 0.);
+  
+  // If scinti_eta_coverage>0 it will take precdence. 
+  // Set to 0 (or <0) to use pos/neg values
   // hcal->set_double_param("scinti_eta_coverage", 1.1);
+  // hcal->set_double_param("scinti_eta_coverage_pos", 1.1);
+  // hcal->set_double_param("scinti_eta_coverage_neg", 1.1);
+
   // hcal->set_double_param("scinti_gap_neighbor", 0.1);
   // hcal->set_double_param("scinti_inner_gap", 0.85);
   // hcal->set_double_param("scinti_outer_gap", 1.22 * (5.0 / 4.0));
@@ -163,12 +173,16 @@ double HCalInner(PHG4Reco *g4Reco,
   // hcal->set_double_param("size_z", 175.94 * 2);
   // hcal->set_double_param("steplimits", NAN);
   // hcal->set_double_param("tilt_angle", 36.15);
-
   // hcal->set_int_param("light_scint_model", 1);
   // hcal->set_int_param("ncross", 0);
   // hcal->set_int_param("n_towers", 64);
   // hcal->set_int_param("n_scinti_plates_per_tower", 4);
+  //
+  // If n_scinti_tiles>0 it will take precdence. 
+  // Set to 0 (or <0) to use pos/neg values
   // hcal->set_int_param("n_scinti_tiles", 12);
+  // hcal->set_int_param("n_scinti_tiles_pos", 12);
+  // hcal->set_int_param("n_scinti_tiles_neg", 12);
 
   // hcal->set_string_param("material", "SS310");
 
