@@ -124,7 +124,7 @@ double HCalInner(PHG4Reco *g4Reco,
 
   // ECCE Inner HCAL paremeters
   
-  double z_end = G4HCALIN::support_ring_z_ring2 - 13.5 + (G4HCALIN::dz/2.0);
+  double z_end = G4HCALIN::support_ring_z_ring2 - 12.5 + (G4HCALIN::dz/2.0);
   double z_start = -287; // DIRC prizm end
   double length = z_end - z_start;
   double z_shift = 0.5 * (z_end + z_start);
@@ -213,7 +213,7 @@ void HCalInner_SupportRing(PHG4Reco *g4Reco)
   const double innerradius_sphenix = 138.6;
   const double innerradius_ephenix_hadronside = 138.6;
   const double z_rings[] =
-      {-G4HCALIN::support_ring_z_ring2, -z_ring1, z_ring1 - 13.5, G4HCALIN::support_ring_z_ring2 - 13.5};
+      {-G4HCALIN::support_ring_z_ring2, -z_ring1, z_ring1 - 12.5, G4HCALIN::support_ring_z_ring2 - 12.5};
 
   PHG4CylinderSubsystem *cyl;
 
