@@ -68,7 +68,8 @@ void hFarBwdBeamLineInit()
   {
 //    hFarBwdBeamLine::enclosure_z_max = -4500.;
     hFarBwdBeamLine::enclosure_z_max = -2000.;
-    BlackHoleGeometry::min_z = std::min(BlackHoleGeometry::min_z, hFarBwdBeamLine::starting_z);
+//    BlackHoleGeometry::min_z = std::min(BlackHoleGeometry::min_z, hFarBwdBeamLine::starting_z);
+    BlackHoleGeometry::min_z = std::min(BlackHoleGeometry::min_z, hFarBwdBeamLine::enclosure_z_max);
     hFarBwdBeamLine::enclosure_r_max = 200.;
   }
 
@@ -76,13 +77,16 @@ void hFarBwdBeamLineInit()
   {
 //    hFarBwdBeamLine::enclosure_z_max = -4500.;
     hFarBwdBeamLine::enclosure_z_max = -2000.;
-    BlackHoleGeometry::min_z = std::min(BlackHoleGeometry::min_z, hFarBwdBeamLine::starting_z);
+//    BlackHoleGeometry::min_z = std::min(BlackHoleGeometry::min_z, hFarBwdBeamLine::starting_z);
+    BlackHoleGeometry::min_z = std::min(BlackHoleGeometry::min_z, hFarBwdBeamLine::enclosure_z_max);
     hFarBwdBeamLine::enclosure_r_max = 200.;
   }
 
   hFarBwdBeamLine::enclosure_center = 0.5 * (hFarBwdBeamLine::starting_z + hFarBwdBeamLine::enclosure_z_max);
 
-  BlackHoleGeometry::max_z = std::max(BlackHoleGeometry::max_z, hFarBwdBeamLine::enclosure_z_max);
+//  BlackHoleGeometry::max_z = std::max(BlackHoleGeometry::max_z, hFarBwdBeamLine::enclosure_z_max);
+  BlackHoleGeometry::max_z = std::max(BlackHoleGeometry::max_z, hFarBwdBeamLine::starting_z);
+
   BlackHoleGeometry::max_radius = std::max(BlackHoleGeometry::max_radius, hFarBwdBeamLine::enclosure_r_max);
 }
 
