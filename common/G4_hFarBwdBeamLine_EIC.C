@@ -66,8 +66,7 @@ void hFarBwdBeamLineInit()
 
   if (Enable::HFARBWD_MAGNETS_IP6)
   {
-//    hFarBwdBeamLine::enclosure_z_max = -4500.;
-    hFarBwdBeamLine::enclosure_z_max = -2000.;
+    hFarBwdBeamLine::enclosure_z_max = -4700.;
 //    BlackHoleGeometry::min_z = std::min(BlackHoleGeometry::min_z, hFarBwdBeamLine::starting_z);
     BlackHoleGeometry::min_z = std::min(BlackHoleGeometry::min_z, hFarBwdBeamLine::enclosure_z_max);
     hFarBwdBeamLine::enclosure_r_max = 200.;
@@ -75,8 +74,7 @@ void hFarBwdBeamLineInit()
 
   if (Enable::HFARBWD_MAGNETS_IP8)
   {
-//    hFarBwdBeamLine::enclosure_z_max = -4500.;
-    hFarBwdBeamLine::enclosure_z_max = -2000.;
+    hFarBwdBeamLine::enclosure_z_max = -4700.;
 //    BlackHoleGeometry::min_z = std::min(BlackHoleGeometry::min_z, hFarBwdBeamLine::starting_z);
     BlackHoleGeometry::min_z = std::min(BlackHoleGeometry::min_z, hFarBwdBeamLine::enclosure_z_max);
     hFarBwdBeamLine::enclosure_r_max = 200.;
