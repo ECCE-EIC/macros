@@ -400,8 +400,11 @@ void hFarFwdDefineDetectorsIP6(PHG4Reco *g4Reco)
 
 void hFarFwdDefineDetectorsIP8(PHG4Reco *g4Reco)
 {
-//  cout << __PRETTY_FUNCTION__ << " : IP8 setup is not yet validated!" << endl;
-//  gSystem->Exit(1);
+
+//--------------------------------------------------------
+// The IP8 detector position is implemented by Wenliang Li (billlee@jlab.org)
+// on July 07, 2021
+// Reference of this implementation: https://indico.bnl.gov/event/10974/contributions/51160/
 
   bool overlapCheck = Enable::OVERLAPCHECK || Enable::HFARFWD_OVERLAPCHECK;
   if (Enable::HFARFWD_VIRTUAL_DETECTORS_IP6 && Enable::HFARFWD_VIRTUAL_DETECTORS_IP8)
@@ -412,21 +415,29 @@ void hFarFwdDefineDetectorsIP8(PHG4Reco *g4Reco)
 
   int verbosity = std::max(Enable::VERBOSITY, Enable::HFARFWD_VERBOSITY);
 
-  const int offMomDetNr = 3;
-  const double om_zCent[offMomDetNr] = {4250, 4400, 4550};
-  const double om_xCent[offMomDetNr] = {100, 100, 100};
+//  const int offMomDetNr = 3;
+//  const double om_zCent[offMomDetNr] = {4250, 4400, 4550};
+//  const double om_xCent[offMomDetNr] = {100, 100, 100};
+
+  const int offMomDetNr = 2;
+  const double om_xCent[offMomDetNr] = {46, 49};
+  const double om_zCent[offMomDetNr] = {3250, 3450};
+
   for (int i = 0; i < offMomDetNr; i++)
   {
     auto *detOM = new PHG4BlockSubsystem(Form("offMomTruth_%d", i));
     detOM->set_double_param("place_x", PosFlip(om_xCent[i]));
     detOM->set_double_param("place_y", 0);
     detOM->set_double_param("place_z", om_zCent[i]);
-    detOM->set_double_param("rot_y", AngleFlip(-0.029 * TMath::RadToDeg()));
-    detOM->set_double_param("size_x", 100);
-    detOM->set_double_param("size_y", 100);
+    detOM->set_double_param("rot_y", AngleFlip(-0.045 * TMath::RadToDeg()));
+    detOM->set_double_param("size_x", 40);  // Original design specification
+    detOM->set_double_param("size_y", 35);  // Original design specification
+//    detOM->set_double_param("size_x", 100);
+//    detOM->set_double_param("size_y", 100);
     detOM->set_double_param("size_z", 0.03);
     detOM->set_string_param("material", "G4_Si");
     detOM->SetActive();
+    detOM->set_color(0, 0, 1, 0.5);
     if (verbosity)
       detOM->Verbosity(verbosity);
     g4Reco->registerSubsystem(detOM);
@@ -435,9 +446,9 @@ void hFarFwdDefineDetectorsIP8(PHG4Reco *g4Reco)
   auto *detZDCsurrogate = new PHG4BlockSubsystem("zdcTruth");
   const double detZDCsurrogate_size_z = 0.1;
   detZDCsurrogate->SuperDetector("ZDCsurrogate");
-  detZDCsurrogate->set_double_param("place_x", PosFlip(127.8));
+  detZDCsurrogate->set_double_param("place_x", PosFlip(120));
   detZDCsurrogate->set_double_param("place_y", 0);
-  detZDCsurrogate->set_double_param("place_z", 3650);
+  detZDCsurrogate->set_double_param("place_z", 3350);
   detZDCsurrogate->set_double_param("rot_y", AngleFlip(-0.035 * TMath::RadToDeg()));
   detZDCsurrogate->set_double_param("size_x", 60);
   detZDCsurrogate->set_double_param("size_y", 60);
@@ -453,15 +464,21 @@ void hFarFwdDefineDetectorsIP8(PHG4Reco *g4Reco)
 
   EICG4ZDCSubsystem *detZDC = new EICG4ZDCSubsystem("EICG4ZDC");
   detZDC->SetActive();
-  detZDC->set_double_param("place_z", 3650. + detZDCsurrogate_size_z);
-  detZDC->set_double_param("place_x", PosFlip(127.8));
+  detZDC->set_double_param("place_z", 3350. + detZDCsurrogate_size_z);
+  detZDC->set_double_param("place_x", PosFlip(120.0));
   detZDC->set_double_param("rot_y", AngleFlip(-0.035));
   detZDC->OverlapCheck(overlapCheck);
   g4Reco->registerSubsystem(detZDC);
 
-  const int rpDetNr = 4;
-  const double rp_zCent[rpDetNr] = {2200, 2500, 2800, 3100};
-  const double rp_xCent[rpDetNr] = {75, 75, 75, 75};
+  //------------------
+  // Roman pot set #1
+  const int rpDetNr = 2;
+//  const double rp_zCent[rpDetNr] = {2200, 2500, 2800, 3100};
+//  const double rp_xCent[rpDetNr] = {75, 75, 75, 75};
+
+  const double rp_xCent[rpDetNr] = {75.6, 78.15};
+  const double rp_zCent[rpDetNr] = {2600, 2800};
+
   for (int i = 0; i < rpDetNr; i++)
   {
     auto *detRP = new PHG4BlockSubsystem(Form("rpTruth_%d", i));
@@ -470,15 +487,45 @@ void hFarFwdDefineDetectorsIP8(PHG4Reco *g4Reco)
     detRP->set_double_param("place_x", PosFlip(rp_xCent[i]));
     detRP->set_double_param("place_y", 0);
     detRP->set_double_param("place_z", rp_zCent[i]);
-    detRP->set_double_param("rot_y", AngleFlip(-0.0215 * TMath::RadToDeg()));
-    detRP->set_double_param("size_x", 100);
-    detRP->set_double_param("size_y", 100);
+    detRP->set_double_param("rot_y", AngleFlip(-0.035 * TMath::RadToDeg()));
+    detRP->set_double_param("size_x", 25);  // Original design specification
+    detRP->set_double_param("size_y", 20);  // Original design specification
+//    detRP->set_double_param("size_x", 100);
+//    detRP->set_double_param("size_y", 100);
     detRP->set_double_param("size_z", 0.03);
     detRP->set_string_param("material", "G4_Si");
     detRP->SetActive();
     if (verbosity)
       detRP->Verbosity(verbosity);
     g4Reco->registerSubsystem(detRP);
+  }
+
+  //------------------
+  // Roman pot set #2 before and after the secondary focus
+
+  const int rp2ndDetNr = 2;
+  const double rp_2nd_xCent[rp2ndDetNr] = {101.94, 106.94};
+  const double rp_2nd_zCent[rp2ndDetNr] = {4300, 4450};
+
+  for (int i = 0; i < rp2ndDetNr; i++)
+  {
+    auto *detRP_2nd = new PHG4BlockSubsystem(Form("rp2ndTruth_%d", i));
+    //    detRP_2nd->SuperDetector("RomanPots");
+    detRP_2nd->SuperDetector(Form("RomanPots_2nd_%d", i));
+    detRP_2nd->set_double_param("place_x", PosFlip(rp_2nd_xCent[i]));
+    detRP_2nd->set_double_param("place_y", 0);
+    detRP_2nd->set_double_param("place_z", rp_2nd_zCent[i]);
+    detRP_2nd->set_double_param("rot_y", AngleFlip(-0.029 * TMath::RadToDeg()));
+//    detRP_2nd->set_double_param("size_x", 10);  // Original design specification
+//    detRP_2nd->set_double_param("size_y", 5);  // Original design specification
+    detRP_2nd->set_double_param("size_x", 25);
+    detRP_2nd->set_double_param("size_y", 20);
+    detRP_2nd->set_double_param("size_z", 0.03);
+    detRP_2nd->set_string_param("material", "G4_Si");
+    detRP_2nd->SetActive();
+    if (verbosity)
+      detRP_2nd->Verbosity(verbosity);
+    g4Reco->registerSubsystem(detRP_2nd);
   }
 
   const int b0DetNr = 4;
