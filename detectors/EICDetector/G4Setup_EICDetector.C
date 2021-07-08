@@ -30,6 +30,7 @@
 #include <G4_User.C>
 #include <G4_World.C>
 #include <G4_hFarFwdBeamLine_EIC.C>
+#include <G4_hFarBwdBeamLine_EIC.C>
 #include <G4_mRICH.C>
 
 #include <g4detectors/PHG4CylinderSubsystem.h>
@@ -67,6 +68,7 @@ void G4Init()
   // load detector/material macros and execute Init() function
   if (Enable::PIPE) PipeInit();
   if (Enable::HFARFWD_MAGNETS) hFarFwdBeamLineInit();
+  if (Enable::HFARFWD_MAGNETS) hFarBwdBeamLineInit();
   if (Enable::PLUGDOOR) PlugDoorInit();
 
   if (Enable::TRACKING) TrackingInit();
@@ -141,9 +143,16 @@ int G4Setup()
   double radius = 0.;
 
   if (Enable::PIPE) radius = Pipe(g4Reco, radius);
+  // Far Forward Region
   if (Enable::HFARFWD_MAGNETS_IP6 || Enable::HFARFWD_MAGNETS_IP8) hFarFwdDefineMagnets(g4Reco);
   if (Enable::HFARFWD_VIRTUAL_DETECTORS_IP6) hFarFwdDefineDetectorsIP6(g4Reco);
   if (Enable::HFARFWD_VIRTUAL_DETECTORS_IP8) hFarFwdDefineDetectorsIP8(g4Reco);
+
+  // Far Backward Region
+  if (Enable::HFARBWD_MAGNETS_IP6 || Enable::HFARBWD_MAGNETS_IP8) hFarBwdDefineMagnets(g4Reco);
+  if (Enable::HFARBWD_VIRTUAL_DETECTORS_IP6) hFarBwdDefineDetectorsIP6(g4Reco);
+  if (Enable::HFARBWD_VIRTUAL_DETECTORS_IP8) hFarBwdDefineDetectorsIP8(g4Reco);
+
   if (Enable::EGEM) EGEMSetup(g4Reco);
   if (Enable::FGEM) FGEMSetup(g4Reco);
   if (Enable::RWELL) RWellSetup(g4Reco);

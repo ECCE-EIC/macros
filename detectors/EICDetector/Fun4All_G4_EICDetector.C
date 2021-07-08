@@ -255,6 +255,9 @@ int Fun4All_G4_EICDetector(
   Enable::HFARFWD_MAGNETS = true;
   Enable::HFARFWD_VIRTUAL_DETECTORS = true;
 
+  Enable::HFARBWD_MAGNETS = true;
+  Enable::HFARBWD_VIRTUAL_DETECTORS = true;
+
   // gems
   Enable::EGEM = true;
   Enable::FGEM = true;
