@@ -26,6 +26,7 @@ void Barrel(PHG4Reco *g4Reco, int det_ver = 3)
 {
 
   // import Geometry (lines 111 to 148 in https://github.com/eic/g4lblvtx/blob/master/macros/auxiliary_studies/simplified_geometry/Fun4All_G4_simplified_v2.C):
+  PHG4CylinderSubsystem * cyl(nullptr);
 
   //---------------------------
   // Vertexing
