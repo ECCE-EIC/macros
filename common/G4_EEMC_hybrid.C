@@ -90,14 +90,14 @@ void EEMCHSetup(PHG4Reco *g4Reco)
   /** Use dedicated EEMCH module */
   ostringstream mapping_eemc_1, mapping_eemc_2;
     
-  cout << "hybrid: " << G4EEMCH::SETTING::USEHYBRID <<  "\t CEMC:" << G4EEMCH::SETTING::USECEMCGeo << endl;
+  if (Enable::EEMCH_VERBOSITY > 0) cout << "hybrid: " << G4EEMCH::SETTING::USEHYBRID <<  "\t CEMC:" << G4EEMCH::SETTING::USECEMCGeo << endl;
   
   PHG4HybridHomogeneousCalorimeterSubsystem *eemc_crystal = new PHG4HybridHomogeneousCalorimeterSubsystem("EEMC");
   eemc_crystal->SuperDetector("EEMC");
   eemc_crystal->SetActive();
   if (AbsorberActive)
     eemc_crystal->SetAbsorberActive();
-/*  
+  
   if (G4EEMCH::SETTING::USEHYBRID && !G4EEMCH::SETTING::USECEMCGeo)
     mapping_eemc_1 << getenv("CALIBRATIONROOT") << "/CrystalCalorimeter/mapping/crystal_mapping/tower_map_crystal_200cm_SciGlassBarrel.txt";
   else if (G4EEMCH::SETTING::USEHYBRID && G4EEMCH::SETTING::USECEMCGeo)
@@ -106,38 +106,23 @@ void EEMCHSetup(PHG4Reco *g4Reco)
     mapping_eemc_1 << getenv("CALIBRATIONROOT") << "/CrystalCalorimeter/mapping/crystal_mapping/tower_map_purecrystal_200cm_SciGlassBarrel.txt";
   else if (!G4EEMCH::SETTING::USEHYBRID && G4EEMCH::SETTING::USECEMCGeo)
     mapping_eemc_1 << getenv("CALIBRATIONROOT") << "/CrystalCalorimeter/mapping/crystal_mapping/tower_map_purecrystal_200cm_CEMCBarrel.txt";
-*/
-  if (G4EEMCH::SETTING::USEHYBRID && !G4EEMCH::SETTING::USECEMCGeo)
-    mapping_eemc_1 << "/sphenix/user/cdean/ECCE/calibrations//CrystalCalorimeter/mapping/crystal_mapping/tower_map_crystal_200cm_SciGlassBarrel.txt";
-  else if (G4EEMCH::SETTING::USEHYBRID && G4EEMCH::SETTING::USECEMCGeo)
-    mapping_eemc_1 << "/sphenix/user/cdean/ECCE/calibrations//CrystalCalorimeter/mapping/crystal_mapping/tower_map_crystal_200cm_CEMCBarrel.txt";
-  else if (!G4EEMCH::SETTING::USEHYBRID && !G4EEMCH::SETTING::USECEMCGeo)
-    mapping_eemc_1 << "/sphenix/user/cdean/ECCE/calibrations//CrystalCalorimeter/mapping/crystal_mapping/tower_map_purecrystal_200cm_SciGlassBarrel.txt";
-  else if (!G4EEMCH::SETTING::USEHYBRID && G4EEMCH::SETTING::USECEMCGeo)
-    mapping_eemc_1 << "/sphenix/user/cdean/ECCE/calibrations//CrystalCalorimeter/mapping/crystal_mapping/tower_map_purecrystal_200cm_CEMCBarrel.txt";
   else {
     cout << "*******************************************************************************" << endl;
     cout << "******   ATTENTION no EEMC set as your settings aren't correct ******" << endl;
     cout << "*******************************************************************************" << endl;
     return;
   }
-  cout << "setting EEMC crystal mapping: " << mapping_eemc_1.str() << endl;
+  if (Enable::EEMCH_VERBOSITY > 0) cout << "setting EEMC crystal mapping: " << mapping_eemc_1.str() << endl;
   eemc_crystal->set_string_param("mappingtower", mapping_eemc_1.str());    
   eemc_crystal->OverlapCheck(OverlapCheck);
 
   g4Reco->registerSubsystem(eemc_crystal);
-/*  
+  
   if (G4EEMCH::SETTING::USEHYBRID){
     if (!G4EEMCH::SETTING::USECEMCGeo)
       mapping_eemc_2 << getenv("CALIBRATIONROOT") << "/CrystalCalorimeter/mapping/crystal_mapping/tower_map_glass_200cm_SciGlassBarrel.txt";
     else if ( G4EEMCH::SETTING::USECEMCGeo)
       mapping_eemc_2 << getenv("CALIBRATIONROOT") << "/CrystalCalorimeter/mapping/crystal_mapping/tower_map_glass_200cm_CEMCBarrel.txt";
-*/
-  if (G4EEMCH::SETTING::USEHYBRID){
-    if (!G4EEMCH::SETTING::USECEMCGeo)
-      mapping_eemc_2 << "/sphenix/user/cdean/ECCE/calibrations//CrystalCalorimeter/mapping/crystal_mapping/tower_map_glass_200cm_SciGlassBarrel.txt";
-    else if ( G4EEMCH::SETTING::USECEMCGeo)
-      mapping_eemc_2 << "/sphenix/user/cdean/ECCE/calibrations//CrystalCalorimeter/mapping/crystal_mapping/tower_map_glass_200cm_CEMCBarrel.txt";
     else {
       cout << "*******************************************************************************" << endl;
       cout << "******  requested hybrid option but no glass mapping set ******" << endl;
@@ -145,7 +130,7 @@ void EEMCHSetup(PHG4Reco *g4Reco)
       return;
     }
   
-    cout << "setting EEMC glass mapping: " << mapping_eemc_2.str() << endl;
+    if (Enable::EEMCH_VERBOSITY > 0) cout << "setting EEMC glass mapping: " << mapping_eemc_2.str() << endl;
     PHG4HybridHomogeneousCalorimeterSubsystem *eemc_glass = new PHG4HybridHomogeneousCalorimeterSubsystem("EEMC_glass");
     eemc_glass->SuperDetector("EEMC_glass");
     eemc_glass->SetActive();
