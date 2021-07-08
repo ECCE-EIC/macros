@@ -22,7 +22,7 @@ namespace Enable
 namespace RWELL
 {
   //All units specified in cm unless stated otherwise
-  const int n_layer = 2;  //tracker layers
+  const int n_layer = 1;  //tracker layers
   //const double nom_radius[RWELL::n_layer] = {79.5,90.0}; //77 to not hit DIRC
   //  const double nom_radius[RWELL::n_layer] = {78.67, 90.0};  //77 to not hit DIRC
   const double nom_radius[RWELL::n_layer] = {69 - 1.6 - 2.6, 78.67};  //77 to not hit DIRC
