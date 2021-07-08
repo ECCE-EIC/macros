@@ -68,7 +68,7 @@ void Micromegas(PHG4Reco* g4Reco)
   auto mm = new PHG4MicromegasSubsystem("MICROMEGAS", mm_layer);
   mm->SetActive();
   mm->set_double_param("mm_length", 220);
-  mm->set_double_param("mm_radius", 82);
+//  mm->set_double_param("mm_radius", 82);
   g4Reco->registerSubsystem(mm);
 }
 
