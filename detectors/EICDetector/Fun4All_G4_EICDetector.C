@@ -20,6 +20,8 @@
 
 #include <phool/recoConsts.h>
 
+#include <RooUnblindPrecision.h>
+
 R__LOAD_LIBRARY(libfun4all.so)
 
 int Fun4All_G4_EICDetector(
@@ -45,6 +47,18 @@ int Fun4All_G4_EICDetector(
   // if the RANDOMSEED flag is set its value is taken as initial seed
   // which will produce identical results so you can debug your code
   // rc->set_IntFlag("RANDOMSEED", 12345);
+
+  bool generate_seed = false;
+
+  if (generate_seed)
+  {
+    size_t findSlash = inputFile.find_last_of("/");
+    string inputFileName = inputFile.substr(findSlash + 1, inputFile.size());
+
+    RooRealVar dummyVal("dummy", "", 0);
+    RooUnblindPrecision blindVal("blindVal", "blindVal", inputFileName.c_str(), nEvents, skip+1, dummyVal, kFALSE);
+    rc->set_IntFlag("RANDOMSEED", abs(ceil(blindVal.getVal()*1e2)));
+  }
 
   //===============
   // Input options
