@@ -2,13 +2,17 @@ name: Sync production branches
 on:
   push:
     branches:
-      - 'production'
+      - production
 jobs:
   sync-branch:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
 
+      - name: Test
+        run: 
+          echo "test"
+      
       - name: Merge production -> production_singleElectron_0-20GeV
         uses: devmasx/merge-branch@v1.3.1
         with:
