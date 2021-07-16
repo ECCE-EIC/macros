@@ -2,7 +2,7 @@ name: Sync with main branch
 on:
   push:
     branches:
-      - '*'
+      - production
 jobs:
   sync-branch:
     runs-on: ubuntu-latest
