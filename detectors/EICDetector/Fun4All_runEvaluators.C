@@ -64,7 +64,7 @@ int Fun4All_runEvaluators(
   //-----
   
   Enable::DSTREADER = false;
-  Enable::USER = false;
+  Enable::USER = false; // Enable this to run custom code from G4_User.C
 
   Enable::EVENT_EVAL = true;
   Enable::TRACKING_EVAL = true;
