@@ -1,8 +1,10 @@
 name: Sync with main branch
 on:
+  # Trigger the workflow on push or pull request,
+  # but only for the main branch
   push:
     branches:
-      - production
+      - main
 jobs:
   sync-branch:
     runs-on: ubuntu-latest
