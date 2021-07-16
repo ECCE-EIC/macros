@@ -1,0 +1,26 @@
+name: Sync production branches
+on:
+  push:
+    branches:
+      - 'production'
+jobs:
+  sync-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Merge production -> production_singleElectron_0-20GeV
+        uses: devmasx/merge-branch@v1.3.1
+        with:
+          type: now
+          from_branch: production
+          target_branch: production_singleElectron_0-20GeV
+          github_token: ${{ github.token }}
+
+      - name: Merge production -> production_singlePion_0-20GeV
+        uses: devmasx/merge-branch@v1.3.1
+        with:
+          type: now
+          from_branch: production
+          target_branch: production_singlePion_0-20GeV
+          github_token: ${{ github.token }}
