@@ -141,7 +141,7 @@ int Fun4All_G4_EICDetector(
   // add the settings for other with [1], next with [2]...
   if (Input::SIMPLE)
   {
-    INPUTGENERATOR::SimpleEventGenerator[0]->add_particles("pi+", 1);
+    INPUTGENERATOR::SimpleEventGenerator[0]->add_particles("e-", 1);
     if (Input::HEPMC || Input::EMBED)
     {
       INPUTGENERATOR::SimpleEventGenerator[0]->set_reuse_existing_vertex(true);
@@ -155,7 +155,7 @@ int Fun4All_G4_EICDetector(
       INPUTGENERATOR::SimpleEventGenerator[0]->set_vertex_distribution_mean(0., 0., 0.);
       INPUTGENERATOR::SimpleEventGenerator[0]->set_vertex_distribution_width(0., 0., 5.);
     }
-    INPUTGENERATOR::SimpleEventGenerator[0]->set_eta_range(-3, 3);
+    INPUTGENERATOR::SimpleEventGenerator[0]->set_eta_range(-3.5, 3.5);
     INPUTGENERATOR::SimpleEventGenerator[0]->set_phi_range(-M_PI, M_PI);
     INPUTGENERATOR::SimpleEventGenerator[0]->set_p_range(0., 20.);
   }
