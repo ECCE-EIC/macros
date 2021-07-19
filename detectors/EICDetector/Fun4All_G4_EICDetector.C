@@ -93,7 +93,8 @@ int Fun4All_G4_EICDetector(
   //INPUTEMBED::listfile[0] = embed_input_file;
 
   // Use Pythia 8
-  // Input::PYTHIA8 = true;
+  Input::PYTHIA8 = true;
+  PYTHIA8::config_file = inputFile;
 
   // Use Pythia 6
   // Input::PYTHIA6 = true;
@@ -119,7 +120,7 @@ int Fun4All_G4_EICDetector(
   // And/Or read generated particles from file
 
   // eic-smear output
-  Input::READEIC = true;
+  //Input::READEIC = true;
   INPUTREADEIC::filename = inputFile;
 
   // HepMC2 files
