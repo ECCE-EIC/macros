@@ -24,3 +24,11 @@ jobs:
           from_branch: production
           target_branch: production_singlePion_0-20GeV
           github_token: ${{ github.token }}
+
+      - name: Merge production -> production_pythia8
+        uses: devmasx/merge-branch@v1.3.1
+        with:
+          type: now
+          from_branch: production
+          target_branch: production_pythia8
+          github_token: ${{ github.token }}
