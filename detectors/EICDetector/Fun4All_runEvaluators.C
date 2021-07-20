@@ -66,7 +66,7 @@ int Fun4All_runEvaluators(
   Enable::DSTREADER = false;
   Enable::USER = false; // Enable this to run custom code from G4_User.C
 
-  Enable::EVENT_EVAL = true;
+  Enable::EVENT_EVAL = false;
   Enable::TRACKING_EVAL = true;
   Enable::CEMC_EVAL = true;
   Enable::HCALIN_EVAL = true;
@@ -74,7 +74,7 @@ int Fun4All_runEvaluators(
   Enable::FEMC_EVAL = true;
   Enable::FHCAL_EVAL = true;
   Enable::EEMC_EVAL = true;
-  Enable::FWDJETS_EVAL = true;
+  Enable::FWDJETS_EVAL = false;
 
   map<string, string> evaluatorNames;
   evaluatorNames["event"] = "_g4event_eval.root";
