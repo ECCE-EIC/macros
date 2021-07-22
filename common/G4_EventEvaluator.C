@@ -2,10 +2,10 @@
 #define MACRO_EventEvaluator_C
 
 #include <fun4all/Fun4AllServer.h>
-#include <g4eval/EventEvaluator.h>
+#include <eiceval/EventEvaluatorEIC.h>
 
 R__LOAD_LIBRARY(libfun4all.so)
-R__LOAD_LIBRARY(libg4eval.so)
+R__LOAD_LIBRARY(libeiceval.so)
 
 namespace Enable
 {
@@ -23,7 +23,7 @@ void Event_Eval(const std::string &filename)
 {
   Fun4AllServer *se = Fun4AllServer::instance();
 
-  EventEvaluator *eval = new EventEvaluator("EVENTEVALUATOR", filename);
+  EventEvaluatorEIC *eval = new EventEvaluatorEIC("EVENTEVALUATOR", filename);
   eval->set_reco_tracing_energy_threshold(EVENT_EVALUATOR::EnergyThreshold);
   eval->Verbosity(EVENT_EVALUATOR::Verbosity);
 
