@@ -281,10 +281,10 @@ void hFarFwdDefineDetectorsIP6(PHG4Reco *g4Reco)
   auto *detZDCsurrogate = new PHG4BlockSubsystem("zdcTruth");
   const double detZDCsurrogate_size_z = 0.1;
   detZDCsurrogate->SuperDetector("ZDCsurrogate");
-  detZDCsurrogate->set_double_param("place_x", PosFlip(96.24));
+  detZDCsurrogate->set_double_param("place_x", PosFlip(-96.24));
   detZDCsurrogate->set_double_param("place_y", 0);
-  detZDCsurrogate->set_double_param("place_z", 3750 - hFarFwdBeamLine::enclosure_center);
-  detZDCsurrogate->set_double_param("rot_y", AngleFlip(-0.025 * TMath::RadToDeg()));
+  detZDCsurrogate->set_double_param("place_z", 3700 - hFarFwdBeamLine::enclosure_center);
+  detZDCsurrogate->set_double_param("rot_y", AngleFlip(0.025 * TMath::RadToDeg()));
   detZDCsurrogate->set_double_param("size_x", 60);
   detZDCsurrogate->set_double_param("size_y", 60);
   detZDCsurrogate->set_double_param("size_z", detZDCsurrogate_size_z);
@@ -302,9 +302,9 @@ void hFarFwdDefineDetectorsIP6(PHG4Reco *g4Reco)
   {
     EICG4ZDCSubsystem *detZDC = new EICG4ZDCSubsystem("EICG4ZDC");
     detZDC->SetActive();
-    detZDC->set_double_param("place_z", 3750. + detZDCsurrogate_size_z - hFarFwdBeamLine::enclosure_center);
-    detZDC->set_double_param("place_x", PosFlip(96.24));
-    detZDC->set_double_param("rot_y", AngleFlip(-0.025));
+    detZDC->set_double_param("place_z", 3700. + detZDCsurrogate_size_z - hFarFwdBeamLine::enclosure_center);
+    detZDC->set_double_param("place_x", PosFlip(-96.24));
+    detZDC->set_double_param("rot_y", AngleFlip(0.025));
     detZDC->OverlapCheck(overlapCheck);
     detZDC->SetMotherSubsystem(hFarFwdBeamLine::hFarFwdBeamLineEnclosure);
     g4Reco->registerSubsystem(detZDC);
@@ -312,7 +312,7 @@ void hFarFwdDefineDetectorsIP6(PHG4Reco *g4Reco)
 
   const int offMomDetNr = 2;
   const double om_zCent[offMomDetNr] = {3450, 3650};
-  const double om_xCent[offMomDetNr] = {162, 171};
+  const double om_xCent[offMomDetNr] = {-162, -171};
   for (int i = 0; i < offMomDetNr; i++)
   {
     auto *detOM = new PHG4BlockSubsystem(Form("offMomTruth_%d", i), i);
@@ -320,7 +320,7 @@ void hFarFwdDefineDetectorsIP6(PHG4Reco *g4Reco)
     detOM->set_double_param("place_x", PosFlip(om_xCent[i]));
     detOM->set_double_param("place_y", 0);
     detOM->set_double_param("place_z", om_zCent[i] - hFarFwdBeamLine::enclosure_center);
-    detOM->set_double_param("rot_y", AngleFlip(-0.045 * TMath::RadToDeg()));
+    detOM->set_double_param("rot_y", AngleFlip(0.045 * TMath::RadToDeg()));
     detOM->set_double_param("size_x", 50);
     detOM->set_double_param("size_y", 35);
     detOM->set_double_param("size_z", 0.03);
@@ -335,7 +335,7 @@ void hFarFwdDefineDetectorsIP6(PHG4Reco *g4Reco)
 
   const int rpDetNr = 2;
   const double rp_zCent[rpDetNr] = {2600, 2800};
-  const double rp_xCent[rpDetNr] = {84.49, 93.59};
+  const double rp_xCent[rpDetNr] = {-83.22, -92.20};
   for (int i = 0; i < rpDetNr; i++)
   {
     ////*********************
@@ -363,7 +363,7 @@ void hFarFwdDefineDetectorsIP6(PHG4Reco *g4Reco)
     detRP->set_double_param("place_x", PosFlip(rp_xCent[i]));
     detRP->set_double_param("place_y", 0);
     detRP->set_double_param("place_z", rp_zCent[i] - hFarFwdBeamLine::enclosure_center);
-    detRP->set_double_param("rot_y", AngleFlip(-0.025 * TMath::RadToDeg()));
+    detRP->set_double_param("rot_y", AngleFlip(0.047 * TMath::RadToDeg()));
     detRP->set_double_param("radius", 0);
     detRP->set_double_param("thickness", 25);  // This is intentionally made large 25cm radius
     detRP->set_double_param("length", 0.03);
@@ -660,7 +660,7 @@ void hFarFwdDefineBeamPipe(PHG4Reco *g4Reco)
 
 float PosFlip(float pos) {
   if(Enable::HFARFWD_MAGNETS_IP6) {
-  	return -pos;
+  	return pos;
   } else {
   	return pos;
   }
@@ -668,7 +668,7 @@ float PosFlip(float pos) {
 
 float AngleFlip(float angle){
   if(Enable::HFARFWD_MAGNETS_IP6) {
-  	return -angle;
+  	return angle;
   } else {
   	return angle;
   }
@@ -676,7 +676,7 @@ float AngleFlip(float angle){
 
 float MagFieldFlip(float Bfield){
   if(Enable::HFARFWD_MAGNETS_IP6) {
-  	return -Bfield;
+  	return Bfield;
   } else {
   	return Bfield;
   }
