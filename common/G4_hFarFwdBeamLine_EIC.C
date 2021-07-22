@@ -109,7 +109,7 @@ void hFarFwdDefineMagnets(PHG4Reco *g4Reco)
 
   string magFile;
   if (Enable::HFARFWD_MAGNETS_IP6)
-    magFile = string(getenv("CALIBRATIONROOT")) + "/Beam/ip6_h_farFwdBeamLineMagnets.dat";
+    magFile = string(getenv("CALIBRATIONROOT")) + "/Beam/ip6_h_farFwdBeamLineMagnets_v2.0.dat";
   else if (Enable::HFARFWD_MAGNETS_IP8)
     magFile = string(getenv("CALIBRATIONROOT")) + "/Beam/ip8_35mrad_h_farFwdBeamLineMagnets.dat";
   else
