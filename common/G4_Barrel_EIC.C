@@ -24,35 +24,66 @@ void BarrelInit()
 //-----------------------------------------------------------------------------------//
 void Barrel(PHG4Reco *g4Reco, int det_ver = 3)
 {
-  // Loading All-Si Tracker from dgml file
-  AllSiliconTrackerSubsystem *allsili = new AllSiliconTrackerSubsystem();
-  allsili->set_string_param("GDMPath", string(getenv("CALIBRATIONROOT")) + Form("/AllSiliconTracker/genfitGeom_AllSi_v%d.gdml", det_ver));
-  allsili->AddAssemblyVolume("VST");  // Barrel
 
-  // this is for plotting single logical volumes for debugging and geantino scanning they end up at the center, you can plot multiple
-  // allsili->AddLogicalVolume("VstStave00");
+  // import Geometry (lines 111 to 148 in https://github.com/eic/g4lblvtx/blob/master/macros/auxiliary_studies/simplified_geometry/Fun4All_G4_simplified_v2.C):
+  PHG4CylinderSubsystem * cyl(nullptr);
 
-  allsili->SuperDetector("Barrel");
-  allsili->SetActive();          // this saves hits in the MimosaCore volumes
-  allsili->SetAbsorberActive();  // this saves hits in all volumes (in the absorber node)
-  g4Reco->registerSubsystem(allsili);
-
-  float pitch = 10e-4;
-  int nBarrel = 6;
-
-  if (TRACKING::FastKalmanFilter)
-  {
-    for (int i = 10; i < 10 + nBarrel; i++) // hit nodes are shifted with a base of 10
-    {
-      TRACKING::FastKalmanFilter->add_phg4hits(Form("G4HIT_Barrel_CENTRAL_%d", i),  //      const std::string& phg4hitsNames,
-                                               PHG4TrackFastSim::Cylinder,          //      const DETECTOR_TYPE phg4dettype,
-                                               999,                                 //      const float radres, not used
-                                               pitch / sqrt(12.),                   //      const float phires,
-                                               pitch / sqrt(12.),                   //      const float lonres, *ignored in plane detector*
-                                               1,                                   //      const float eff,
-                                               0);                                  //      const float noise
-    }
+  //---------------------------
+  // Vertexing
+  double si_vtx_r_pos[] = {3.30,5.70};
+  const int nVtxLayers = sizeof(si_vtx_r_pos)/sizeof(*si_vtx_r_pos);
+  for (int ilayer = 0; ilayer < nVtxLayers ; ilayer++){
+  cyl = new PHG4CylinderSubsystem("SVTX", ilayer);
+  cyl->set_string_param("material" , "G4_Si" );
+  cyl->set_double_param("radius" , si_vtx_r_pos[ilayer] );
+  cyl->set_double_param("thickness", 0.05/100.*9.37 );
+  cyl->set_double_param("place_z" , 0 );
+  cyl->set_double_param("length" , 30.);
+  cyl->SetActive();
+  cyl->SuperDetector("SVTX");
+  g4Reco->registerSubsystem(cyl);
   }
+  //---------------------------
+  // Barrel
+  double si_r_pos[] = {21.,22.68,39.3,43.23};
+  const int nTrckLayers = sizeof(si_r_pos)/sizeof(*si_r_pos);
+  double si_z_length[] = {54.,60.,105.,114.};
+  for (int ilayer = 0; ilayer < nTrckLayers ; ilayer++){
+  cyl = new PHG4CylinderSubsystem("BARR", ilayer);
+  cyl->set_string_param("material" , "G4_Si" );
+  cyl->set_double_param("radius" , si_r_pos[ilayer] );
+  cyl->set_double_param("thickness", 0.55/100.*9.37 );
+  cyl->set_double_param("place_z" , 0 );
+  cyl->set_double_param("length" , si_z_length[ilayer]);
+  cyl->SetActive();
+  cyl->SuperDetector("BARR");
+  g4Reco->registerSubsystem(cyl);
+  }
+
+  // import Kalman filter config (lines 226 to 246 here: https://github.com/eic/g4lblvtx/blob/master/macros/auxiliary_studies/simplified_geometry/Fun4All_G4_simplified_v2.C):
+
+  // add Vertexing Layers
+  TRACKING::FastKalmanFilter->add_phg4hits(
+  "G4HIT_SVTX", // const std::string& phg4hitsNames,
+  PHG4TrackFastSim::Cylinder,
+  999., // radial-resolution [cm]
+  10./10000./sqrt(12.), // azimuthal-resolution [cm]
+  10./10000./sqrt(12.), // z-resolution [cm]
+  1, // efficiency,
+  0 // noise hits
+  );
+
+  // add Barrel Layers
+  TRACKING::FastKalmanFilter->add_phg4hits(
+  "G4HIT_BARR", // const std::string& phg4hitsNames,
+  PHG4TrackFastSim::Cylinder,
+  999., // radial-resolution [cm]
+  10./10000./sqrt(12.), // azimuthal-resolution [cm]
+  10./10000./sqrt(12.), // z-resolution [cm]
+  1, // efficiency,
+  0 // noise hits
+  );
+
 }
 
 #endif
