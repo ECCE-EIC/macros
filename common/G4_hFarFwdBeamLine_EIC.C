@@ -12,9 +12,13 @@
 #include <eicg4zdc/EICG4ZDCNtuple.h>
 #include <eicg4zdc/EICG4ZDCSubsystem.h>
 
+#include <g4eval/FarForwardEvaluator.h>
+
 #include <g4main/PHG4Reco.h>
 
 #include <TSystem.h>
+
+#include <fun4all/Fun4AllServer.h>
 
 R__LOAD_LIBRARY(libg4detectors.so)
 
@@ -42,6 +46,9 @@ namespace Enable
   bool HFARFWD_VIRTUAL_DETECTORS_IP8 = false;
 
   float HFARFWD_ION_ENERGY = 0;
+
+  bool FFR_EVAL = false;
+
 }  // namespace Enable
 
 namespace hFarFwdBeamLine
@@ -683,6 +690,31 @@ float MagFieldFlip(float Bfield){
 }
 
 
+//------------------------------------------
+
+void FFR_Eval(const std::string &outputfile)
+{
+
+  string ip_str;
+
+
+  if(Enable::IP6) {
+    ip_str = "IP6";
+  } else {
+    ip_str = "IP8";
+  }
+
+  int verbosity = std::max(Enable::VERBOSITY, Enable::EEMC_VERBOSITY);
+
+  Fun4AllServer *se = Fun4AllServer::instance();
+
+  FarForwardEvaluator *eval = new FarForwardEvaluator("FARFORWARDEVALUATOR", "FFR", outputfile.c_str(), ip_str);
+
+  eval->Verbosity(verbosity);
+  se->registerSubsystem(eval);
+
+  return;
+}
 
 
 
