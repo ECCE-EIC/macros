@@ -297,23 +297,23 @@ int Fun4All_G4_EICDetector(
   G4TRACKING::PROJECTION_FEMC = true;
   G4TRACKING::PROJECTION_FHCAL = true;
 
-  Enable::CEMC = true;
+  //Enable::CEMC = true;
   //  Enable::CEMC_ABSORBER = true;
   Enable::CEMC_CELL = Enable::CEMC && true;
   Enable::CEMC_TOWER = Enable::CEMC_CELL && true;
   Enable::CEMC_CLUSTER = Enable::CEMC_TOWER && true;
   Enable::CEMC_EVAL = Enable::CEMC_CLUSTER && true;
 
-  Enable::HCALIN = true;
+  //Enable::HCALIN = true;
   //  Enable::HCALIN_ABSORBER = true;
   Enable::HCALIN_CELL = Enable::HCALIN && true;
   Enable::HCALIN_TOWER = Enable::HCALIN_CELL && true;
   Enable::HCALIN_CLUSTER = Enable::HCALIN_TOWER && true;
   Enable::HCALIN_EVAL = Enable::HCALIN_CLUSTER && true;
 
-  Enable::MAGNET = true;
+  //Enable::MAGNET = true;
 
-  Enable::HCALOUT = true;
+  //Enable::HCALOUT = true;
   //  Enable::HCALOUT_ABSORBER = true;
   Enable::HCALOUT_CELL = Enable::HCALOUT && true;
   Enable::HCALOUT_TOWER = Enable::HCALOUT_CELL && true;
@@ -329,7 +329,7 @@ int Fun4All_G4_EICDetector(
   // EICDetector geometry - 'electron' direction
   Enable::mRICH = true;
 
-  Enable::FEMC = true;
+  //Enable::FEMC = true;
   //  Enable::FEMC_ABSORBER = true;
   Enable::FEMC_TOWER = Enable::FEMC && true;
   Enable::FEMC_CLUSTER = Enable::FEMC_TOWER && true;
@@ -342,12 +342,22 @@ int Fun4All_G4_EICDetector(
   Enable::FHCAL_EVAL = Enable::FHCAL_CLUSTER && true;
 
   // EICDetector geometry - 'electron' direction
-  Enable::EEMC = true;
+  Enable::EEMC = false;
   Enable::EEMC_TOWER = Enable::EEMC && true;
   Enable::EEMC_CLUSTER = Enable::EEMC_TOWER && true;
   Enable::EEMC_EVAL = Enable::EEMC_CLUSTER && true;
 
-  Enable::EHCAL = true;
+  Enable::EEMCH = true;
+  Enable::EEMCH_TOWER = Enable::EEMCH && true;
+  Enable::EEMCH_CLUSTER = Enable::EEMCH_TOWER && true;
+  Enable::EEMCH_EVAL = Enable::EEMCH_CLUSTER && true;
+  G4EEMCH::SETTING::USECEMCGeo  = false;
+  G4EEMCH::SETTING::USEHYBRID = true;
+  G4TTL::SETTING::optionEEMCH = Enable::EEMCH && true;
+  G4TTL::SETTING::optionCEMC = false;
+  G4TTL::SETTING::optionGeo = 3;
+
+  //Enable::EHCAL = true;
   Enable::EHCAL_CELL = Enable::EHCAL && true;
   Enable::EHCAL_TOWER = Enable::EHCAL_CELL && true;
   Enable::EHCAL_CLUSTER = Enable::EHCAL_TOWER && true;

@@ -8,6 +8,7 @@
 #include <G4_CEmc_EIC.C>
 #include <G4_DIRC.C>
 #include <G4_EEMC.C>
+#include <G4_EEMC_hybrid.C>
 #include <G4_EHCAL.C>
 #include <G4_FEMC_EIC.C>
 #include <G4_FHCAL.C>
@@ -65,6 +66,12 @@ void G4Init()
     gSystem->Exit(1);
   }
 
+  if(Enable::EEMC and Enable::EEMCH)
+  {
+    cout << "Can not enable EEMC and EEMCH at the same time!" << endl;
+    gSystem->Exit(1);
+  }
+
   // load detector/material macros and execute Init() function
   if (Enable::PIPE) PipeInit();
   if (Enable::HFARFWD_MAGNETS) hFarFwdBeamLineInit();
@@ -87,6 +94,7 @@ void G4Init()
   if (Enable::FEMC) FEMCInit();
   if (Enable::FHCAL) FHCALInit();
   if (Enable::EEMC) EEMCInit();
+  if (Enable::EEMCH) EEMCHInit();  
   if (Enable::EHCAL) EHCALInit();
   if (Enable::DIRC) DIRCInit();
   if (Enable::RICH) RICHInit();
@@ -168,6 +176,7 @@ int G4Setup()
   if (Enable::FEMC) FEMCSetup(g4Reco);
   if (Enable::FHCAL) FHCALSetup(g4Reco);
   if (Enable::EEMC) EEMCSetup(g4Reco);
+  if (Enable::EEMCH) EEMCHSetup(g4Reco);
   if (Enable::EHCAL) EHCALSetup(g4Reco);
 
   //----------------------------------------
@@ -253,6 +262,7 @@ void ShowerCompress()
   compress->AddTowerContainer("TOWER_CALIB_FHCAL");
 
   compress->AddHitContainer("G4HIT_EEMC");
+  compress->AddHitContainer("G4HIT_EEMC_glass");
   compress->AddHitContainer("G4HIT_ABSORBER_EEMC");
   compress->AddCellContainer("G4CELL_EEMC");
   compress->AddTowerContainer("TOWER_SIM_EEMC");
@@ -306,6 +316,7 @@ void DstCompress(Fun4AllDstOutputManager *out)
     out->StripNode("G4CELL_FHCAL");
 
     out->StripNode("G4HIT_EEMC");
+    out->StripNode("G4HIT_EEMC_glass");
     out->StripNode("G4HIT_ABSORBER_EEMC");
     out->StripNode("G4CELL_EEMC");
     out->StripNode("G4HIT_EHCAL");
