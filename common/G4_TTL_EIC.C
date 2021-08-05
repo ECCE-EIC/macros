@@ -13,9 +13,9 @@
 R__LOAD_LIBRARY(libg4detectors.so)
 
 int make_forward_station(string name, PHG4Reco *g4Reco, double zpos, double Rmin,
-                         double Rmax, double tSilicon);
-int make_barrel_layer(string name, PHG4Reco *g4Reco,
-                      double radius, double z_start, double z_end, double tSilicon);
+                          double Rmax,double tSilicon, double xoffset=0);
+int make_barrel_layer(string name, PHG4Reco *g4Reco, 
+                      double radius, double halflength, double tSilicon, double zOffset);
 
 //-----------------------------------------------------------------------------------//
 namespace Enable
@@ -129,8 +129,11 @@ void CTTLSetup(PHG4Reco *g4Reco, TString cttloption = "")
   const double cm = PHG4Sector::Sector_Geometry::Unit_cm();
   const double mm = .1 * cm;
   const double um = 1e-3 * mm;
-
-  make_barrel_layer("CTTL_0", g4Reco, 80, -250, 180, 85 * um);
+  
+  for (Int_t i = 0; i < G4TTL::layer[1]; i++){
+    cout << G4TTL::positionToVtx[1][i] << "\t" << G4TTL::minExtension[1][i] << "\t" << G4TTL::maxExtension[1][i] << endl;
+    make_barrel_layer(Form("CTTL_%d",i), g4Reco, G4TTL::positionToVtx[1][i],  G4TTL::minExtension[1][i], 85*um, G4TTL::maxExtension[1][i]);     
+  }
 }
 
 
@@ -168,17 +171,13 @@ int make_forward_station(string name, PHG4Reco *g4Reco,
 
 
 //-----------------------------------------------------------------------------------//
-int make_barrel_layer(string name, PHG4Reco *g4Reco,
-                      double radius, double z_start, double z_end, double tSilicon)
-{
-  bool OverlapCheck = Enable::OVERLAPCHECK || Enable::TTL_OVERLAPCHECK;
+int make_barrel_layer(string name, PHG4Reco *g4Reco, 
+                      double radius, double halflength, double tSilicon, double zOffset){
+
   //---------------------------------
   //build barrel layer
   //---------------------------------
   const int nSubLayer = 7;
-
-  const double halflength = 0.5 * (z_end - z_start);
-  const double z_center = 0.5 * (z_end + z_start);
 
   string layerName[nSubLayer] = {"SiliconSensor", "Metalconnection", "HDI", "Cooling",
                                  "Support1", "Support_Gap", "Support2"};
@@ -199,7 +198,6 @@ int make_barrel_layer(string name, PHG4Reco *g4Reco,
     cyl->SuperDetector(name);
     cyl->set_double_param("radius", currRadius);
     cyl->set_double_param("length", 2.0 * halflength);
-    cyl->set_double_param("place_z", z_center);
     cyl->set_string_param("material", material[l]);
     cyl->set_double_param("thickness", thickness[l]);
     cyl->set_double_param("place_x", 0.);
