@@ -24,7 +24,7 @@ void Event_Eval(const std::string &filename)
   Fun4AllServer *se = Fun4AllServer::instance();
 
   EventEvaluatorEIC *eval = new EventEvaluatorEIC("EVENTEVALUATOR", filename);
-  eval->set_reco_tracing_energy_threshold(EVENT_EVALUATOR::EnergyThreshold);
+  eval->set_reco_tracing_energy_thresholdMC(EVENT_EVALUATOR::EnergyThreshold);
   eval->Verbosity(EVENT_EVALUATOR::Verbosity);
 
   if (Enable::TRACKING)
