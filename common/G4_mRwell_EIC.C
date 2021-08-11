@@ -375,8 +375,8 @@ double RWellSetup(PHG4Reco* g4Reco,
       TRACKING::FastKalmanFilter->add_phg4hits(string("G4HIT_") + string(Form("RWELL_%d", ilyr)),  //      const std::string& phg4hitsNames,
                                                PHG4TrackFastSim::Cylinder,                         //      const DETECTOR_TYPE phg4dettype,
                                                1. / sqrt(12.),                                     //      const float radres,
-                                               55e-4,                                              //      const float phires,
-                                               55e-4,                                              //      const float lonres,
+                                               35e-4,                                              //      const float phires,
+                                               35e-4,                                              //      const float lonres,
                                                1,                                                  //      const float eff,
                                                0);                                                 //      const float noise
   }

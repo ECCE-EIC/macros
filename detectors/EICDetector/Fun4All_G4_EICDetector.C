@@ -297,12 +297,18 @@ int Fun4All_G4_EICDetector(
   G4TRACKING::PROJECTION_FEMC = true;
   G4TRACKING::PROJECTION_FHCAL = true;
 
-  Enable::CEMC = true;
+  Enable::CEMC = false;
   //  Enable::CEMC_ABSORBER = true;
   Enable::CEMC_CELL = Enable::CEMC && true;
   Enable::CEMC_TOWER = Enable::CEMC_CELL && true;
   Enable::CEMC_CLUSTER = Enable::CEMC_TOWER && true;
   Enable::CEMC_EVAL = Enable::CEMC_CLUSTER && true;
+
+  Enable::BECAL = true;
+  Enable::BECAL_CELL    = Enable::BECAL && true;
+  Enable::BECAL_TOWER   = Enable::BECAL_CELL && true;
+  Enable::BECAL_CLUSTER = Enable::BECAL_TOWER && true;
+  Enable::BECAL_EVAL    = Enable::BECAL_CLUSTER && false;
 
   Enable::HCALIN = true;
   //  Enable::HCALIN_ABSORBER = true;
@@ -335,11 +341,25 @@ int Fun4All_G4_EICDetector(
   Enable::FEMC_CLUSTER = Enable::FEMC_TOWER && true;
   Enable::FEMC_EVAL = Enable::FEMC_CLUSTER && true;
 
-  Enable::FHCAL = true;
+  Enable::DRCALO = false;
+  Enable::DRCALO_CELL = Enable::DRCALO && true;
+  Enable::DRCALO_TOWER = Enable::DRCALO_CELL && true;
+  Enable::DRCALO_CLUSTER = Enable::DRCALO_TOWER && true;
+  Enable::DRCALO_EVAL = Enable::DRCALO_CLUSTER && false;
+  G4TTL::SETTING::optionDR = 1;
+
+  Enable::FHCAL = false;
   //  Enable::FHCAL_ABSORBER = true;
   Enable::FHCAL_TOWER = Enable::FHCAL && true;
   Enable::FHCAL_CLUSTER = Enable::FHCAL_TOWER && true;
   Enable::FHCAL_EVAL = Enable::FHCAL_CLUSTER && true;
+
+  Enable::LFHCAL = true;
+  Enable::LFHCAL_ABSORBER = false;
+  Enable::LFHCAL_CELL = Enable::LFHCAL && true;
+  Enable::LFHCAL_TOWER = Enable::LFHCAL_CELL && true;
+  Enable::LFHCAL_CLUSTER = Enable::LFHCAL_TOWER && true;
+  Enable::LFHCAL_EVAL = Enable::LFHCAL_CLUSTER && false;
 
   // EICDetector geometry - 'electron' direction
   Enable::EEMC = false;
@@ -355,7 +375,7 @@ int Fun4All_G4_EICDetector(
   G4EEMCH::SETTING::USEHYBRID = true;
   G4TTL::SETTING::optionEEMCH = Enable::EEMCH && true;
   G4TTL::SETTING::optionCEMC = false;
-  G4TTL::SETTING::optionGeo = 3;
+  G4TTL::SETTING::optionGeo = 1;
 
   Enable::EHCAL = true;
   Enable::EHCAL_CELL = Enable::EHCAL && true;
@@ -456,11 +476,20 @@ int Fun4All_G4_EICDetector(
   if (Enable::FHCAL_TOWER) FHCAL_Towers();
   if (Enable::FHCAL_CLUSTER) FHCAL_Clusters();
 
+  if (Enable::DRCALO_TOWER) DRCALO_Towers();
+  if (Enable::DRCALO_CLUSTER) DRCALO_Clusters();
+
+  if (Enable::LFHCAL_TOWER) LFHCAL_Towers();
+  if (Enable::LFHCAL_CLUSTER) LFHCAL_Clusters();
+
   if (Enable::EEMC_TOWER) EEMC_Towers();
   if (Enable::EEMC_CLUSTER) EEMC_Clusters();
 
   if (Enable::EHCAL_TOWER) EHCAL_Towers();
   if (Enable::EHCAL_CLUSTER) EHCAL_Clusters();
+
+  if (Enable::BECAL_TOWER) BECAL_Towers();
+  if (Enable::BECAL_CLUSTER) BECAL_Clusters();
 
   if (Enable::DSTOUT_COMPRESS) ShowerCompress();
 

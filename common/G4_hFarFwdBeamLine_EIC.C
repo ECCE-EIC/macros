@@ -157,7 +157,7 @@ void hFarFwdDefineMagnets(PHG4Reco *g4Reco)
         double fieldgradient;
         if (!(iss >> magname >> x >> y >> z >> inner_radius_zin >> inner_radius_zout >> outer_magnet_diameter >> length >> angle >> dipole_field_x >> fieldgradient))
         {
-          cout << "coud not decode " << line << endl;
+          cout << "could not decode " << line << endl;
           gSystem->Exit(1);
         }
         else

@@ -161,7 +161,7 @@ int make_forward_station(string name, PHG4Reco *g4Reco,
   ttl->set_double_param("rMax", rMax * cm);                    //
   ttl->set_double_param("offset_x", xoffset * cm);                    //
   ttl->set_double_param("tSilicon", tSilicon);                    //
-  ttl->OverlapCheck(true);
+  ttl->OverlapCheck(false);
 
   g4Reco->registerSubsystem(ttl);
   return 0;
@@ -205,7 +205,7 @@ int make_barrel_layer(string name, PHG4Reco *g4Reco,
     cyl->set_double_param("place_z", zOffset);
 
     if (l == 0) cyl->SetActive();  //only the Silicon Sensor is active
-    cyl->OverlapCheck(true);
+    cyl->OverlapCheck(false);
     g4Reco->registerSubsystem(cyl);
     currRadius = currRadius+thickness[l];
 //     cout << currRadius << endl;
