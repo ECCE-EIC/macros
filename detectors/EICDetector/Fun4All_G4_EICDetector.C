@@ -36,7 +36,7 @@ int Fun4All_G4_EICDetector(
   // Fun4All server
   //---------------
   Fun4AllServer *se = Fun4AllServer::instance();
-  se->Verbosity(0);
+  se->Verbosity(INT_MAX - 10);
   //Opt to print all random seed used for debugging reproducibility. Comment out to reduce stdout prints.
   //PHRandomSeed::Verbosity(1);
 
@@ -251,7 +251,7 @@ int Fun4All_G4_EICDetector(
   // Enable::DSTREADER = true;
 
   // turn the display on (default off)
-  //  Enable::DISPLAY = true;
+    Enable::DISPLAY = true;
 
   //======================
   // What to run
@@ -266,11 +266,11 @@ int Fun4All_G4_EICDetector(
   // If need to disable EIC beam pipe extension beyond the Be-section:
   // G4PIPE::use_forward_pipes = false;
   //EIC hadron far forward magnets and detectors. IP6 and IP8 are incompatible (pick either or);
-  Enable::HFARFWD_MAGNETS = true;
-  Enable::HFARFWD_VIRTUAL_DETECTORS = true;
+  //Enable::HFARFWD_MAGNETS = true;
+  //Enable::HFARFWD_VIRTUAL_DETECTORS = true;
 
-  Enable::HFARBWD_MAGNETS = true;
-  Enable::HFARBWD_VIRTUAL_DETECTORS = true;
+  //Enable::HFARBWD_MAGNETS = true;
+  //Enable::HFARBWD_VIRTUAL_DETECTORS = true;
 
   // gems
   Enable::EGEM = true;
@@ -278,9 +278,12 @@ int Fun4All_G4_EICDetector(
   // Enable::BGEM = true; // not yet defined in this model
   Enable::RWELL = true;
   // barrel tracker
-  Enable::BARREL = true;
+  Enable::ALLSILICON = true;
+  //Enable::ALLSILICON_ABSORBER = true;
+  G4ALLSILICON::SETTING::geomVersion = 2;
+  //Enable::BARREL = true;
   // fst
-  Enable::FST = true;
+  //Enable::FST = true;
   // G4FST::SETTING::SUPPORTCYL = false; // if want to disable support
 
   // TOFs
@@ -341,7 +344,7 @@ int Fun4All_G4_EICDetector(
   Enable::FEMC_CLUSTER = Enable::FEMC_TOWER && true;
   Enable::FEMC_EVAL = Enable::FEMC_CLUSTER && true;
 
-  Enable::DRCALO = false;
+  //Enable::DRCALO = false;
   Enable::DRCALO_CELL = Enable::DRCALO && true;
   Enable::DRCALO_TOWER = Enable::DRCALO_CELL && true;
   Enable::DRCALO_CLUSTER = Enable::DRCALO_TOWER && true;
@@ -355,6 +358,8 @@ int Fun4All_G4_EICDetector(
   Enable::FHCAL_EVAL = Enable::FHCAL_CLUSTER && true;
 
   Enable::LFHCAL = true;
+  G4LFHCAL::SETTING::longer = true;
+  G4LFHCAL::SETTING::asymmetric = true;
   Enable::LFHCAL_ABSORBER = false;
   Enable::LFHCAL_CELL = Enable::LFHCAL && true;
   Enable::LFHCAL_TOWER = Enable::LFHCAL_CELL && true;
@@ -368,11 +373,11 @@ int Fun4All_G4_EICDetector(
   Enable::EEMC_EVAL = Enable::EEMC_CLUSTER && true;
 
   Enable::EEMCH = true;
+  G4EEMCH::SETTING::USECEMCGeo  = false;
+  G4EEMCH::SETTING::USEHYBRID = false;
   Enable::EEMCH_TOWER = Enable::EEMCH && true;
   Enable::EEMCH_CLUSTER = Enable::EEMCH_TOWER && true;
   Enable::EEMCH_EVAL = Enable::EEMCH_CLUSTER && true;
-  G4EEMCH::SETTING::USECEMCGeo  = false;
-  G4EEMCH::SETTING::USEHYBRID = true;
   G4TTL::SETTING::optionEEMCH = Enable::EEMCH && true;
   G4TTL::SETTING::optionCEMC = false;
   G4TTL::SETTING::optionGeo = 1;

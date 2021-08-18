@@ -42,7 +42,7 @@ void RICHSetup(PHG4Reco* g4Reco)
   int verbosity = std::max(Enable::VERBOSITY, Enable::RICH_VERBOSITY);
 
   double z = 185;
-  double dz = 20;
+  double dz = 40;
 
   EICG4dRICHSubsystem *drichSubsys = new EICG4dRICHSubsystem("dRICh");
   drichSubsys->SetGeometryFile(string(getenv("CALIBRATIONROOT")) + "/dRICH/mapping/drich-g4model.txt");
