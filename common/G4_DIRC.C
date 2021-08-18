@@ -40,6 +40,7 @@ void DIRCSetup(PHG4Reco* g4Reco)
   double dz = 40;
 
   G4EicDircSubsystem *dircSubsys = new G4EicDircSubsystem("hpDIRC");
+  dircSubsys->SuperDetector("hpDIRC");
   //dircSubsys->set_double_param("place_z", z + dz * 0.5);// relative position to mother vol.
   dircSubsys->OverlapCheck(OverlapCheck);
   dircSubsys->Verbosity(verbosity);
