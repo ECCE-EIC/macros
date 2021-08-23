@@ -367,6 +367,10 @@ int Fun4All_G4_EICDetector(
   Enable::BLACKHOLE = true;
   //Enable::BLACKHOLE_SAVEHITS = false; // turn off saving of bh hits
   //BlackHoleGeometry::visible = true;
+  
+  // ZDC
+  // Enable::ZDC = true;
+  // Enable::ZDC_DISABLE_BLACKHOLE = true;
 
   // Enabling the event evaluator?
   Enable::EVENT_EVAL = true;
@@ -512,6 +516,8 @@ int Fun4All_G4_EICDetector(
   if (Enable::FWDJETS_EVAL) Jet_FwdEval();
 
   if (Enable::USER) UserAnalysisInit();
+
+  if (Enable::FFR_EVAL) FFR_Eval(outputroot + "_g4ffr_eval.root");
 
   //--------------
   // Set up Input Managers
