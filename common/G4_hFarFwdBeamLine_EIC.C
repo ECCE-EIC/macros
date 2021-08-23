@@ -12,7 +12,7 @@
 #include <eicg4zdc/EICG4ZDCNtuple.h>
 #include <eicg4zdc/EICG4ZDCSubsystem.h>
 
-#include <g4eval/FarForwardEvaluator.h>
+#include <eiceval/FarForwardEvaluator.h>
 
 #include <g4main/PHG4Reco.h>
 

@@ -353,6 +353,8 @@ int Fun4All_G4_EICDetector(
   Enable::EHCAL_CLUSTER = Enable::EHCAL_TOWER && true;
   Enable::EHCAL_EVAL = Enable::EHCAL_CLUSTER && false;
 
+  Enable::FFR_EVAL = Enable::HFARFWD_MAGNETS && Enable::HFARFWD_VIRTUAL_DETECTORS && true;
+
   Enable::PLUGDOOR = false;
 
   // Other options
@@ -513,11 +515,12 @@ int Fun4All_G4_EICDetector(
 
   if (Enable::EEMC_EVAL) EEMC_Eval(outputroot + "_g4eemc_eval.root");
 
+  if (Enable::FFR_EVAL) FFR_Eval(outputroot + "_g4ffr_eval.root");
+
   if (Enable::FWDJETS_EVAL) Jet_FwdEval();
 
   if (Enable::USER) UserAnalysisInit();
 
-  if (Enable::FFR_EVAL) FFR_Eval(outputroot + "_g4ffr_eval.root");
 
   //--------------
   // Set up Input Managers
