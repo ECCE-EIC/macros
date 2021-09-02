@@ -121,7 +121,7 @@ double TrackingServiceCone(ServiceProperties *object, PHG4Reco* g4Reco, double r
 
   double materialBoundariesNorth[5] = {object->get_r_north(), 0, 0, 0, 0.1};
   calculateMaterialBoundaries(object, materialBoundariesNorth[1], materialBoundariesNorth[2], materialBoundariesNorth[3], false);
-  materialBoundariesSouth[4] += materialBoundariesSouth[3];
+  materialBoundariesNorth[4] += materialBoundariesNorth[3];
 
   for (int i = 0; i < 4; ++i)
   {
