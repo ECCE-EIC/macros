@@ -30,9 +30,9 @@ namespace RWELL
   //  const double nom_length[RWELL::n_layer] = {300.0, 300.0};
 
   const int n_layer = 1;  //tracker layers
-  const double nom_radius[RWELL::n_layer] = {69 - 1.6 - 2.6};
-  const double nom_driftgap[RWELL::n_layer] = {0.4};
-  const double nom_length[RWELL::n_layer] = {300.0};
+  const double nom_radius[RWELL::n_layer] = {44, 47, 69 - 1.6 - 2.6};
+  const double nom_driftgap[RWELL::n_layer] = {0.4, 0.4, 0.4};
+  const double nom_length[RWELL::n_layer] = {150, 150, 300.0};
 }  //namespace RWELL
 
 void RWellInit(int verbosity = 0)
@@ -375,8 +375,8 @@ double RWellSetup(PHG4Reco* g4Reco,
       TRACKING::FastKalmanFilter->add_phg4hits(string("G4HIT_") + string(Form("RWELL_%d", ilyr)),  //      const std::string& phg4hitsNames,
                                                PHG4TrackFastSim::Cylinder,                         //      const DETECTOR_TYPE phg4dettype,
                                                1. / sqrt(12.),                                     //      const float radres,
-                                               35e-4,                                              //      const float phires,
-                                               35e-4,                                              //      const float lonres,
+                                               55e-4,                                              //      const float phires,
+                                               55e-4,                                              //      const float lonres,
                                                1,                                                  //      const float eff,
                                                0);                                                 //      const float noise
   }
