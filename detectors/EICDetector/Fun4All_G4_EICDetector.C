@@ -251,14 +251,14 @@ int Fun4All_G4_EICDetector(
   // Enable::DSTREADER = true;
 
   // turn the display on (default off)
-    Enable::DISPLAY = true;
+  //  Enable::DISPLAY = true;
 
   //======================
   // What to run
   //======================
   // Global options (enabled for all subsystems - if implemented)
   //  Enable::ABSORBER = true;
-  //  Enable::OVERLAPCHECK = true;
+    Enable::OVERLAPCHECK = true;
   //  Enable::VERBOSITY = 1;
 
   // whether to simulate the Be section of the beam pipe
@@ -278,13 +278,14 @@ int Fun4All_G4_EICDetector(
   // Enable::BGEM = true; // not yet defined in this model
   Enable::RWELL = true;
   // barrel tracker
-  Enable::ALLSILICON = true;
+  Enable::TrackingService = true;
+  //Enable::ALLSILICON = true;
   //Enable::ALLSILICON_ABSORBER = true;
-  G4ALLSILICON::SETTING::geomVersion = 2;
-  //Enable::BARREL = true;
+  //G4ALLSILICON::SETTING::geomVersion = 2;
+  Enable::BARREL = true;
   // fst
-  //Enable::FST = true;
-  // G4FST::SETTING::SUPPORTCYL = false; // if want to disable support
+  Enable::FST = true;
+  G4FST::SETTING::SUPPORTCYL = false; // if want to disable support
 
   // TOFs
   Enable::FTTL = true;

@@ -5,7 +5,7 @@
 
 #include <G4_BlackHole.C>
 
-#include <G4_AllSilicon.C>
+//#include <G4_AllSilicon.C>
 #include <G4_Barrel_EIC.C>
 #include <G4_BECAL.C>
 #include <G4_CEmc_EIC.C>
@@ -32,6 +32,7 @@
 #include <G4_Pipe_EIC.C>
 #include <G4_PlugDoor_EIC.C>
 #include <G4_Tracking_EIC.C>
+#include <G4_TrackingSupport.C>
 #include <G4_TTL_EIC.C>
 
 #include <G4_User.C>
@@ -85,7 +86,8 @@ void G4Init()
   if (Enable::HFARFWD_MAGNETS) hFarFwdBeamLineInit();
 
   //Barrel
-  if (Enable::ALLSILICON) AllSiliconInit();
+  //if (Enable::ALLSILICON) AllSiliconInit();
+  if (Enable::TrackingService) TrackingServiceInit(); 
   if (Enable::BARREL) BarrelInit();
   if (Enable::RWELL) RWellInit();
   if (Enable::CEMC) CEmcInit(72);  // make it 2*2*2*3*3 so we can try other combinations
@@ -180,7 +182,8 @@ int G4Setup()
   if (Enable::HFARBWD_VIRTUAL_DETECTORS_IP8) hFarBwdDefineDetectorsIP8(g4Reco);
 
   //Barrel
-  if (Enable::ALLSILICON) AllSiliconSetup(g4Reco);
+  //if (Enable::ALLSILICON) AllSiliconSetup(g4Reco);
+  if (Enable::TrackingService) radius = TrackingService(g4Reco, radius);
   if (Enable::RWELL) RWellSetup(g4Reco);
   if (Enable::FST) FSTSetup(g4Reco);
   if (Enable::CTTL) CTTLSetup(g4Reco);
