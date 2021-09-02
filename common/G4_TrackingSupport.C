@@ -4,6 +4,7 @@
 #include <GlobalVariables.C>
 #include <QA.C>
 
+#include <g4detectors/PHG4ConeSubsystem.h>
 #include <g4detectors/PHG4CylinderSubsystem.h>
 #include <g4main/PHG4Reco.h>
 
@@ -105,32 +106,61 @@ void calculateMaterialBoundaries(ServiceProperties *properties, double& outer_co
   outer_water_radius = calculateOR(outer_copper_radius, properties->get_n_staves() * G4TrackingService::single_stave_service_water_area);
   outer_plastic_radius = calculateOR(outer_water_radius, properties->get_n_staves() * G4TrackingService::single_stave_service_plastic_area);
 }
-/*
-double TrackingServiceCone(PHG4Reco* g4Reco, double radius)
+
+double TrackingServiceCone(ServiceProperties *object, PHG4Reco* g4Reco, double radius)
 {
+  bool AbsorberActive = Enable::ABSORBER || Enable::TrackingService_ABSORBER;
+  bool OverlapCheck = Enable::OVERLAPCHECK || Enable::TrackingService_OVERLAPCHECK;
+  int verbosity = std::max(Enable::VERBOSITY, Enable::TrackingService_VERBOSITY);
+
+  PHG4ConeSubsystem* cone;
+
+  double materialBoundariesSouth[5] = {object->get_r_south(), 0, 0, 0, 0.1};
+  calculateMaterialBoundaries(object, materialBoundariesSouth[1], materialBoundariesSouth[2], materialBoundariesSouth[3], true);
+  materialBoundariesSouth[4] += materialBoundariesSouth[3];
+
+  double materialBoundariesNorth[5] = {object->get_r_north(), 0, 0, 0, 0.1};
+  calculateMaterialBoundaries(object, materialBoundariesNorth[1], materialBoundariesNorth[2], materialBoundariesNorth[3], false);
+  materialBoundariesSouth[4] += materialBoundariesSouth[3];
+
+  for (int i = 0; i < 4; ++i)
+  {
+    cone = new PHG4ConeSubsystem(object->get_name(), i);
+    cone->SetR1(materialBoundariesSouth[i], materialBoundariesSouth[i+1]);
+    cone->SetR2(materialBoundariesNorth[i], materialBoundariesNorth[i+1]);
+    cone->SetPlaceZ(object->get_z_south());
+    cone->SetZlength(abs(object->get_z_north() - object->get_z_south()));
+    cone->SetMaterial(G4TrackingService::materials[i]);
+    cone->SuperDetector("TrackingService");
+    if (AbsorberActive) cone->SetActive();
+    cone->OverlapCheck(OverlapCheck);
+    g4Reco->registerSubsystem(cone);
+  }
+  radius = max(materialBoundariesSouth[4], materialBoundariesNorth[4]);
+
+  return radius;
 }
-*/
+
 double TrackingServiceCylinder(ServiceProperties *object, PHG4Reco* g4Reco, double radius)
 {
   bool AbsorberActive = Enable::ABSORBER || Enable::TrackingService_ABSORBER;
   bool OverlapCheck = Enable::OVERLAPCHECK || Enable::TrackingService_OVERLAPCHECK;
   int verbosity = std::max(Enable::VERBOSITY, Enable::TrackingService_VERBOSITY);
 
-  double materialBoundaries[5] = {object->get_r_south(), 0, 0, 0, 0.1};
   PHG4CylinderSubsystem* cyl;
 
+  double materialBoundaries[5] = {object->get_r_south(), 0, 0, 0, 0.1};
   calculateMaterialBoundaries(object, materialBoundaries[1], materialBoundaries[2], materialBoundaries[3], true);
   materialBoundaries[4] += materialBoundaries[3];
 
-  for (int iMaterial = 0; iMaterial < 4; ++iMaterial)
+  for (int i = 0; i < 4; ++i)
   {
-     cyl = new PHG4CylinderSubsystem(object->get_name(), iMaterial);
+     cyl = new PHG4CylinderSubsystem(object->get_name(), i);
      cyl->set_double_param("place_z", object->get_z_south());
-     cyl->set_double_param("radius", materialBoundaries[iMaterial]);
-     cyl->set_int_param("lengthviarapidity", 0);
+     cyl->set_double_param("radius", materialBoundaries[i]);
      cyl->set_double_param("length", abs(object->get_z_north() - object->get_z_south()));
-     cyl->set_string_param("material", G4TrackingService::materials[iMaterial]);
-     cyl->set_double_param("thickness", materialBoundaries[iMaterial + 1] - materialBoundaries[iMaterial]);
+     cyl->set_string_param("material", G4TrackingService::materials[i]);
+     cyl->set_double_param("thickness", materialBoundaries[i + 1] - materialBoundaries[i]);
      cyl->SuperDetector("TrackingService");
      if (AbsorberActive) cyl->SetActive();
      cyl->OverlapCheck(OverlapCheck);
@@ -145,11 +175,19 @@ double TrackingServiceCylinder(ServiceProperties *object, PHG4Reco* g4Reco, doub
 double TrackingService(PHG4Reco* g4Reco, double radius)
 {
   std::vector<ServiceProperties*> cylinders, cones;
+
   cylinders.push_back(new ServiceProperties("ETrackingCylinderService", 48, -200, -50, 10.75, 10.75));
+
+  cones.push_back(new ServiceProperties("ETrackingConeService", 48, -50, -20, 10.75, 5));
 
   for (ServiceProperties *cylinder : cylinders)
   {
     radius += TrackingServiceCylinder(cylinder, g4Reco, radius);
+  }
+  
+  for (ServiceProperties *cone : cones)
+  {
+    radius += TrackingServiceCone(cone, g4Reco, radius);
   }
 
   return radius;
