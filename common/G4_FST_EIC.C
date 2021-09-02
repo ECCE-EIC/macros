@@ -59,18 +59,17 @@ void FSTSetup(PHG4Reco *g4Reco, const double min_eta = 1.245)
   const double um = 1e-3 * mm;
 
   //Design from Xuan Li @LANL
-  make_LANL_FST_station("FST_0", g4Reco, 35, 4, 22, 35 * um, 20e-4);  //cm
-  make_LANL_FST_station("FST_1", g4Reco, 57.5, 4.5, 42, 35 * um, 20e-4);
-  make_LANL_FST_station("FST_2", g4Reco, 80, 6, 43.5, 35 * um, 20e-4);
-  make_LANL_FST_station("FST_3", g4Reco, 115, 9.3, 46.8, 85 * um, 36.4e-4);
-  make_LANL_FST_station("FST_4", g4Reco, 125, 9.6, 47.1, 85 * um, 36.4e-4);
+  make_LANL_FST_station("FST_0", g4Reco, 35, 4, 22, 35 * um, 10e-4);  //cm
+  make_LANL_FST_station("FST_1", g4Reco, 57.5, 4.5, 42, 35 * um, 10e-4);
+  make_LANL_FST_station("FST_2", g4Reco, 80, 6, 43.5, 35 * um, 10e-4);
+  make_LANL_FST_station("FST_3", g4Reco, 115, 9.3, 46.8, 35 * um, 10e-4);
+  make_LANL_FST_station("FST_4", g4Reco, 125, 9.6, 47.1, 35 * um, 10e-4);
 
-  //mirror for e-going FST
-  make_LANL_FST_station("EFST_0", g4Reco, -35, 4, 22, 35 * um, 20e-4);  //cm
-  make_LANL_FST_station("EFST_1", g4Reco, -57.5, 4.5, 42, 35 * um, 20e-4);
-  make_LANL_FST_station("EFST_2", g4Reco, -80, 6, 43.5, 35 * um, 20e-4);
-  make_LANL_FST_station("EFST_3", g4Reco, -115, 9.3, 46.8, 85 * um, 36.4e-4);
-  make_LANL_FST_station("EFST_4", g4Reco, -125, 9.6, 47.1, 85 * um, 36.4e-4);
+  //mirror for e-going FST, after update with new e-spectrometer 
+  make_LANL_FST_station("EFST_0", g4Reco, -35, 4, 22, 35 * um, 10e-4);  //cm
+  make_LANL_FST_station("EFST_1", g4Reco, -57.5, 4.5, 42, 35 * um, 10e-4);
+  make_LANL_FST_station("EFST_2", g4Reco, -80, 6, 43.5, 35 * um, 10e-4);
+  make_LANL_FST_station("EFST_3", g4Reco, -107.1, 9.3, 46.8, 35 * um, 10e-4);
 
   if (G4FST::SETTING::SUPPORTCYL)
   {
