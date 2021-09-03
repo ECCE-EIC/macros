@@ -297,9 +297,11 @@ int Fun4All_G4_EICDetector(
   G4TRACKING::DISPLACED_VERTEX = false;  // this option exclude vertex in the track fitting and use RAVE to reconstruct primary and 2ndary vertexes
                                          // projections to calorimeters
   G4TRACKING::PROJECTION_EEMC = true;
-  G4TRACKING::PROJECTION_CEMC = true;
+  G4TRACKING::PROJECTION_CEMC = false;
+  G4TRACKING::PROJECTION_BECAL = true;
   G4TRACKING::PROJECTION_FEMC = true;
-  G4TRACKING::PROJECTION_FHCAL = true;
+  G4TRACKING::PROJECTION_FHCAL = false;
+  G4TRACKING::PROJECTION_LFHCAL = true;
 
   Enable::CEMC = false;
   //  Enable::CEMC_ABSORBER = true;
