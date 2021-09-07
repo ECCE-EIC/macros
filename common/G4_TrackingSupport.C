@@ -26,7 +26,10 @@ class ServiceProperties
    ServiceProperties();
 
     explicit ServiceProperties(const string &name,
-                               const int &n_staves,
+                               const double &rad_len_copper,
+                               const double &rad_len_water,
+                               const double &rad_len_plastic,
+                               const double &rad_len_carbon,
                                const double &z_south,
                                const double &z_north,
                                const double &r_south,
@@ -35,7 +38,10 @@ class ServiceProperties
     virtual ~ServiceProperties(){};
 
     const string get_name();
-    const int get_n_staves();
+    const double get_rad_len_copper();
+    const double get_rad_len_water();
+    const double get_rad_len_plastic();
+    const double get_rad_len_carbon();
     const double get_z_south();
     const double get_z_north();
     const double get_r_south();
@@ -43,7 +49,10 @@ class ServiceProperties
   
   private:
     const string m_name = "service";
-    const int m_n_staves = 48;
+    const double m_rad_len_copper = 0.0;
+    const double m_rad_len_water = 0.0;
+    const double m_rad_len_plastic = 0.0;
+    const double m_rad_len_carbon = 0.0;
     const double m_z_south = 0.0;
     const double m_z_north = 0.0;
     const double m_r_south = 0.0;
@@ -51,13 +60,19 @@ class ServiceProperties
 };
 
 ServiceProperties::ServiceProperties(const string &name,
-                                     const int &n_staves,
+                                     const double &rad_len_copper,
+                                     const double &rad_len_water,
+                                     const double &rad_len_plastic,
+                                     const double &rad_len_carbon,
                                      const double &z_south,
                                      const double &z_north,
                                      const double &r_south,
                                      const double &r_north)
   : m_name(name)
-  , m_n_staves(n_staves)
+  , m_rad_len_copper(rad_len_copper)
+  , m_rad_len_water(rad_len_water)
+  , m_rad_len_plastic(rad_len_plastic)
+  , m_rad_len_carbon(rad_len_carbon)
   , m_z_south(z_south)
   , m_z_north(z_north)
   , m_r_south(r_south)
@@ -65,7 +80,10 @@ ServiceProperties::ServiceProperties(const string &name,
 {}
 
 const string ServiceProperties::get_name() { return m_name; }
-const int ServiceProperties::get_n_staves() { return m_n_staves; }
+const double ServiceProperties::get_rad_len_copper() { return m_rad_len_copper; }
+const double ServiceProperties::get_rad_len_water() { return m_rad_len_water; }
+const double ServiceProperties::get_rad_len_plastic() { return m_rad_len_plastic; }
+const double ServiceProperties::get_rad_len_carbon() { return m_rad_len_carbon; }
 const double ServiceProperties::get_z_south() { return m_z_south; }
 const double ServiceProperties::get_z_north() { return m_z_north; }
 const double ServiceProperties::get_r_south() { return m_r_south; }
@@ -81,13 +99,13 @@ namespace Enable
 }  // namespace Enable
 
 namespace G4TrackingService
-{
-  std::string materials[] = {"G4_Cu", "G4_WATER", "G4_POLYETHYLENE", "PEEK"};
+{ //List materials and radiation length in cm
+  const int nMaterials = 4;
+  pair<string, double> materials[nMaterials] = { make_pair("G4_Cu", 1.436)
+                                               , make_pair("G4_WATER",  36.08)
+                                               , make_pair("G4_POLYETHYLENE", 50.31), 
+                                               , make_pair("PEEK", 30.00) };
 
-  double single_stave_service_copper_area = 0.0677;   //Cross-sectional area of copper for 1 stave [cm^2]
-  double single_stave_service_water_area = 0.0098;    //Cross-sectional area of water for 1 stave [cm^2]
-  double single_stave_service_plastic_area = 0.4303;  //Cross-sectional area of plastic for 1 stave [cm^2]
-  
   int subsysID = 0;
 }  // namespace G4TrackingService
 
@@ -95,51 +113,40 @@ void TrackingServiceInit()
 {
 }
 
-double calculateOR(double inner_radius, double area)  //Calculate the outer radius of a disk, knowing the inner radius and the area
-{
-  return std::sqrt(area / M_PI + std::pow(inner_radius, 2));
-}
-
-void calculateMaterialBoundaries(ServiceProperties *properties, double& outer_copper_radius, double& outer_water_radius, double& outer_plastic_radius, bool isSouth)  //Calculate where the transition between each material occurs
-{
-  double start_radius = isSouth ? properties->get_r_south() : properties->get_r_north();
-
-  outer_copper_radius = calculateOR(start_radius, properties->get_n_staves() * G4TrackingService::single_stave_service_copper_area);
-  outer_water_radius = calculateOR(outer_copper_radius, properties->get_n_staves() * G4TrackingService::single_stave_service_water_area);
-  outer_plastic_radius = calculateOR(outer_water_radius, properties->get_n_staves() * G4TrackingService::single_stave_service_plastic_area);
-}
-
 double TrackingServiceCone(ServiceProperties *object, PHG4Reco* g4Reco, double radius)
 {
   bool AbsorberActive = Enable::ABSORBER || Enable::TrackingService_ABSORBER;
   bool OverlapCheck = Enable::OVERLAPCHECK || Enable::TrackingService_OVERLAPCHECK;
-  int verbosity = std::max(Enable::VERBOSITY, Enable::TrackingService_VERBOSITY);
+  int verbosity = max(Enable::VERBOSITY, Enable::TrackingService_VERBOSITY);
 
   PHG4ConeSubsystem* cone;
 
-  double materialBoundariesSouth[5] = {object->get_r_south(), 0, 0, 0, 0.1};
-  calculateMaterialBoundaries(object, materialBoundariesSouth[1], materialBoundariesSouth[2], materialBoundariesSouth[3], true);
-  materialBoundariesSouth[4] += materialBoundariesSouth[3];
+  double innerRadiusSouth = object->get_r_south();
+  double innerRadiusNorth = object->get_r_north();
+  double thickness[G4TrackingService::nMaterials] = {(object->get_rad_len_copper/100)*G4TrackingService::materials[0].second
+                                                    ,(object->get_rad_len_water/100)*G4TrackingService::materials[1].second
+                                                    ,(object->get_rad_len_plastic/100)*G4TrackingService::materials[2].second
+                                                    ,(object->get_rad_len_carbon/100)*G4TrackingService::materials[3].second};
 
-  double materialBoundariesNorth[5] = {object->get_r_north(), 0, 0, 0, 0.1};
-  calculateMaterialBoundaries(object, materialBoundariesNorth[1], materialBoundariesNorth[2], materialBoundariesNorth[3], false);
-  materialBoundariesNorth[4] += materialBoundariesNorth[3];
-
-  for (int i = 0; i < 4; ++i)
+  for (int i = 0; i < G4TrackingService::nMaterials; ++i)
   {
+    double outerRadiusSouth = innerRadiusSouth + thickness[i];
+    double outerRadiusNorth = innerRadiusNorth + thickness[i];
     cone = new PHG4ConeSubsystem(object->get_name(), G4TrackingService::subsysID);
-    cone->SetR1(materialBoundariesSouth[i], materialBoundariesSouth[i+1]);
-    cone->SetR2(materialBoundariesNorth[i], materialBoundariesNorth[i+1]);
+    cone->SetR1(innerRadiusSouth, outerRadiusSouth);
+    cone->SetR2(innerRadiusNorth, outerRadiusNorth);
     cone->SetPlaceZ(object->get_z_south());
     cone->SetZlength(abs(object->get_z_north() - object->get_z_south()));
-    cone->SetMaterial(G4TrackingService::materials[i]);
+    cone->SetMaterial(G4TrackingService::materials[i].first);
     cone->SuperDetector("TrackingService");
     if (AbsorberActive) cone->SetActive();
     cone->OverlapCheck(OverlapCheck);
     g4Reco->registerSubsystem(cone);
     ++G4TrackingService::subsysID;
+    innerRadiusSouth = outerRadiusSouth;
+    innerRadiusNorth = outerRadiusNorth;
   }
-  radius = max(materialBoundariesSouth[4], materialBoundariesNorth[4]);
+  radius = max(outerRadiusSouth, outerRadiusNorth);
 
   return radius;
 }
@@ -148,48 +155,50 @@ double TrackingServiceCylinder(ServiceProperties *object, PHG4Reco* g4Reco, doub
 {
   bool AbsorberActive = Enable::ABSORBER || Enable::TrackingService_ABSORBER;
   bool OverlapCheck = Enable::OVERLAPCHECK || Enable::TrackingService_OVERLAPCHECK;
-  int verbosity = std::max(Enable::VERBOSITY, Enable::TrackingService_VERBOSITY);
+  int verbosity = max(Enable::VERBOSITY, Enable::TrackingService_VERBOSITY);
 
   PHG4CylinderSubsystem* cyl;
 
-  double materialBoundaries[5] = {object->get_r_south(), 0, 0, 0, 0.1};
-  calculateMaterialBoundaries(object, materialBoundaries[1], materialBoundaries[2], materialBoundaries[3], true);
-  materialBoundaries[4] += materialBoundaries[3];
+  double innerRadius = object->get_r_south();
+  double thickness[G4TrackingService::nMaterials] = {(object->get_rad_len_copper/100)*G4TrackingService::materials[0].second
+                                                    ,(object->get_rad_len_water/100)*G4TrackingService::materials[1].second
+                                                    ,(object->get_rad_len_plastic/100)*G4TrackingService::materials[2].second
+                                                    ,(object->get_rad_len_carbon/100)*G4TrackingService::materials[3].second};
 
-  for (int i = 0; i < 4; ++i)
+  for (int i = 0; i < G4TrackingService::nMaterials; ++i)
   {
      cyl = new PHG4CylinderSubsystem(object->get_name(), G4TrackingService::subsysID);
      cyl->set_double_param("place_z", object->get_z_south());
-     cyl->set_double_param("radius", materialBoundaries[i]);
+     cyl->set_double_param("radius", innerRadius);
      cyl->set_double_param("length", abs(object->get_z_north() - object->get_z_south()));
-     cyl->set_string_param("material", G4TrackingService::materials[i]);
-     cyl->set_double_param("thickness", materialBoundaries[i + 1] - materialBoundaries[i]);
+     cyl->set_string_param("material", G4TrackingService::materials[i].first);
+     cyl->set_double_param("thickness", thickness[i]);
      cyl->SuperDetector("TrackingService");
      if (AbsorberActive) cyl->SetActive();
      cyl->OverlapCheck(OverlapCheck);
      g4Reco->registerSubsystem(cyl);
      ++G4TrackingService::subsysID;
+     innerRadius += thickness[i];
   }
-
-  radius = materialBoundaries[4];
+   radius = innerRadius;
 
   return radius;
 }
 
 double TrackingService(PHG4Reco* g4Reco, double radius)
 {
-  std::vector<ServiceProperties*> cylinders, cones;
+  vector<ServiceProperties*> cylinders, cones;
 
-  cylinders.push_back(new ServiceProperties("ETrackingCylinderService", 48, -80, -50, 10.75, 10.75));
-  cylinders.push_back(new ServiceProperties("BTrackingCylinderService_1", 10, -50, 50, 10.75, 10.75));
-  cylinders.push_back(new ServiceProperties("BTrackingCylinderService_2", 10, -40, 40, 7, 7));
-  cylinders.push_back(new ServiceProperties("BTrackingCylinderService_3", 10, -30, 30, 5, 5));
-  cylinders.push_back(new ServiceProperties("HTrackingCylinderService", 48, 50, 80, 10.75, 10.75));
+  cylinders.push_back(new ServiceProperties("ETrackingCylinderService", 1, 0.01, 0.1, 1, -80, -50, 10.75, 10.75));
+  cylinders.push_back(new ServiceProperties("BTrackingCylinderService_1", 0.1, 0.001, 0.01, 0.1, -50, 50, 10.75, 10.75));
+  cylinders.push_back(new ServiceProperties("BTrackingCylinderService_2", 0.1, 0.001, 0.01, 0.1, -40, 40, 7, 7));
+  cylinders.push_back(new ServiceProperties("BTrackingCylinderService_3", 0.1, 0.001, 0.01, 0.1, -30, 30, 5, 5));
+  cylinders.push_back(new ServiceProperties("HTrackingCylinderService", 1, 0.01, 0.1, 1, 50, 80, 10.75, 10.75));
  
-  cones.push_back(new ServiceProperties("ETrackingConeService_1", 48, -50, -30, 10.75, 7));
-  cones.push_back(new ServiceProperties("ETrackingConeService_2", 48, -30, -20, 7, 5));
-  cones.push_back(new ServiceProperties("HTrackingConeService_1", 48, 30, 50, 7, 10.75));
-  cones.push_back(new ServiceProperties("HTrackingConeService_2", 48, 20, 30, 5, 7));
+  cones.push_back(new ServiceProperties("ETrackingConeService_1", 1, 0.01, 0.1, 1, -50, -30, 10.75, 7));
+  cones.push_back(new ServiceProperties("ETrackingConeService_2", 1, 0.01, 0.1, 1, -30, -20, 7, 5));
+  cones.push_back(new ServiceProperties("HTrackingConeService_1", 1, 0.01, 0.1, 1, 30, 50, 7, 10.75));
+  cones.push_back(new ServiceProperties("HTrackingConeService_2", 1, 0.01, 0.1, 1, 20, 30, 5, 7));
 
   for (ServiceProperties *cylinder : cylinders)
   {
