@@ -103,9 +103,10 @@ namespace G4TrackingService
   const int nMaterials = 4;
   pair<string, double> materials[nMaterials] = { make_pair("G4_Cu", 1.436)
                                                , make_pair("G4_WATER",  36.08)
-                                               , make_pair("G4_POLYETHYLENE", 50.31), 
+                                               , make_pair("G4_POLYETHYLENE", 50.31)
                                                , make_pair("PEEK", 30.00) };
-
+  
+  double GlobalOffset = 0.0;
   int subsysID = 0;
 }  // namespace G4TrackingService
 
@@ -123,20 +124,21 @@ double TrackingServiceCone(ServiceProperties *object, PHG4Reco* g4Reco, double r
 
   double innerRadiusSouth = object->get_r_south();
   double innerRadiusNorth = object->get_r_north();
-  double thickness[G4TrackingService::nMaterials] = {(object->get_rad_len_copper/100)*G4TrackingService::materials[0].second
-                                                    ,(object->get_rad_len_water/100)*G4TrackingService::materials[1].second
-                                                    ,(object->get_rad_len_plastic/100)*G4TrackingService::materials[2].second
-                                                    ,(object->get_rad_len_carbon/100)*G4TrackingService::materials[3].second};
+  double thickness[G4TrackingService::nMaterials] = {(object->get_rad_len_copper()/100)*G4TrackingService::materials[0].second
+                                                    ,(object->get_rad_len_water()/100)*G4TrackingService::materials[1].second
+                                                    ,(object->get_rad_len_plastic()/100)*G4TrackingService::materials[2].second
+                                                    ,(object->get_rad_len_carbon()/100)*G4TrackingService::materials[3].second};
 
   for (int i = 0; i < G4TrackingService::nMaterials; ++i)
   {
     double outerRadiusSouth = innerRadiusSouth + thickness[i];
     double outerRadiusNorth = innerRadiusNorth + thickness[i];
+    double length = abs(object->get_z_north() - object->get_z_south());
     cone = new PHG4ConeSubsystem(object->get_name(), G4TrackingService::subsysID);
     cone->SetR1(innerRadiusSouth, outerRadiusSouth);
     cone->SetR2(innerRadiusNorth, outerRadiusNorth);
-    cone->SetPlaceZ(object->get_z_south());
-    cone->SetZlength(abs(object->get_z_north() - object->get_z_south()));
+    cone->SetPlaceZ(object->get_z_south() + length/2 + G4TrackingService::GlobalOffset);
+    cone->SetZlength(length);
     cone->SetMaterial(G4TrackingService::materials[i].first);
     cone->SuperDetector("TrackingService");
     if (AbsorberActive) cone->SetActive();
@@ -146,7 +148,7 @@ double TrackingServiceCone(ServiceProperties *object, PHG4Reco* g4Reco, double r
     innerRadiusSouth = outerRadiusSouth;
     innerRadiusNorth = outerRadiusNorth;
   }
-  radius = max(outerRadiusSouth, outerRadiusNorth);
+  radius = max(innerRadiusSouth, innerRadiusNorth);
 
   return radius;
 }
@@ -160,27 +162,29 @@ double TrackingServiceCylinder(ServiceProperties *object, PHG4Reco* g4Reco, doub
   PHG4CylinderSubsystem* cyl;
 
   double innerRadius = object->get_r_south();
-  double thickness[G4TrackingService::nMaterials] = {(object->get_rad_len_copper/100)*G4TrackingService::materials[0].second
-                                                    ,(object->get_rad_len_water/100)*G4TrackingService::materials[1].second
-                                                    ,(object->get_rad_len_plastic/100)*G4TrackingService::materials[2].second
-                                                    ,(object->get_rad_len_carbon/100)*G4TrackingService::materials[3].second};
+  double thickness[G4TrackingService::nMaterials] = {(object->get_rad_len_copper()/100)*G4TrackingService::materials[0].second
+                                                    ,(object->get_rad_len_water()/100)*G4TrackingService::materials[1].second
+                                                    ,(object->get_rad_len_plastic()/100)*G4TrackingService::materials[2].second
+                                                    ,(object->get_rad_len_carbon()/100)*G4TrackingService::materials[3].second};
 
   for (int i = 0; i < G4TrackingService::nMaterials; ++i)
   {
-     cyl = new PHG4CylinderSubsystem(object->get_name(), G4TrackingService::subsysID);
-     cyl->set_double_param("place_z", object->get_z_south());
-     cyl->set_double_param("radius", innerRadius);
-     cyl->set_double_param("length", abs(object->get_z_north() - object->get_z_south()));
-     cyl->set_string_param("material", G4TrackingService::materials[i].first);
-     cyl->set_double_param("thickness", thickness[i]);
-     cyl->SuperDetector("TrackingService");
-     if (AbsorberActive) cyl->SetActive();
-     cyl->OverlapCheck(OverlapCheck);
-     g4Reco->registerSubsystem(cyl);
-     ++G4TrackingService::subsysID;
-     innerRadius += thickness[i];
+    double length = abs(object->get_z_north() - object->get_z_south());
+    cyl = new PHG4CylinderSubsystem(object->get_name(), G4TrackingService::subsysID);
+    cyl->set_double_param("place_z", object->get_z_south() + length/2 + G4TrackingService::GlobalOffset);
+    cyl->set_double_param("radius", innerRadius);
+    cyl->set_double_param("length", length);
+    cyl->set_string_param("material", G4TrackingService::materials[i].first);
+    cyl->set_double_param("thickness", thickness[i]);
+    cyl->SuperDetector("TrackingService");
+    if (AbsorberActive) cyl->SetActive();
+    cyl->OverlapCheck(OverlapCheck);
+    g4Reco->registerSubsystem(cyl);
+    ++G4TrackingService::subsysID;
+    innerRadius += thickness[i];
   }
    radius = innerRadius;
+
 
   return radius;
 }
