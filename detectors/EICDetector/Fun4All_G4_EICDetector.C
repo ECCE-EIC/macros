@@ -291,10 +291,12 @@ int Fun4All_G4_EICDetector(
 
   Enable::TRACKING = true;
   Enable::TRACKING_EVAL = Enable::TRACKING && true;
-  G4TRACKING::DISPLACED_VERTEX = false;  // this option exclude vertex in the track fitting and use RAVE to reconstruct primary and 2ndary vertexes
+  G4TRACKING::DISPLACED_VERTEX = true;  // this option exclude vertex in the track fitting and use RAVE to reconstruct primary and 2ndary vertexes
                                          // projections to calorimeters
   G4TRACKING::PROJECTION_EEMC = true;
+  G4TRACKING::PROJECTION_EHCAL = true;
   G4TRACKING::PROJECTION_CEMC = true;
+  G4TRACKING::PROJECTION_HCALOUT = true;
   G4TRACKING::PROJECTION_FEMC = true;
   G4TRACKING::PROJECTION_FHCAL = true;
 
@@ -368,6 +370,8 @@ int Fun4All_G4_EICDetector(
   Enable::EHCAL_CLUSTER = Enable::EHCAL_TOWER && true;
   Enable::EHCAL_EVAL = Enable::EHCAL_CLUSTER && false;
 
+  Enable::FFR_EVAL = Enable::HFARFWD_MAGNETS && Enable::HFARFWD_VIRTUAL_DETECTORS && true;
+
   Enable::PLUGDOOR = false;
 
   // Other options
@@ -382,6 +386,10 @@ int Fun4All_G4_EICDetector(
   Enable::BLACKHOLE = true;
   //Enable::BLACKHOLE_SAVEHITS = false; // turn off saving of bh hits
   //BlackHoleGeometry::visible = true;
+  
+  // ZDC
+  // Enable::ZDC = true;
+  // Enable::ZDC_DISABLE_BLACKHOLE = true;
 
   // Enabling the event evaluator?
   Enable::EVENT_EVAL = true;
@@ -533,9 +541,12 @@ int Fun4All_G4_EICDetector(
 
   if (Enable::EEMC_EVAL) EEMC_Eval(outputroot + "_g4eemc_eval.root");
 
+  if (Enable::FFR_EVAL) FFR_Eval(outputroot + "_g4ffr_eval.root");
+
   if (Enable::FWDJETS_EVAL) Jet_FwdEval();
 
   if (Enable::USER) UserAnalysisInit();
+
 
   //--------------
   // Set up Input Managers
