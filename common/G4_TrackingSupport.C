@@ -27,6 +27,7 @@ class ServiceProperties
 
     explicit ServiceProperties(const string &name,
                                const double &rad_len_copper,
+                               const double &rad_len_aluminum,
                                const double &rad_len_water,
                                const double &rad_len_plastic,
                                const double &rad_len_carbon,
@@ -39,6 +40,7 @@ class ServiceProperties
 
     const string get_name();
     const double get_rad_len_copper();
+    const double get_rad_len_aluminum();
     const double get_rad_len_water();
     const double get_rad_len_plastic();
     const double get_rad_len_carbon();
@@ -50,6 +52,7 @@ class ServiceProperties
   private:
     const string m_name = "service";
     const double m_rad_len_copper = 0.0;
+    const double m_rad_len_aluminum = 0.0;
     const double m_rad_len_water = 0.0;
     const double m_rad_len_plastic = 0.0;
     const double m_rad_len_carbon = 0.0;
@@ -61,6 +64,7 @@ class ServiceProperties
 
 ServiceProperties::ServiceProperties(const string &name,
                                      const double &rad_len_copper,
+                                     const double &rad_len_aluminum,
                                      const double &rad_len_water,
                                      const double &rad_len_plastic,
                                      const double &rad_len_carbon,
@@ -70,6 +74,7 @@ ServiceProperties::ServiceProperties(const string &name,
                                      const double &r_north)
   : m_name(name)
   , m_rad_len_copper(rad_len_copper)
+  , m_rad_len_aluminum(rad_len_aluminum)
   , m_rad_len_water(rad_len_water)
   , m_rad_len_plastic(rad_len_plastic)
   , m_rad_len_carbon(rad_len_carbon)
@@ -81,6 +86,7 @@ ServiceProperties::ServiceProperties(const string &name,
 
 const string ServiceProperties::get_name() { return m_name; }
 const double ServiceProperties::get_rad_len_copper() { return m_rad_len_copper; }
+const double ServiceProperties::get_rad_len_aluminum() { return m_rad_len_aluminum; }
 const double ServiceProperties::get_rad_len_water() { return m_rad_len_water; }
 const double ServiceProperties::get_rad_len_plastic() { return m_rad_len_plastic; }
 const double ServiceProperties::get_rad_len_carbon() { return m_rad_len_carbon; }
@@ -100,8 +106,9 @@ namespace Enable
 
 namespace G4TrackingService
 { //List materials and radiation length in cm
-  const int nMaterials = 4;
+  const int nMaterials = 5;
   pair<string, double> materials[nMaterials] = { make_pair("G4_Cu", 1.436)
+                                               , make_pair("G4_Al",  8.897)
                                                , make_pair("G4_WATER",  36.08)
                                                , make_pair("G4_POLYETHYLENE", 50.31)
                                                , make_pair("PEEK", 30.00) };
@@ -125,12 +132,14 @@ double TrackingServiceCone(ServiceProperties *object, PHG4Reco* g4Reco, double r
   double innerRadiusSouth = object->get_r_south();
   double innerRadiusNorth = object->get_r_north();
   double thickness[G4TrackingService::nMaterials] = {(object->get_rad_len_copper()/100)*G4TrackingService::materials[0].second
-                                                    ,(object->get_rad_len_water()/100)*G4TrackingService::materials[1].second
-                                                    ,(object->get_rad_len_plastic()/100)*G4TrackingService::materials[2].second
-                                                    ,(object->get_rad_len_carbon()/100)*G4TrackingService::materials[3].second};
+                                                    ,(object->get_rad_len_aluminum()/100)*G4TrackingService::materials[1].second
+                                                    ,(object->get_rad_len_water()/100)*G4TrackingService::materials[2].second
+                                                    ,(object->get_rad_len_plastic()/100)*G4TrackingService::materials[3].second
+                                                    ,(object->get_rad_len_carbon()/100)*G4TrackingService::materials[4].second};
 
   for (int i = 0; i < G4TrackingService::nMaterials; ++i)
   {
+    if (thickness[i] = 0) continue;
     double outerRadiusSouth = innerRadiusSouth + thickness[i];
     double outerRadiusNorth = innerRadiusNorth + thickness[i];
     double length = abs(object->get_z_north() - object->get_z_south());
@@ -163,12 +172,14 @@ double TrackingServiceCylinder(ServiceProperties *object, PHG4Reco* g4Reco, doub
 
   double innerRadius = object->get_r_south();
   double thickness[G4TrackingService::nMaterials] = {(object->get_rad_len_copper()/100)*G4TrackingService::materials[0].second
-                                                    ,(object->get_rad_len_water()/100)*G4TrackingService::materials[1].second
-                                                    ,(object->get_rad_len_plastic()/100)*G4TrackingService::materials[2].second
-                                                    ,(object->get_rad_len_carbon()/100)*G4TrackingService::materials[3].second};
+                                                    ,(object->get_rad_len_aluminum()/100)*G4TrackingService::materials[1].second
+                                                    ,(object->get_rad_len_water()/100)*G4TrackingService::materials[2].second
+                                                    ,(object->get_rad_len_plastic()/100)*G4TrackingService::materials[3].second
+                                                    ,(object->get_rad_len_carbon()/100)*G4TrackingService::materials[4].second};
 
   for (int i = 0; i < G4TrackingService::nMaterials; ++i)
   {
+    if (thickness[i] = 0) continue;
     double length = abs(object->get_z_north() - object->get_z_south());
     cyl = new PHG4CylinderSubsystem(object->get_name(), G4TrackingService::subsysID);
     cyl->set_double_param("place_z", object->get_z_south() + length/2 + G4TrackingService::GlobalOffset);
@@ -193,16 +204,16 @@ double TrackingService(PHG4Reco* g4Reco, double radius)
 {
   vector<ServiceProperties*> cylinders, cones;
 
-  cylinders.push_back(new ServiceProperties("ETrackingCylinderService", 1, 0.01, 0.1, 1, -80, -50, 10.75, 10.75));
-  cylinders.push_back(new ServiceProperties("BTrackingCylinderService_1", 0.1, 0.001, 0.01, 0.1, -50, 50, 10.75, 10.75));
-  cylinders.push_back(new ServiceProperties("BTrackingCylinderService_2", 0.1, 0.001, 0.01, 0.1, -40, 40, 7, 7));
-  cylinders.push_back(new ServiceProperties("BTrackingCylinderService_3", 0.1, 0.001, 0.01, 0.1, -30, 30, 5, 5));
-  cylinders.push_back(new ServiceProperties("HTrackingCylinderService", 1, 0.01, 0.1, 1, 50, 80, 10.75, 10.75));
+  cylinders.push_back(new ServiceProperties("ETrackingCylinderService", 1, 0, 0.01, 0.1, 1, -80, -50, 10.75, 10.75));
+  cylinders.push_back(new ServiceProperties("BTrackingCylinderService_1", 0.1, 0, 0.001, 0.01, 0.1, -50, 50, 10.75, 10.75));
+  cylinders.push_back(new ServiceProperties("BTrackingCylinderService_2", 0.1, 0, 0.001, 0.01, 0.1, -40, 40, 7, 7));
+  cylinders.push_back(new ServiceProperties("BTrackingCylinderService_3", 0.1, 0, 0.001, 0.01, 0.1, -30, 30, 5, 5));
+  cylinders.push_back(new ServiceProperties("HTrackingCylinderService", 1, 0, 0.01, 0.1, 1, 50, 80, 10.75, 10.75));
  
-  cones.push_back(new ServiceProperties("ETrackingConeService_1", 1, 0.01, 0.1, 1, -50, -30, 10.75, 7));
-  cones.push_back(new ServiceProperties("ETrackingConeService_2", 1, 0.01, 0.1, 1, -30, -20, 7, 5));
-  cones.push_back(new ServiceProperties("HTrackingConeService_1", 1, 0.01, 0.1, 1, 30, 50, 7, 10.75));
-  cones.push_back(new ServiceProperties("HTrackingConeService_2", 1, 0.01, 0.1, 1, 20, 30, 5, 7));
+  cones.push_back(new ServiceProperties("ETrackingConeService_1", 1, 0, 0.01, 0.1, 1, -50, -30, 10.75, 7));
+  cones.push_back(new ServiceProperties("ETrackingConeService_2", 1, 0, 0.01, 0.1, 1, -30, -20, 7, 5));
+  cones.push_back(new ServiceProperties("HTrackingConeService_1", 1, 0, 0.01, 0.1, 1, 30, 50, 7, 10.75));
+  cones.push_back(new ServiceProperties("HTrackingConeService_2", 1, 0, 0.01, 0.1, 1, 20, 30, 5, 7));
 
   for (ServiceProperties *cylinder : cylinders)
   {
