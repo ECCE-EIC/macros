@@ -30,7 +30,7 @@ void Barrel(PHG4Reco *g4Reco, int det_ver = 3)
 
   //---------------------------
   // Vertexing
-  double si_vtx_r_pos[] = {3.30,5.70};
+  double si_vtx_r_pos[] = {3.30,5.70,8.10};
   const int nVtxLayers = sizeof(si_vtx_r_pos)/sizeof(*si_vtx_r_pos);
   for (int ilayer = 0; ilayer < nVtxLayers ; ilayer++){
   cyl = new PHG4CylinderSubsystem("SVTX", ilayer);
@@ -45,14 +45,14 @@ void Barrel(PHG4Reco *g4Reco, int det_ver = 3)
   }
   //---------------------------
   // Barrel
-  double si_r_pos[] = {21.,22.68,39.3,43.23};
+  double si_r_pos[] = {21.,22.68};
   const int nTrckLayers = sizeof(si_r_pos)/sizeof(*si_r_pos);
-  double si_z_length[] = {54.,60.,105.,114.};
+  double si_z_length[] = {60.,60.};
   for (int ilayer = 0; ilayer < nTrckLayers ; ilayer++){
   cyl = new PHG4CylinderSubsystem("BARR", ilayer);
   cyl->set_string_param("material" , "G4_Si" );
   cyl->set_double_param("radius" , si_r_pos[ilayer] );
-  cyl->set_double_param("thickness", 0.55/100.*9.37 );
+  cyl->set_double_param("thickness", 0.05/100.*9.37 );
   cyl->set_double_param("place_z" , 0 );
   cyl->set_double_param("length" , si_z_length[ilayer]);
   cyl->SetActive();

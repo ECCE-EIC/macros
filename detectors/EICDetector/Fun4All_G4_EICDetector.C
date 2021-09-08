@@ -36,7 +36,7 @@ int Fun4All_G4_EICDetector(
   // Fun4All server
   //---------------
   Fun4AllServer *se = Fun4AllServer::instance();
-  se->Verbosity(0);
+  se->Verbosity(INT_MAX - 10);
   //Opt to print all random seed used for debugging reproducibility. Comment out to reduce stdout prints.
   //PHRandomSeed::Verbosity(1);
 
@@ -266,11 +266,11 @@ int Fun4All_G4_EICDetector(
   // If need to disable EIC beam pipe extension beyond the Be-section:
   // G4PIPE::use_forward_pipes = false;
   //EIC hadron far forward magnets and detectors. IP6 and IP8 are incompatible (pick either or);
-  Enable::HFARFWD_MAGNETS = true;
-  Enable::HFARFWD_VIRTUAL_DETECTORS = true;
+  //Enable::HFARFWD_MAGNETS = true;
+  //Enable::HFARFWD_VIRTUAL_DETECTORS = true;
 
-  Enable::HFARBWD_MAGNETS = true;
-  Enable::HFARBWD_VIRTUAL_DETECTORS = true;
+  //Enable::HFARBWD_MAGNETS = true;
+  //Enable::HFARBWD_VIRTUAL_DETECTORS = true;
 
   // gems
   Enable::EGEM = true;
@@ -278,10 +278,11 @@ int Fun4All_G4_EICDetector(
   // Enable::BGEM = true; // not yet defined in this model
   Enable::RWELL = true;
   // barrel tracker
+  Enable::TrackingService = true;
   Enable::BARREL = true;
   // fst
   Enable::FST = true;
-  // G4FST::SETTING::SUPPORTCYL = false; // if want to disable support
+  G4FST::SETTING::SUPPORTCYL = false; // if want to disable support
 
   // TOFs
   Enable::FTTL = true;
@@ -299,12 +300,11 @@ int Fun4All_G4_EICDetector(
   G4TRACKING::PROJECTION_FEMC = true;
   G4TRACKING::PROJECTION_FHCAL = true;
 
-  Enable::CEMC = true;
-  //  Enable::CEMC_ABSORBER = true;
-  Enable::CEMC_CELL = Enable::CEMC && true;
-  Enable::CEMC_TOWER = Enable::CEMC_CELL && true;
-  Enable::CEMC_CLUSTER = Enable::CEMC_TOWER && true;
-  Enable::CEMC_EVAL = Enable::CEMC_CLUSTER && true;
+  Enable::BECAL = true;
+  Enable::BECAL_CELL    = Enable::BECAL && true;
+  Enable::BECAL_TOWER   = Enable::BECAL_CELL && true;
+  Enable::BECAL_CLUSTER = Enable::BECAL_TOWER && true;
+  Enable::BECAL_EVAL    = Enable::BECAL_CLUSTER && false;
 
   Enable::HCALIN = true;
   //  Enable::HCALIN_ABSORBER = true;
@@ -337,17 +337,32 @@ int Fun4All_G4_EICDetector(
   Enable::FEMC_CLUSTER = Enable::FEMC_TOWER && true;
   Enable::FEMC_EVAL = Enable::FEMC_CLUSTER && true;
 
-  Enable::FHCAL = true;
-  //  Enable::FHCAL_ABSORBER = true;
-  Enable::FHCAL_TOWER = Enable::FHCAL && true;
-  Enable::FHCAL_CLUSTER = Enable::FHCAL_TOWER && true;
-  Enable::FHCAL_EVAL = Enable::FHCAL_CLUSTER && true;
+  //Enable::DRCALO = false;
+  Enable::DRCALO_CELL = Enable::DRCALO && true;
+  Enable::DRCALO_TOWER = Enable::DRCALO_CELL && true;
+  Enable::DRCALO_CLUSTER = Enable::DRCALO_TOWER && true;
+  Enable::DRCALO_EVAL = Enable::DRCALO_CLUSTER && false;
+  G4TTL::SETTING::optionDR = 1;
+
+  Enable::LFHCAL = true;
+  G4LFHCAL::SETTING::longer = true;
+  G4LFHCAL::SETTING::asymmetric = true;
+  Enable::LFHCAL_ABSORBER = false;
+  Enable::LFHCAL_CELL = Enable::LFHCAL && true;
+  Enable::LFHCAL_TOWER = Enable::LFHCAL_CELL && true;
+  Enable::LFHCAL_CLUSTER = Enable::LFHCAL_TOWER && true;
+  Enable::LFHCAL_EVAL = Enable::LFHCAL_CLUSTER && false;
 
   // EICDetector geometry - 'electron' direction
-  Enable::EEMC = true;
-  Enable::EEMC_TOWER = Enable::EEMC && true;
-  Enable::EEMC_CLUSTER = Enable::EEMC_TOWER && true;
-  Enable::EEMC_EVAL = Enable::EEMC_CLUSTER && true;
+  Enable::EEMCH = true;
+  G4EEMCH::SETTING::USECEMCGeo  = false;
+  G4EEMCH::SETTING::USEHYBRID = false;
+  Enable::EEMCH_TOWER = Enable::EEMCH && true;
+  Enable::EEMCH_CLUSTER = Enable::EEMCH_TOWER && true;
+  Enable::EEMCH_EVAL = Enable::EEMCH_CLUSTER && true;
+  G4TTL::SETTING::optionEEMCH = Enable::EEMCH && true;
+  G4TTL::SETTING::optionCEMC = false;
+  G4TTL::SETTING::optionGeo = 1;
 
   Enable::EHCAL = true;
   Enable::EHCAL_CELL = Enable::EHCAL && true;
@@ -454,11 +469,20 @@ int Fun4All_G4_EICDetector(
   if (Enable::FHCAL_TOWER) FHCAL_Towers();
   if (Enable::FHCAL_CLUSTER) FHCAL_Clusters();
 
+  if (Enable::DRCALO_TOWER) DRCALO_Towers();
+  if (Enable::DRCALO_CLUSTER) DRCALO_Clusters();
+
+  if (Enable::LFHCAL_TOWER) LFHCAL_Towers();
+  if (Enable::LFHCAL_CLUSTER) LFHCAL_Clusters();
+
   if (Enable::EEMC_TOWER) EEMC_Towers();
   if (Enable::EEMC_CLUSTER) EEMC_Clusters();
 
   if (Enable::EHCAL_TOWER) EHCAL_Towers();
   if (Enable::EHCAL_CLUSTER) EHCAL_Clusters();
+
+  if (Enable::BECAL_TOWER) BECAL_Towers();
+  if (Enable::BECAL_CLUSTER) BECAL_Clusters();
 
   if (Enable::DSTOUT_COMPRESS) ShowerCompress();
 
