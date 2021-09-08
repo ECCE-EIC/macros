@@ -121,6 +121,7 @@ void Tracking_Reco()
   {
     TRACKING::FastKalmanFilter->add_state_name("BECAL");
     TRACKING::ProjectionNames.insert("BECAL");
+  }
   //-------------------------
   // HCALOUT
   //-------------------------
