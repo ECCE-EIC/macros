@@ -103,7 +103,7 @@ void EEMCHSetup(PHG4Reco *g4Reco)
   else if (G4EEMCH::SETTING::USEHYBRID && G4EEMCH::SETTING::USECEMCGeo)
     mapping_eemc_1 << getenv("CALIBRATIONROOT") << "/CrystalCalorimeter/mapping/crystal_mapping/tower_map_crystal_200cm_CEMCBarrel.txt";
   else if (!G4EEMCH::SETTING::USEHYBRID && !G4EEMCH::SETTING::USECEMCGeo)
-    mapping_eemc_1 << getenv("CALIBRATIONROOT") << "/CrystalCalorimeter/mapping/crystal_mapping/tower_map_purecrystal_200cm_SciGlassBarrel.txt";
+    mapping_eemc_1 << getenv("CALIBRATIONROOT") << "/CrystalCalorimeter/mapping/crystal_mapping/tower_map_purecrystal_185cm.txt";
   else if (!G4EEMCH::SETTING::USEHYBRID && G4EEMCH::SETTING::USECEMCGeo)
     mapping_eemc_1 << getenv("CALIBRATIONROOT") << "/CrystalCalorimeter/mapping/crystal_mapping/tower_map_purecrystal_200cm_CEMCBarrel.txt";
   else {
@@ -161,7 +161,7 @@ void EEMCH_Towers()
   else if (G4EEMCH::SETTING::USEHYBRID && G4EEMCH::SETTING::USECEMCGeo)
     mapping_eemc_1 << getenv("CALIBRATIONROOT") << "/CrystalCalorimeter/mapping/crystal_mapping/tower_map_crystal_200cm_CEMCBarrel.txt";
   else if (!G4EEMCH::SETTING::USEHYBRID && !G4EEMCH::SETTING::USECEMCGeo)
-    mapping_eemc_1 << getenv("CALIBRATIONROOT") << "/CrystalCalorimeter/mapping/crystal_mapping/tower_map_purecrystal_200cm_SciGlassBarrel.txt";
+    mapping_eemc_1 << getenv("CALIBRATIONROOT") << "/CrystalCalorimeter/mapping/crystal_mapping/tower_map_purecrystal_185cm.txt";
   else if (!G4EEMCH::SETTING::USEHYBRID && G4EEMCH::SETTING::USECEMCGeo)
     mapping_eemc_1 << getenv("CALIBRATIONROOT") << "/CrystalCalorimeter/mapping/crystal_mapping/tower_map_purecrystal_200cm_CEMCBarrel.txt";
 
