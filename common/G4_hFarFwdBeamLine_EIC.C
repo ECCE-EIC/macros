@@ -12,9 +12,13 @@
 #include <eicg4zdc/EICG4ZDCNtuple.h>
 #include <eicg4zdc/EICG4ZDCSubsystem.h>
 
+#include <eiceval/FarForwardEvaluator.h>
+
 #include <g4main/PHG4Reco.h>
 
 #include <TSystem.h>
+
+#include <fun4all/Fun4AllServer.h>
 
 R__LOAD_LIBRARY(libg4detectors.so)
 
@@ -42,6 +46,9 @@ namespace Enable
   bool HFARFWD_VIRTUAL_DETECTORS_IP8 = false;
 
   float HFARFWD_ION_ENERGY = 0;
+
+  bool FFR_EVAL = false;
+
 }  // namespace Enable
 
 namespace hFarFwdBeamLine
@@ -394,7 +401,9 @@ void hFarFwdDefineDetectorsIP6(PHG4Reco *g4Reco)
     detB0->SetActive(true);
     if (verbosity) detB0->Verbosity(verbosity);
     detB0->OverlapCheck(overlapCheck);
+
     detB0->SetMotherSubsystem(hFarFwdBeamLine::B0Magnet);
+
     g4Reco->registerSubsystem(detB0);
   }
 }
@@ -419,7 +428,7 @@ void hFarFwdDefineDetectorsIP8(PHG4Reco *g4Reco)
   //const int offMomDetNr = 3;
   //const double om_xCent[offMomDetNr] = {100, 100, 100};
   //const double om_zCent[offMomDetNr] = {4250, 4400, 4550};
-
+  
   const int offMomDetNr = 2;
   const double om_xCent[offMomDetNr] = {46, 49};
   const double om_zCent[offMomDetNr] = {3250, 3450};
@@ -449,7 +458,7 @@ void hFarFwdDefineDetectorsIP8(PHG4Reco *g4Reco)
   detZDCsurrogate->SuperDetector("ZDCsurrogate");
   detZDCsurrogate->set_double_param("place_x", PosFlip(120));
   detZDCsurrogate->set_double_param("place_y", 0);
-  detZDCsurrogate->set_double_param("place_z", 3350);
+  detZDCsurrogate->set_double_param("place_z", 3350 - hFarFwdBeamLine::enclosure_center);
   detZDCsurrogate->set_double_param("rot_y", AngleFlip(-0.035 * TMath::RadToDeg()));
   detZDCsurrogate->set_double_param("size_x", 60);
   detZDCsurrogate->set_double_param("size_y", 60);
@@ -462,13 +471,21 @@ void hFarFwdDefineDetectorsIP8(PHG4Reco *g4Reco)
   if (verbosity) detZDCsurrogate->Verbosity(verbosity);
   g4Reco->registerSubsystem(detZDCsurrogate);
 
-  EICG4ZDCSubsystem *detZDC = new EICG4ZDCSubsystem("EICG4ZDC");
-  detZDC->SetActive();
-  detZDC->set_double_param("place_z", 3350. + detZDCsurrogate_size_z);
-  detZDC->set_double_param("place_x", PosFlip(120.0));
-  detZDC->set_double_param("rot_y", AngleFlip(-0.035));
-  detZDC->OverlapCheck(overlapCheck);
-  g4Reco->registerSubsystem(detZDC);
+
+
+  if (Enable::ZDC_DISABLE_BLACKHOLE)
+  {
+
+    EICG4ZDCSubsystem *detZDC = new EICG4ZDCSubsystem("EICG4ZDC");
+    detZDC->SetActive();
+    detZDC->set_double_param("place_z", 3350. + detZDCsurrogate_size_z - hFarFwdBeamLine::enclosure_center);
+    detZDC->set_double_param("place_x", PosFlip(120.0));
+    detZDC->set_double_param("rot_y", AngleFlip(-0.035));
+    detZDC->SetMotherSubsystem(hFarFwdBeamLine::hFarFwdBeamLineEnclosure);
+    detZDC->OverlapCheck(overlapCheck);
+    g4Reco->registerSubsystem(detZDC);
+
+  }
 
   //------------------
   // Roman pot set #1
@@ -540,7 +557,6 @@ void hFarFwdDefineDetectorsIP8(PHG4Reco *g4Reco)
     detB0->set_double_param("thickness", 20);
     detB0->set_double_param("length", 0.1);
     detB0->set_string_param("material", "G4_Si");
-    detB0->set_double_param("place_x", PosFlip(21.2));
     detB0->set_double_param("place_y", 0);
     detB0->set_double_param("place_z", b0Mag_zLen / (b0DetNr + 1) * (i - b0DetNr / 2));  
     detB0->OverlapCheck(overlapCheck);
@@ -683,6 +699,31 @@ float MagFieldFlip(float Bfield){
 }
 
 
+//------------------------------------------
+
+void FFR_Eval(const std::string &outputfile)
+{
+
+  string ip_str;
+
+
+  if(Enable::IP6) {
+    ip_str = "IP6";
+  } else {
+    ip_str = "IP8";
+  }
+
+  int verbosity = std::max(Enable::VERBOSITY, Enable::EEMC_VERBOSITY);
+
+  Fun4AllServer *se = Fun4AllServer::instance();
+
+  FarForwardEvaluator *eval = new FarForwardEvaluator("FARFORWARDEVALUATOR", "FFR", outputfile.c_str(), ip_str);
+
+  eval->Verbosity(verbosity);
+  se->registerSubsystem(eval);
+
+  return;
+}
 
 
 

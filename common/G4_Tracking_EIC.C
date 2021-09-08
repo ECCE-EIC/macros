@@ -27,8 +27,10 @@ namespace G4TRACKING
 {
   bool DISPLACED_VERTEX = false;
   bool PROJECTION_EEMC = false;
+  bool PROJECTION_EHCAL = false;
   bool PROJECTION_CEMC = false;
   bool PROJECTION_BECAL = false;
+  bool PROJECTION_HCALOUT = false;
   bool PROJECTION_FEMC = false;
   bool PROJECTION_FHCAL = false;
   bool PROJECTION_LFHCAL = false;
@@ -119,6 +121,13 @@ void Tracking_Reco()
   {
     TRACKING::FastKalmanFilter->add_state_name("BECAL");
     TRACKING::ProjectionNames.insert("BECAL");
+  //-------------------------
+  // HCALOUT
+  //-------------------------
+  if (Enable::HCALOUT && G4TRACKING::PROJECTION_HCALOUT)
+  {
+    TRACKING::FastKalmanFilter->add_state_name("HCALOUT");
+    TRACKING::ProjectionNames.insert("HCALOUT");
   }
   //-------------------------
   // EEMC
@@ -127,6 +136,14 @@ void Tracking_Reco()
   {
     TRACKING::FastKalmanFilter->add_state_name("EEMC");
     TRACKING::ProjectionNames.insert("EEMC");
+  }
+  //-------------------------
+  // EHCAL
+  //-------------------------
+  if (Enable::EHCAL && G4TRACKING::PROJECTION_EHCAL)
+  {
+    TRACKING::FastKalmanFilter->add_state_name("EHCAL");
+    TRACKING::ProjectionNames.insert("EHCAL");
   }
 
   se->registerSubsystem(TRACKING::FastKalmanFilter);

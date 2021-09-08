@@ -82,8 +82,8 @@ void G4Init()
   if (Enable::TRACKING) TrackingInit();
 
   //Farforward/backward
-  if (Enable::HFARFWD_MAGNETS) hFarBwdBeamLineInit(); //Shouldnt this be far backward enables
-  if (Enable::HFARFWD_MAGNETS) hFarFwdBeamLineInit();
+  //if (Enable::HFARFWD_MAGNETS) hFarBwdBeamLineInit(); //Shouldnt this be far backward enables
+  //if (Enable::HFARFWD_MAGNETS) hFarFwdBeamLineInit();
 
   //Barrel
   //if (Enable::ALLSILICON) AllSiliconInit();
@@ -183,7 +183,9 @@ int G4Setup()
 
   //Barrel
   //if (Enable::ALLSILICON) AllSiliconSetup(g4Reco);
+
   if (Enable::TrackingService) radius = TrackingService(g4Reco, radius);
+
   if (Enable::RWELL) RWellSetup(g4Reco);
   if (Enable::FST) FSTSetup(g4Reco);
   if (Enable::CTTL) CTTLSetup(g4Reco);

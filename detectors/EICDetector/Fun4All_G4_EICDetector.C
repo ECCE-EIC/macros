@@ -258,7 +258,7 @@ int Fun4All_G4_EICDetector(
   //======================
   // Global options (enabled for all subsystems - if implemented)
   //  Enable::ABSORBER = true;
-    Enable::OVERLAPCHECK = true;
+  //  Enable::OVERLAPCHECK = true;
   //  Enable::VERBOSITY = 1;
 
   // whether to simulate the Be section of the beam pipe
@@ -279,9 +279,6 @@ int Fun4All_G4_EICDetector(
   Enable::RWELL = true;
   // barrel tracker
   Enable::TrackingService = true;
-  //Enable::ALLSILICON = true;
-  //Enable::ALLSILICON_ABSORBER = true;
-  //G4ALLSILICON::SETTING::geomVersion = 2;
   Enable::BARREL = true;
   // fst
   Enable::FST = true;
@@ -294,21 +291,16 @@ int Fun4All_G4_EICDetector(
 
   Enable::TRACKING = true;
   Enable::TRACKING_EVAL = Enable::TRACKING && true;
-  G4TRACKING::DISPLACED_VERTEX = false;  // this option exclude vertex in the track fitting and use RAVE to reconstruct primary and 2ndary vertexes
+  G4TRACKING::DISPLACED_VERTEX = true;  // this option exclude vertex in the track fitting and use RAVE to reconstruct primary and 2ndary vertexes
                                          // projections to calorimeters
   G4TRACKING::PROJECTION_EEMC = true;
-  G4TRACKING::PROJECTION_CEMC = false;
   G4TRACKING::PROJECTION_BECAL = true;
+  G4TRACKING::PROJECTION_EHCAL = true;
+  G4TRACKING::PROJECTION_CEMC = true;
+  G4TRACKING::PROJECTION_HCALOUT = true;
   G4TRACKING::PROJECTION_FEMC = true;
   G4TRACKING::PROJECTION_FHCAL = false;
   G4TRACKING::PROJECTION_LFHCAL = true;
-
-  Enable::CEMC = false;
-  //  Enable::CEMC_ABSORBER = true;
-  Enable::CEMC_CELL = Enable::CEMC && true;
-  Enable::CEMC_TOWER = Enable::CEMC_CELL && true;
-  Enable::CEMC_CLUSTER = Enable::CEMC_TOWER && true;
-  Enable::CEMC_EVAL = Enable::CEMC_CLUSTER && true;
 
   Enable::BECAL = true;
   Enable::BECAL_CELL    = Enable::BECAL && true;
@@ -354,12 +346,6 @@ int Fun4All_G4_EICDetector(
   Enable::DRCALO_EVAL = Enable::DRCALO_CLUSTER && false;
   G4TTL::SETTING::optionDR = 1;
 
-  Enable::FHCAL = false;
-  //  Enable::FHCAL_ABSORBER = true;
-  Enable::FHCAL_TOWER = Enable::FHCAL && true;
-  Enable::FHCAL_CLUSTER = Enable::FHCAL_TOWER && true;
-  Enable::FHCAL_EVAL = Enable::FHCAL_CLUSTER && true;
-
   Enable::LFHCAL = true;
   G4LFHCAL::SETTING::longer = true;
   G4LFHCAL::SETTING::asymmetric = true;
@@ -370,11 +356,6 @@ int Fun4All_G4_EICDetector(
   Enable::LFHCAL_EVAL = Enable::LFHCAL_CLUSTER && false;
 
   // EICDetector geometry - 'electron' direction
-  Enable::EEMC = false;
-  Enable::EEMC_TOWER = Enable::EEMC && true;
-  Enable::EEMC_CLUSTER = Enable::EEMC_TOWER && true;
-  Enable::EEMC_EVAL = Enable::EEMC_CLUSTER && true;
-
   Enable::EEMCH = true;
   G4EEMCH::SETTING::USECEMCGeo  = false;
   G4EEMCH::SETTING::USEHYBRID = false;
@@ -391,6 +372,8 @@ int Fun4All_G4_EICDetector(
   Enable::EHCAL_CLUSTER = Enable::EHCAL_TOWER && true;
   Enable::EHCAL_EVAL = Enable::EHCAL_CLUSTER && false;
 
+  Enable::FFR_EVAL = Enable::HFARFWD_MAGNETS && Enable::HFARFWD_VIRTUAL_DETECTORS && true;
+
   Enable::PLUGDOOR = false;
 
   // Other options
@@ -405,6 +388,10 @@ int Fun4All_G4_EICDetector(
   Enable::BLACKHOLE = true;
   //Enable::BLACKHOLE_SAVEHITS = false; // turn off saving of bh hits
   //BlackHoleGeometry::visible = true;
+  
+  // ZDC
+  // Enable::ZDC = true;
+  // Enable::ZDC_DISABLE_BLACKHOLE = true;
 
   // Enabling the event evaluator?
   Enable::EVENT_EVAL = true;
@@ -556,9 +543,12 @@ int Fun4All_G4_EICDetector(
 
   if (Enable::EEMC_EVAL) EEMC_Eval(outputroot + "_g4eemc_eval.root");
 
+  if (Enable::FFR_EVAL) FFR_Eval(outputroot + "_g4ffr_eval.root");
+
   if (Enable::FWDJETS_EVAL) Jet_FwdEval();
 
   if (Enable::USER) UserAnalysisInit();
+
 
   //--------------
   // Set up Input Managers
