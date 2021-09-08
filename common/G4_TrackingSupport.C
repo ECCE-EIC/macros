@@ -148,6 +148,7 @@ double TrackingServiceCone(ServiceProperties *object, PHG4Reco* g4Reco, double r
   {
     if (thickness[i] == 0) continue;
     cone = new PHG4ConeSubsystem(object->get_name(), G4TrackingService::subsysID);
+    cone->Verbosity(verbosity);
     cone->SetR1(innerRadiusSouth, innerRadiusSouth + thickness[i]);
     cone->SetR2(innerRadiusNorth, innerRadiusNorth + thickness[i]);
     cone->SetPlaceZ(object->get_z_south() + length/2 + G4TrackingService::GlobalOffset);
@@ -182,6 +183,7 @@ double TrackingServiceCylinder(ServiceProperties *object, PHG4Reco* g4Reco, doub
   {
     if (thickness[i] == 0) continue;
     cyl = new PHG4CylinderSubsystem(object->get_name(), G4TrackingService::subsysID);
+    cyl->Verbosity(verbosity);
     cyl->set_double_param("place_z", object->get_z_south() + length/2 + G4TrackingService::GlobalOffset);
     cyl->set_double_param("radius", innerRadius);
     cyl->set_double_param("length", length);

@@ -279,6 +279,7 @@ int Fun4All_G4_EICDetector(
   Enable::RWELL = true;
   // barrel tracker
   Enable::TrackingService = true;
+  Enable::TrackingService_VERBOSITY = INT_MAX - 10;
   Enable::BARREL = true;
   // fst
   Enable::FST = true;
