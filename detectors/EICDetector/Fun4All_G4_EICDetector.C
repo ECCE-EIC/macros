@@ -258,7 +258,7 @@ int Fun4All_G4_EICDetector(
   //======================
   // Global options (enabled for all subsystems - if implemented)
   //  Enable::ABSORBER = true;
-    Enable::OVERLAPCHECK = true;
+  //  Enable::OVERLAPCHECK = true;
   //  Enable::VERBOSITY = 1;
 
   // whether to simulate the Be section of the beam pipe
@@ -279,9 +279,6 @@ int Fun4All_G4_EICDetector(
   Enable::RWELL = true;
   // barrel tracker
   Enable::TrackingService = true;
-  //Enable::ALLSILICON = true;
-  //Enable::ALLSILICON_ABSORBER = true;
-  //G4ALLSILICON::SETTING::geomVersion = 2;
   Enable::BARREL = true;
   // fst
   Enable::FST = true;
@@ -300,13 +297,6 @@ int Fun4All_G4_EICDetector(
   G4TRACKING::PROJECTION_CEMC = true;
   G4TRACKING::PROJECTION_FEMC = true;
   G4TRACKING::PROJECTION_FHCAL = true;
-
-  Enable::CEMC = false;
-  //  Enable::CEMC_ABSORBER = true;
-  Enable::CEMC_CELL = Enable::CEMC && true;
-  Enable::CEMC_TOWER = Enable::CEMC_CELL && true;
-  Enable::CEMC_CLUSTER = Enable::CEMC_TOWER && true;
-  Enable::CEMC_EVAL = Enable::CEMC_CLUSTER && true;
 
   Enable::BECAL = true;
   Enable::BECAL_CELL    = Enable::BECAL && true;
@@ -352,12 +342,6 @@ int Fun4All_G4_EICDetector(
   Enable::DRCALO_EVAL = Enable::DRCALO_CLUSTER && false;
   G4TTL::SETTING::optionDR = 1;
 
-  Enable::FHCAL = false;
-  //  Enable::FHCAL_ABSORBER = true;
-  Enable::FHCAL_TOWER = Enable::FHCAL && true;
-  Enable::FHCAL_CLUSTER = Enable::FHCAL_TOWER && true;
-  Enable::FHCAL_EVAL = Enable::FHCAL_CLUSTER && true;
-
   Enable::LFHCAL = true;
   G4LFHCAL::SETTING::longer = true;
   G4LFHCAL::SETTING::asymmetric = true;
@@ -368,11 +352,6 @@ int Fun4All_G4_EICDetector(
   Enable::LFHCAL_EVAL = Enable::LFHCAL_CLUSTER && false;
 
   // EICDetector geometry - 'electron' direction
-  Enable::EEMC = false;
-  Enable::EEMC_TOWER = Enable::EEMC && true;
-  Enable::EEMC_CLUSTER = Enable::EEMC_TOWER && true;
-  Enable::EEMC_EVAL = Enable::EEMC_CLUSTER && true;
-
   Enable::EEMCH = true;
   G4EEMCH::SETTING::USECEMCGeo  = false;
   G4EEMCH::SETTING::USEHYBRID = false;

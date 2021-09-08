@@ -36,9 +36,6 @@ void DIRCSetup(PHG4Reco* g4Reco)
   bool OverlapCheck = Enable::OVERLAPCHECK || Enable::DIRC_OVERLAPCHECK;
   int verbosity = std::max(Enable::VERBOSITY, Enable::DIRC_VERBOSITY);
 
-  double z = 185;
-  double dz = 40;
-
   G4EicDircSubsystem *dircSubsys = new G4EicDircSubsystem("hpDIRC");
   dircSubsys->SuperDetector("hpDIRC");
   //dircSubsys->set_double_param("place_z", z + dz * 0.5);// relative position to mother vol.
