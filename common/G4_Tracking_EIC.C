@@ -29,9 +29,11 @@ namespace G4TRACKING
   bool PROJECTION_EEMC = false;
   bool PROJECTION_EHCAL = false;
   bool PROJECTION_CEMC = false;
+  bool PROJECTION_BECAL = false;
   bool PROJECTION_HCALOUT = false;
   bool PROJECTION_FEMC = false;
   bool PROJECTION_FHCAL = false;
+  bool PROJECTION_LFHCAL = false;
 }  // namespace G4TRACKING
 
 //-----------------------------------------------------------------------------//
@@ -97,6 +99,14 @@ void Tracking_Reco()
     TRACKING::ProjectionNames.insert("FHCAL");
   }
   //-------------------------
+  // LFHCAL
+  //-------------------------
+  if (Enable::LFHCAL && G4TRACKING::PROJECTION_LFHCAL)
+  {
+    TRACKING::FastKalmanFilter->add_state_name("LFHCAL");
+    TRACKING::ProjectionNames.insert("LFHCAL");
+  }
+  //-------------------------
   // CEMC
   //-------------------------
   if (Enable::CEMC && G4TRACKING::PROJECTION_CEMC)
@@ -104,6 +114,13 @@ void Tracking_Reco()
     TRACKING::FastKalmanFilter->add_state_name("CEMC");
     TRACKING::ProjectionNames.insert("CEMC");
   }
+  //-------------------------
+  // BECAL
+  //-------------------------
+  if (Enable::BECAL && G4TRACKING::PROJECTION_BECAL)
+  {
+    TRACKING::FastKalmanFilter->add_state_name("BECAL");
+    TRACKING::ProjectionNames.insert("BECAL");
   //-------------------------
   // HCALOUT
   //-------------------------
