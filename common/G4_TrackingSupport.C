@@ -152,7 +152,7 @@ double TrackingServiceCone(ServiceProperties *object, PHG4Reco* g4Reco, double r
     cone->SetR1(innerRadiusSouth, innerRadiusSouth + thickness[i]);
     cone->SetR2(innerRadiusNorth, innerRadiusNorth + thickness[i]);
     cone->SetPlaceZ(object->get_z_south() + length/2 + G4TrackingService::GlobalOffset);
-    cone->SetZlength(length);
+    cone->SetZlength(length/2);
     cone->SetMaterial(G4TrackingService::materials[i].first);
     cone->SuperDetector("TrackingService");
     if (AbsorberActive) cone->SetActive();
@@ -205,16 +205,16 @@ double TrackingService(PHG4Reco* g4Reco, double radius)
 {
   vector<ServiceProperties*> cylinders, cones;
 
-  cylinders.push_back(new ServiceProperties("ETrackingCylinderService", 1, 0, 0.01, 0.1, 1, -80, -50, 10.75, 10.75));
-  cylinders.push_back(new ServiceProperties("BTrackingCylinderService_1", 0.1, 0, 0.001, 0.01, 0.1, -50, 50, 10.75, 10.75));
-  cylinders.push_back(new ServiceProperties("BTrackingCylinderService_2", 0.1, 0, 0.001, 0.01, 0.1, -40, 40, 7, 7));
-  cylinders.push_back(new ServiceProperties("BTrackingCylinderService_3", 0.1, 0, 0.001, 0.01, 0.1, -30, 30, 5, 5));
-  cylinders.push_back(new ServiceProperties("HTrackingCylinderService", 1, 0, 0.01, 0.1, 1, 50, 80, 10.75, 10.75));
- 
-  cones.push_back(new ServiceProperties("ETrackingConeService_1", 1, 0, 0.01, 0.1, 1, -50, -30, 10.75, 7));
-  cones.push_back(new ServiceProperties("ETrackingConeService_2", 1, 0, 0.01, 0.1, 1, -30, -20, 7, 5));
-  cones.push_back(new ServiceProperties("HTrackingConeService_1", 1, 0, 0.01, 0.1, 1, 30, 50, 7, 10.75));
-  cones.push_back(new ServiceProperties("HTrackingConeService_2", 1, 0, 0.01, 0.1, 1, 20, 30, 5, 7));
+  cylinders.push_back(new ServiceProperties("ETrackingCylinderService", 1, 0, 0.01, 0.1, 1, -200, -57, 67, 0));
+  cylinders.push_back(new ServiceProperties("BTrackingCylinderService_1", 0.1, 0, 0.001, 0.01, 0.1, -57, 57, 65, 0));
+  cylinders.push_back(new ServiceProperties("BTrackingCylinderService_2", 0.1, 0, 0.001, 0.01, 0.1, -34, 34, 24, 0));
+  cylinders.push_back(new ServiceProperties("BTrackingCylinderService_3", 0.1, 0, 0.001, 0.01, 0.1, -18, 18, 7.5, 0));
+  cylinders.push_back(new ServiceProperties("HTrackingCylinderService", 1, 0, 0.01, 0.1, 1, 57, 200, 67, 0));
+
+  cones.push_back(new ServiceProperties("ETrackingConeService_1", 1, 0, 0.01, 0.1, 1, -57, -34, 67, 24));
+  cones.push_back(new ServiceProperties("ETrackingConeService_2", 1, 0, 0.01, 0.1, 1, -34, -18, 24, 7.5));
+  cones.push_back(new ServiceProperties("HTrackingConeService_1", 1, 0, 0.01, 0.1, 1, 34, 57, 24, 67));
+  cones.push_back(new ServiceProperties("HTrackingConeService_2", 1, 0, 0.01, 0.1, 1, 18, 34, 7.5, 24));
 
   for (ServiceProperties *cylinder : cylinders) radius += TrackingServiceCylinder(cylinder, g4Reco, radius); 
   for (ServiceProperties *cone : cones) radius += TrackingServiceCone(cone, g4Reco, radius);
