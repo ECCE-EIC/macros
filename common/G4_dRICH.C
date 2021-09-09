@@ -41,12 +41,12 @@ void RICHSetup(PHG4Reco* g4Reco)
   bool OverlapCheck = Enable::OVERLAPCHECK || Enable::RICH_OVERLAPCHECK;
   int verbosity = std::max(Enable::VERBOSITY, Enable::RICH_VERBOSITY);
 
-  double z = 185;
-  double dz = 40;
+  double z = 185; //Start of dRICH
+  double dz = 100; //Length of dRICH
 
   EICG4dRICHSubsystem *drichSubsys = new EICG4dRICHSubsystem("dRICh");
-  drichSubsys->SetGeometryFile(string(getenv("CALIBRATIONROOT")) + "/dRICH/mapping/drich-g4model.txt");
-  drichSubsys->set_double_param("place_z", z + dz * 0.5);// relative position to mother vol.
+  drichSubsys->SetGeometryFile(string(getenv("CALIBRATIONROOT")) + "/dRICH/mapping/drich-g4model_v2.txt");
+  drichSubsys->set_double_param("place_z", z + dz*0.5);// relative position to mother vol.
   drichSubsys->OverlapCheck(OverlapCheck);
   drichSubsys->Verbosity(verbosity);
   drichSubsys->SetActive();
