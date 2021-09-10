@@ -52,7 +52,7 @@ void DIRCSetup(PHG4Reco* g4Reco)
   dircSubsys->set_double_param("BarL_length", 122.5 * Enable::DIRC_SCALE);
   dircSubsys->set_double_param("BarS_length", 56.0 * Enable::DIRC_SCALE);
   dircSubsys->set_double_param("Mirror_height", 2.0 * Enable::DIRC_SCALE);
-  dircSubsys->set_double_param("z_shift", -40 * Enable::DIRC_SCALE);
+  dircSubsys->set_double_param("z_shift", -45 * Enable::DIRC_SCALE);
   dircSubsys->set_int_param("Geom_type", 0); // 0-whole DIRC, 1-one bar box
   dircSubsys->set_int_param("Lens_id", 3); // 3- 3-layer spherical lens
   dircSubsys->set_int_param("MCP_rows", 6);
