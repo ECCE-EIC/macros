@@ -82,11 +82,10 @@ void G4Init()
   if (Enable::TRACKING) TrackingInit();
 
   //Farforward/backward
-  //if (Enable::HFARFWD_MAGNETS) hFarBwdBeamLineInit(); //Shouldnt this be far backward enables
-  //if (Enable::HFARFWD_MAGNETS) hFarFwdBeamLineInit();
+  if (Enable::HFARFWD_MAGNETS) hFarBwdBeamLineInit(); //Shouldnt this be far backward enables
+  if (Enable::HFARFWD_MAGNETS) hFarFwdBeamLineInit();
 
   //Barrel
-  //if (Enable::ALLSILICON) AllSiliconInit();
   if (Enable::TrackingService) TrackingServiceInit(); 
   if (Enable::BARREL) BarrelInit();
   if (Enable::RWELL) RWellInit();
@@ -182,8 +181,6 @@ int G4Setup()
   if (Enable::HFARBWD_VIRTUAL_DETECTORS_IP8) hFarBwdDefineDetectorsIP8(g4Reco);
 
   //Barrel
-  //if (Enable::ALLSILICON) AllSiliconSetup(g4Reco);
-
   if (Enable::TrackingService) radius = TrackingService(g4Reco, radius);
 
   if (Enable::RWELL) RWellSetup(g4Reco);
