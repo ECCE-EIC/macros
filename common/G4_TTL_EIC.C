@@ -44,7 +44,19 @@ namespace G4TTL
     int optionGeo   = 1;
     int optionGran  = 1;
   }  // namespace SETTING
-}  // namespace G4FHCAL
+
+
+
+  // 2, LGAD based ToF by Wei Li:
+  // Present the recent simulation studies and detector layout for the LGAD based ToF,
+  // which can be used as an outer tracker. The current detector can reach around 30 micron spatial
+  // resolution with 500 micron AC-LGAD sensor.
+  // This detector can provide better coverage and provide further constraints in track
+  // reconstruction within high pseudorapidity regions.
+
+  const double PositionResolution(30e-4);
+
+}  // namespace G4TTL
 
 
 //-----------------------------------------------------------------------------------//
@@ -192,6 +204,21 @@ int make_forward_station(string name, PHG4Reco *g4Reco,
   ttl->OverlapCheck(false);
   
   g4Reco->registerSubsystem(ttl);
+
+
+  if (TRACKING::FastKalmanFilter)
+  {
+    TRACKING::FastKalmanFilter->add_phg4hits(string("G4HIT_") + name,           //      const std::string& phg4hitsNames,
+                                             PHG4TrackFastSim::Vertical_Plane,  //      const DETECTOR_TYPE phg4dettype,
+                                             G4TTL::PositionResolution,           //      const float radres,
+                                             G4TTL::PositionResolution,           //      const float phires,
+                                             tSilicon / sqrt(12.),              //      const float lonres, *ignored in plane detector*
+                                             1,                                 //      const float eff,
+                                             0);                                //      const float noise
+    TRACKING::FastKalmanFilter->add_zplane_state(name, zpos);
+    TRACKING::ProjectionNames.insert(name);
+  }
+
   return 0;
 }
 
@@ -251,6 +278,20 @@ int make_forward_station_basic(string name, PHG4Reco *g4Reco,
   ttl->get_geometry().AddLayer("Support2", "G4_GRAPHITE", 50 * um, false, 100);
 
   g4Reco->registerSubsystem(ttl);
+
+
+  if (TRACKING::FastKalmanFilter)
+  {
+    TRACKING::FastKalmanFilter->add_phg4hits(string("G4HIT_") + name,           //      const std::string& phg4hitsNames,
+                                             PHG4TrackFastSim::Vertical_Plane,  //      const DETECTOR_TYPE phg4dettype,
+                                             G4TTL::PositionResolution,           //      const float radres,
+                                             G4TTL::PositionResolution,           //      const float phires,
+                                             tSilicon / sqrt(12.),              //      const float lonres, *ignored in plane detector*
+                                             1,                                 //      const float eff,
+                                             0);                                //      const float noise
+    TRACKING::FastKalmanFilter->add_zplane_state(name, zpos);
+    TRACKING::ProjectionNames.insert(name);
+  }
   return 0;
 }
 
@@ -274,6 +315,22 @@ int make_barrel_layer(string name, PHG4Reco *g4Reco,
   ttl->OverlapCheck(false);
 
   g4Reco->registerSubsystem(ttl);
+
+
+  if (TRACKING::FastKalmanFilter)
+  {
+    TRACKING::FastKalmanFilter->add_phg4hits(string("G4HIT_") + name,     //      const std::string& phg4hitsNames,
+                                             PHG4TrackFastSim::Cylinder,  //      const DETECTOR_TYPE phg4dettype,
+                                             tSilicon / sqrt(12.),        //      const float radres,
+                                             G4TTL::PositionResolution,     //      const float phires,
+                                             G4TTL::PositionResolution,     //      const float lonres,
+                                             1,                           //      const float eff,
+                                             0);                          //      const float noise
+    TRACKING::FastKalmanFilter->add_cylinder_state(name, radius);
+
+    TRACKING::ProjectionNames.insert(name);
+  }
+
   return 0;
 }
 
@@ -319,6 +376,21 @@ int make_barrel_layer_basic(string name, PHG4Reco *g4Reco,
     g4Reco->registerSubsystem(cyl);
     currRadius = currRadius+thickness[l];
 //     cout << currRadius << endl;
+  }
+
+
+  if (TRACKING::FastKalmanFilter)
+  {
+    TRACKING::FastKalmanFilter->add_phg4hits(string("G4HIT_") + name,     //      const std::string& phg4hitsNames,
+                                             PHG4TrackFastSim::Cylinder,  //      const DETECTOR_TYPE phg4dettype,
+                                             tSilicon / sqrt(12.),        //      const float radres,
+                                             G4TTL::PositionResolution,     //      const float phires,
+                                             G4TTL::PositionResolution,     //      const float lonres,
+                                             1,                           //      const float eff,
+                                             0);                          //      const float noise
+    TRACKING::FastKalmanFilter->add_cylinder_state(name, radius);
+
+    TRACKING::ProjectionNames.insert(name);
   }
 
   return 0;

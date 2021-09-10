@@ -40,7 +40,34 @@ namespace G4TRACKING
 void TrackingInit()
 {
   TRACKING::FastKalmanFilter = new PHG4TrackFastSim("PHG4TrackFastSim");
+  TRACKING::FastKalmanFilterSiliconTrack = new PHG4TrackFastSim("FastKalmanFilterSiliconTrack");
+  TRACKING::FastKalmanFilterInnerTrack = new PHG4TrackFastSim("FastKalmanFilterInnerTrack");
 }
+
+void InitFastKalmanFilter(PHG4TrackFastSim *kalman_filter)
+{
+  //  kalman_filter->Smearing(false);
+  if (G4TRACKING::DISPLACED_VERTEX)
+  {
+    // do not use truth vertex in the track fitting,
+    // which would lead to worse momentum resolution for prompt tracks
+    // but this allows displaced track analysis including DCA and vertex finding
+    kalman_filter->set_use_vertex_in_fitting(false);
+    kalman_filter->set_vertex_xy_resolution(0);  // do not smear the vertex used in the built-in DCA calculation
+    kalman_filter->set_vertex_z_resolution(0);   // do not smear the vertex used in the built-in DCA calculation
+    kalman_filter->enable_vertexing(true);       // enable vertex finding and fitting
+  }
+  else
+  {
+    // constraint to a primary vertex and use it as part of the fitting level arm
+    kalman_filter->set_use_vertex_in_fitting(true);
+    kalman_filter->set_vertex_xy_resolution(50e-4);
+    kalman_filter->set_vertex_z_resolution(50e-4);
+  }
+
+  kalman_filter->set_sub_top_node_name("TRACKS");
+}
+
 //-----------------------------------------------------------------------------//
 void Tracking_Reco()
 {
@@ -57,27 +84,8 @@ void Tracking_Reco()
     exit(1);
   }
 
+  InitFastKalmanFilter(TRACKING::FastKalmanFilter);
   TRACKING::FastKalmanFilter->Verbosity(verbosity);
-  //  TRACKING::FastKalmanFilter->Smearing(false);
-  if (G4TRACKING::DISPLACED_VERTEX)
-  {
-    // do not use truth vertex in the track fitting,
-    // which would lead to worse momentum resolution for prompt tracks
-    // but this allows displaced track analysis including DCA and vertex finding
-    TRACKING::FastKalmanFilter->set_use_vertex_in_fitting(false);
-    TRACKING::FastKalmanFilter->set_vertex_xy_resolution(0);  // do not smear the vertex used in the built-in DCA calculation
-    TRACKING::FastKalmanFilter->set_vertex_z_resolution(0);   // do not smear the vertex used in the built-in DCA calculation
-    TRACKING::FastKalmanFilter->enable_vertexing(true);       // enable vertex finding and fitting
-  }
-  else
-  {
-    // constraint to a primary vertex and use it as part of the fitting level arm
-    TRACKING::FastKalmanFilter->set_use_vertex_in_fitting(true);
-    TRACKING::FastKalmanFilter->set_vertex_xy_resolution(50e-4);
-    TRACKING::FastKalmanFilter->set_vertex_z_resolution(50e-4);
-  }
-
-  TRACKING::FastKalmanFilter->set_sub_top_node_name("TRACKS");
   TRACKING::FastKalmanFilter->set_trackmap_out_name(TRACKING::TrackNodeName);
 
   //-------------------------
@@ -148,6 +156,29 @@ void Tracking_Reco()
   }
 
   se->registerSubsystem(TRACKING::FastKalmanFilter);
+
+  // next, tracks with partial usage of the tracker stack
+  if (TRACKING::FastKalmanFilterInnerTrack == nullptr)
+  {
+    cout << __PRETTY_FUNCTION__ << " : missing the expected initialization for TRACKING::FastKalmanFilterInnerTrack." << endl;
+    exit(1);
+  }
+  InitFastKalmanFilter(TRACKING::FastKalmanFilterInnerTrack);
+  TRACKING::FastKalmanFilterInnerTrack->Verbosity(verbosity);
+  TRACKING::FastKalmanFilterInnerTrack->set_trackmap_out_name("InnerTrackMap");
+  TRACKING::FastKalmanFilterInnerTrack->enable_vertexing(false);
+  se->registerSubsystem(TRACKING::FastKalmanFilterInnerTrack);
+
+  if (TRACKING::FastKalmanFilterSiliconTrack == nullptr)
+  {
+    cout << __PRETTY_FUNCTION__ << " : missing the expected initialization for TRACKING::FastKalmanFilterSiliconTrack." << endl;
+    exit(1);
+  }
+  InitFastKalmanFilter(TRACKING::FastKalmanFilterSiliconTrack);
+  TRACKING::FastKalmanFilterSiliconTrack->Verbosity(verbosity);
+  TRACKING::FastKalmanFilterSiliconTrack->set_trackmap_out_name("SiliconTrackMap");
+  TRACKING::FastKalmanFilterSiliconTrack->enable_vertexing(false);
+  se->registerSubsystem(TRACKING::FastKalmanFilterSiliconTrack);
   return;
 }
 
