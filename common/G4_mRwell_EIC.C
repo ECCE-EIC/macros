@@ -379,6 +379,23 @@ double RWellSetup(PHG4Reco* g4Reco,
                                                55e-4,                                              //      const float lonres,
                                                1,                                                  //      const float eff,
                                                0);                                                 //      const float noise
+    if (TRACKING::FastKalmanFilterInnerTrack)
+      TRACKING::FastKalmanFilterInnerTrack->add_phg4hits(string("G4HIT_") + string(Form("RWELL_%d", ilyr)),  //      const std::string& phg4hitsNames,
+                                               PHG4TrackFastSim::Cylinder,                         //      const DETECTOR_TYPE phg4dettype,
+                                               1. / sqrt(12.),                                     //      const float radres,
+                                               55e-4,                                              //      const float phires,
+                                               55e-4,                                              //      const float lonres,
+                                               1,                                                  //      const float eff,
+                                               0);                                                 //      const float noise
+    // only for layers that is close to the silicon tracker system, use in FastKalmanFilterSiliconTrack
+    if (TRACKING::FastKalmanFilterSiliconTrack and RWELL::nom_radius[ilyr] < 50)
+      TRACKING::FastKalmanFilterSiliconTrack->add_phg4hits(string("G4HIT_") + string(Form("RWELL_%d", ilyr)),  //      const std::string& phg4hitsNames,
+                                               PHG4TrackFastSim::Cylinder,                         //      const DETECTOR_TYPE phg4dettype,
+                                               1. / sqrt(12.),                                     //      const float radres,
+                                               55e-4,                                              //      const float phires,
+                                               55e-4,                                              //      const float lonres,
+                                               1,                                                  //      const float eff,
+                                               0);                                                 //      const float noise
   }
   return radius;  //cm
 }
