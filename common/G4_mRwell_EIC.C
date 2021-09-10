@@ -30,7 +30,7 @@ namespace RWELL
   //  const double nom_length[RWELL::n_layer] = {300.0, 300.0};
 
   const int n_layer = 3;  //tracker layers
-  const double nom_radius[RWELL::n_layer] = {44, 47, 67.4};
+  const double nom_radius[RWELL::n_layer] = {44.2, 47.4, 67.4};
   const double nom_driftgap[RWELL::n_layer] = {0.4, 0.4, 0.4};
   const double nom_length[RWELL::n_layer] = {140, 150, 280.0};
 }  //namespace RWELL
