@@ -36,7 +36,7 @@ int Fun4All_G4_EICDetector(
   // Fun4All server
   //---------------
   Fun4AllServer *se = Fun4AllServer::instance();
-  se->Verbosity(INT_MAX - 10);
+  se->Verbosity(0);
   //Opt to print all random seed used for debugging reproducibility. Comment out to reduce stdout prints.
   //PHRandomSeed::Verbosity(1);
 
@@ -279,7 +279,7 @@ int Fun4All_G4_EICDetector(
   Enable::RWELL = true;
   // barrel tracker
   Enable::TrackingService = true;
-  Enable::TrackingService_VERBOSITY = INT_MAX - 10;
+  // Enable::TrackingService_VERBOSITY = INT_MAX - 10;
   Enable::BARREL = true;
   // fst
   Enable::FST = true;
