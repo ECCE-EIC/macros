@@ -33,6 +33,7 @@ void MagnetFieldInit()
   if (G4MAGNET::magfield.empty())
   {
     G4MAGNET::magfield = string(getenv("CALIBRATIONROOT")) + string("/Field/Map/sPHENIX.2d.root");
+cout << "Using magnetic field map: " << G4MAGNET::magfield << endl;
   }
 }
 

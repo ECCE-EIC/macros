@@ -43,7 +43,7 @@ void mRICHSetup(PHG4Reco *g4Reco, const int detectorSetup = 1,  //1: full setup;
   mRICH->set_int_param("detectorSetup", detectorSetup);
   mRICH->set_int_param("subsystemSetup", mRICHsystemSetup);
   mRICH->UseCalibFiles(PHG4DetectorSubsystem::xml);
-  mRICH->SetCalibrationFileDir(string(getenv("CALIBRATIONROOT")) + string("/mRICH/Geometry/"));
+  mRICH->SetCalibrationFileDir(string(getenv("CALIBRATIONROOT")) + string("/mRICH/GeometryV2/"));
   mRICH->OverlapCheck(OverlapCheck);
   //  mRICH->Verbosity(5);
 
