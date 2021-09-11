@@ -2,10 +2,10 @@
 #define MACRO_EventEvaluator_C
 
 #include <fun4all/Fun4AllServer.h>
-#include <g4eval/EventEvaluator.h>
+#include <eiceval/EventEvaluatorEIC.h>
 
 R__LOAD_LIBRARY(libfun4all.so)
-R__LOAD_LIBRARY(libg4eval.so)
+R__LOAD_LIBRARY(libeiceval.so)
 
 namespace Enable
 {
@@ -23,8 +23,8 @@ void Event_Eval(const std::string &filename)
 {
   Fun4AllServer *se = Fun4AllServer::instance();
 
-  EventEvaluator *eval = new EventEvaluator("EVENTEVALUATOR", filename);
-  eval->set_reco_tracing_energy_threshold(EVENT_EVALUATOR::EnergyThreshold);
+  EventEvaluatorEIC *eval = new EventEvaluatorEIC("EVENTEVALUATOR", filename);
+  eval->set_reco_tracing_energy_thresholdMC(EVENT_EVALUATOR::EnergyThreshold);
   eval->Verbosity(EVENT_EVALUATOR::Verbosity);
 
   if (Enable::TRACKING)
@@ -41,8 +41,10 @@ void Event_Eval(const std::string &filename)
   if (Enable::HCALIN_CLUSTER) eval->set_do_HCALIN(true);
   if (Enable::HCALOUT_CLUSTER) eval->set_do_HCALOUT(true);
   if (Enable::FHCAL_CLUSTER) eval->set_do_FHCAL(true);
-  if (Enable::FHCAL_CLUSTER || Enable::FEMC_CLUSTER || Enable::EEMC_CLUSTER)
-    eval->set_do_CLUSTERS(true);
+  if (Enable::FHCAL_CLUSTER || Enable::FEMC_CLUSTER || Enable::EEMC_CLUSTER) eval->set_do_CLUSTERS(true);
+  if (Enable::DRCALO_CLUSTER) eval->set_do_DRCALO(true);
+  if (Enable::LFHCAL_CLUSTER) eval->set_do_LFHCAL(true);
+  if (Enable::BECAL) eval->set_do_BECAL(true);
 
   eval->set_do_MCPARTICLES(true);
   eval->set_do_HEPMC(true);
