@@ -48,14 +48,14 @@ void BGEM_Init()
 
 void EGEMSetup(PHG4Reco *g4Reco)
 {
-  make_GEM_station("EGEM_0", g4Reco, -160.0, -1.65, -3.5);
-//  make_GEM_station("EGEM_1", g4Reco, -190.0, -1.85, -3.6); // replaced by LGAD-TTL
+  make_GEM_station("EGEM_0", g4Reco, -120.0, -1.68, -3.5);
+  //  make_GEM_station("EGEM_1", g4Reco, -190.0, -1.85, -3.6); // replaced by LGAD-TTL
 }
 
 void FGEMSetup(PHG4Reco *g4Reco, const int N_Sector = 8)
 {
   make_GEM_station("FGEM_0", g4Reco, 160.0, 1.65, 3.5, N_Sector);
-//  make_GEM_station("FGEM_1", g4Reco, 285.0, 1.2, 3.5, N_Sector);// replaced by LGAD-TTL
+  //  make_GEM_station("FGEM_1", g4Reco, 285.0, 1.2, 3.5, N_Sector);// replaced by LGAD-TTL
 }
 
 //! Add drift layers to mini TPC
@@ -169,10 +169,19 @@ int make_GEM_station(string name, PHG4Reco *g4Reco, double zpos, double etamin,
     TRACKING::FastKalmanFilter->add_phg4hits(string("G4HIT_") + name,           //      const std::string& phg4hitsNames,
                                              PHG4TrackFastSim::Vertical_Plane,  //      const DETECTOR_TYPE phg4dettype,
                                              1. / sqrt(12.),                    //      const float radres,
-                                             70e-4,                             //      const float phires,
+                                             50e-4,                             //      const float phires,
                                              100e-4,                            //      const float lonres,
                                              1,                                 //      const float eff,
                                              0);                                //      const float noise
+
+  if (TRACKING::FastKalmanFilterInnerTrack)
+    TRACKING::FastKalmanFilterInnerTrack->add_phg4hits(string("G4HIT_") + name,           //      const std::string& phg4hitsNames,
+                                                       PHG4TrackFastSim::Vertical_Plane,  //      const DETECTOR_TYPE phg4dettype,
+                                                       1. / sqrt(12.),                    //      const float radres,
+                                                       50e-4,                             //      const float phires,
+                                                       100e-4,                            //      const float lonres,
+                                                       1,                                 //      const float eff,
+                                                       0);                                //      const float noise
 
   return 0;
 }
