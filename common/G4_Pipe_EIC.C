@@ -28,6 +28,7 @@ namespace G4PIPE
   // directly implimenting the central Be section in G4 cylinder for max speed simulation in the detector region.
   // The jointer lip structure of the pipe R = 3.2cm x L=5mm is ignored here
   double be_pipe_radius = 3.1000;
+  double Au_coating_thickness = 2e-4; // 2um Au coating
   double be_pipe_thickness = 3.1762 - be_pipe_radius;  // 760 um for sPHENIX
   double be_pipe_length_plus = 66.8;                   // +z beam pipe extend.
   double be_pipe_length_neg = -79.8;                   // -z beam pipe extend.
@@ -78,35 +79,34 @@ double Pipe(PHG4Reco* g4Reco,
   cyl->set_double_param("length", be_pipe_length);
   cyl->set_double_param("place_z", be_pipe_center);
   cyl->set_string_param("material", "G4_Galactic");
-  cyl->set_double_param("thickness", be_pipe_radius- 2e-4);
+  cyl->set_double_param("thickness", G4PIPE::be_pipe_radius- G4PIPE::Au_coating_thickness);
   cyl->SuperDetector("PIPE");
   cyl->OverlapCheck(true);
-  if (absorberactive) cyl->SetActive();
   g4Reco->registerSubsystem(cyl);
 
   // 2um Au coating for X-ray absorption
   cyl = new PHG4CylinderSubsystem("Au_PIPE", 2);
-  cyl->set_double_param("radius", be_pipe_radius - 2e-4);
+  cyl->set_double_param("radius", G4PIPE::be_pipe_radius - G4PIPE::Au_coating_thickness);
   cyl->set_int_param("lengthviarapidity", 0);
   cyl->set_double_param("length", be_pipe_length);
   cyl->set_double_param("place_z", be_pipe_center);
   cyl->set_string_param("material", "G4_Au");
-  cyl->set_double_param("thickness", 2e-4);
+  cyl->set_double_param("thickness", G4PIPE::Au_coating_thickness);
   cyl->SuperDetector("PIPE");
   cyl->OverlapCheck(true);
-  cyl->SetActive(AbsorberActive);
+  if (AbsorberActive) cyl->SetActive();
   g4Reco->registerSubsystem(cyl);
 
   cyl = new PHG4CylinderSubsystem("BE_PIPE", 1);
-  cyl->set_double_param("radius", be_pipe_radius);
+  cyl->set_double_param("radius", G4PIPE::be_pipe_radius);
   cyl->set_int_param("lengthviarapidity", 0);
   cyl->set_double_param("length", be_pipe_length);
   cyl->set_double_param("place_z", be_pipe_center);
   cyl->set_string_param("material", "G4_Be");
-  cyl->set_double_param("thickness", be_pipe_thickness);
+  cyl->set_double_param("thickness", G4PIPE::be_pipe_thickness);
   cyl->SuperDetector("PIPE");
   cyl->OverlapCheck(true);
-  cyl->SetActive(AbsorberActive);
+  if (AbsorberActive) cyl->SetActive();
   g4Reco->registerSubsystem(cyl);
 
   radius = G4PIPE::be_pipe_radius + G4PIPE::be_pipe_thickness;
