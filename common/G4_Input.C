@@ -121,51 +121,57 @@ namespace Input
       exit(1);
     }
 
+    HepMCGen->PHHepMCGenHelper_Verbosity(10);
+
     //25mrad x-ing as in EIC CDR
     const double EIC_hadron_crossing_angle = 25e-3;
+    // beta* for 275*x18 collisions
+    // Table 4 of
+    // https://github.com/eic/documents/blob/master/reports/general/Note-Simulations-BeamEffects.pdf
+    const double beta_star_p_h = 80;
+    const double beta_star_p_v = 7.1;
+    const double beta_star_e_h = 59;
+    const double beta_star_e_v = 5.7;
+    // Table 1-2 of
+    // https://github.com/eic/documents/blob/master/reports/general/Note-Simulations-BeamEffects.pdf
+    const double beta_crab_p = 1300e2;
+    const double beta_crab_e = 150e2;
 
     HepMCGen->set_beam_direction_theta_phi(
         EIC_hadron_crossing_angle,  // beamA_theta
-        M_PI,                          // beamA_phi
+        M_PI,                       // beamA_phi
         M_PI,                       // beamB_theta
         0                           // beamB_phi
     );
+    // Table 4 of
+    // https://github.com/eic/documents/blob/master/reports/general/Note-Simulations-BeamEffects.pdf
     HepMCGen->set_beam_angular_divergence_hv(
-        119e-6, 119e-6,  // proton beam divergence horizontal & vertical, as in EIC CDR Table 1.1
-        211e-6, 152e-6   // electron beam divergence horizontal & vertical, as in EIC CDR Table 1.1
+        150e-6, 150e-6,  // proton beam divergence horizontal & vertical
+        202e-6, 187e-6   // electron beam divergence horizontal & vertical
     );
 
+    // vertex shape from beam_bunch_sim
+    HepMCGen->use_beam_bunch_sim(true);
+
     // angular kick within a bunch as result of crab cavity
-    // using an naive assumption of transfer matrix from the cavity to IP,
-    // which is NOT yet validated with accelerator optics simulations!
-    const double z_hadron_cavity = 52e2;  // CDR Fig 3.3
-    const double z_e_cavity = 38e2;       // CDR Fig 3.2
+    // Eq 5 of
+    // https://github.com/eic/documents/blob/master/reports/general/Note-Simulations-BeamEffects.pdf
     HepMCGen->set_beam_angular_z_coefficient_hv(
-        -EIC_hadron_crossing_angle / 2. / z_hadron_cavity, 0,
-        -EIC_hadron_crossing_angle / 2. / z_e_cavity, 0);
+        -EIC_hadron_crossing_angle / 2. / sqrt(beta_star_p_h * beta_crab_p), 0,
+        -EIC_hadron_crossing_angle / 2. / sqrt(beta_star_e_h * beta_crab_e), 0);
 
-    // calculate beam sigma width at IP  as in EIC CDR table 1.1
-    const double sigma_p_h = sqrt(80 * 11.3e-7);
-    const double sigma_p_v = sqrt(7.2 * 1.0e-7);
+    // Table 4 of
+    // https://github.com/eic/documents/blob/master/reports/general/Note-Simulations-BeamEffects.pdf
+    const double sigma_p_h = sqrt(beta_star_p_h * 18e-7);
+    const double sigma_p_v = sqrt(beta_star_p_v * 1.6e-7);
     const double sigma_p_l = 6;
-    const double sigma_e_h = sqrt(45 * 20.0e-7);
-    const double sigma_e_v = sqrt(5.6 * 1.3e-7);
-    const double sigma_e_l = 2;
+    const double sigma_e_h = sqrt(beta_star_e_h * 24e-7);
+    const double sigma_e_v = sqrt(beta_star_e_v * 2.0e-7);
+    const double sigma_e_l = 0.9;
 
-    // combine two beam gives the collision sigma in z
-    const double collision_sigma_z = sqrt(sigma_p_l * sigma_p_l + sigma_e_l * sigma_e_l) / 2;
-    const double collision_sigma_t = collision_sigma_z / 29.9792;  // speed of light in cm/ns
-
-    HepMCGen->set_vertex_distribution_width(
-        sigma_p_h * sigma_e_h / sqrt(sigma_p_h * sigma_p_h + sigma_e_h * sigma_e_h),  //x
-        sigma_p_v * sigma_e_v / sqrt(sigma_p_v * sigma_p_v + sigma_e_v * sigma_e_v),  //y
-        collision_sigma_z,                                                            //z
-        collision_sigma_t);                                                           //t
-    HepMCGen->set_vertex_distribution_function(
-        PHHepMCGenHelper::Gaus,   //x
-        PHHepMCGenHelper::Gaus,   //y
-        PHHepMCGenHelper::Gaus,   //z
-        PHHepMCGenHelper::Gaus);  //t
+    HepMCGen->set_beam_bunch_width(
+        std::vector<double>{sigma_p_h, sigma_p_v, sigma_p_l},
+        std::vector<double>{sigma_e_h, sigma_e_v, sigma_e_l});
   }
 
   //! apply EIC beam parameter to any HepMC generator following EIC CDR,

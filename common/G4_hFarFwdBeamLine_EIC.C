@@ -88,7 +88,7 @@ void hFarFwdBeamLineInit()
   {
     hFarFwdBeamLine::enclosure_z_max = 4500.;
     BlackHoleGeometry::min_z = std::min(BlackHoleGeometry::min_z, hFarFwdBeamLine::starting_z);
-    hFarFwdBeamLine::enclosure_r_max = 200.;
+    hFarFwdBeamLine::enclosure_r_max = 200.; 
   }
 
   hFarFwdBeamLine::enclosure_center = 0.5 * (hFarFwdBeamLine::starting_z + hFarFwdBeamLine::enclosure_z_max);
@@ -366,7 +366,7 @@ void hFarFwdDefineDetectorsIP6(PHG4Reco *g4Reco)
     //// Disk design
     //// 50 cm in x
 
-    auto *detRP = new PHG4CylinderSubsystem(Form("rpTruth_%d", i), i);
+    auto *detRP = new PHG4CylinderSubsystem(Form("rpTruth_%d", i),i);
     detRP->SuperDetector("rpTruth");
     detRP->set_double_param("place_x", PosFlip(rp_xCent[i]));
     detRP->set_double_param("place_y", 0);
@@ -387,15 +387,17 @@ void hFarFwdDefineDetectorsIP6(PHG4Reco *g4Reco)
   const int b0DetNr = 4;
   const double b0Mag_zCent = 590;
   const double b0Mag_zLen = 120;
+
+
   for (int i = 0; i < b0DetNr; i++)
   {
-    auto *detB0 = new PHG4CylinderSubsystem(Form("b0Truth_%d", i), i);
+    auto *detB0 = new PHG4CylinderSubsystem(Form("b0Truth_%d", i),i);
     detB0->SuperDetector("b0Truth");
     detB0->set_double_param("radius", 0);
     detB0->set_double_param("thickness", 20);
     detB0->set_double_param("length", 0.1);
     detB0->set_string_param("material", "G4_Si");
-    detB0->set_double_param("place_z", b0Mag_zLen / (b0DetNr + 1) * (i - b0DetNr / 2));  // relative to B0 magnet
+    detB0->set_double_param("place_z", b0Mag_zLen / (b0DetNr + 1) * (i - b0DetNr / 2));  
     detB0->SetActive(true);
     if (verbosity) detB0->Verbosity(verbosity);
     detB0->OverlapCheck(overlapCheck);
@@ -423,26 +425,28 @@ void hFarFwdDefineDetectorsIP8(PHG4Reco *g4Reco)
 
   int verbosity = std::max(Enable::VERBOSITY, Enable::HFARFWD_VERBOSITY);
 
+  //const int offMomDetNr = 3;
+  //const double om_xCent[offMomDetNr] = {100, 100, 100};
+  //const double om_zCent[offMomDetNr] = {4250, 4400, 4550};
+  
   const int offMomDetNr = 2;
   const double om_xCent[offMomDetNr] = {46, 49};
   const double om_zCent[offMomDetNr] = {3250, 3450};
 
   for (int i = 0; i < offMomDetNr; i++)
   {
-    auto *detOM = new PHG4BlockSubsystem(Form("offMomTruth_%d", i), i);
-    detOM->SuperDetector("offMomTruth");
+    auto *detOM = new PHG4BlockSubsystem(Form("offMomTruth_%d", i),i);
+    detOM->SuperDetector(Form("SDoffMomTruth_%d",i));
     detOM->set_double_param("place_x", PosFlip(om_xCent[i]));
     detOM->set_double_param("place_y", 0);
-    detOM->set_double_param("place_z", PosFlip(om_zCent[i] - hFarFwdBeamLine::enclosure_center));
+    detOM->set_double_param("place_z", om_zCent[i] - hFarFwdBeamLine::enclosure_center);
     detOM->set_double_param("rot_y", AngleFlip(-0.045 * TMath::RadToDeg()));
     detOM->set_double_param("size_x", 40);  // Original design specification
     detOM->set_double_param("size_y", 35);  // Original design specification
     detOM->set_double_param("size_z", 0.03);
     detOM->set_string_param("material", "G4_Si");
-
     detOM->OverlapCheck(overlapCheck);
     detOM->SetMotherSubsystem(hFarFwdBeamLine::hFarFwdBeamLineEnclosure);
-
     detOM->SetActive();
     detOM->set_color(0, 0, 1, 0.5);
     if (verbosity) detOM->Verbosity(verbosity);
@@ -464,9 +468,7 @@ void hFarFwdDefineDetectorsIP8(PHG4Reco *g4Reco)
   detZDCsurrogate->OverlapCheck(overlapCheck);
   detZDCsurrogate->set_color(1, 0, 0, 0.5);
   if (!Enable::ZDC_DISABLE_BLACKHOLE) detZDCsurrogate->BlackHole();
-  if (verbosity)
-    detZDCsurrogate->Verbosity(verbosity);
-  detZDCsurrogate->SetMotherSubsystem(hFarFwdBeamLine::hFarFwdBeamLineEnclosure);
+  if (verbosity) detZDCsurrogate->Verbosity(verbosity);
   g4Reco->registerSubsystem(detZDCsurrogate);
 
 
@@ -489,30 +491,27 @@ void hFarFwdDefineDetectorsIP8(PHG4Reco *g4Reco)
   // Roman pot set #1
   const int rpDetNr = 2;
 
+  //const double rp_xCent[rpDetNr] = {75, 75, 75, 75};
+  //const double rp_zCent[rpDetNr] = {2200, 2500, 2800, 3100};
   const double rp_xCent[rpDetNr] = {75.6, 78.15};
   const double rp_zCent[rpDetNr] = {2600, 2800};
 
   for (int i = 0; i < rpDetNr; i++)
   {
-    auto *detRP = new PHG4BlockSubsystem(Form("rpTruth_%d", i), i);
-    detRP->SuperDetector("rpTruth");
+    auto *detRP = new PHG4BlockSubsystem(Form("RomanPots_%d", i),i);
+    detRP->SuperDetector(Form("SDRomanPots_%d", i));
     detRP->set_double_param("place_x", PosFlip(rp_xCent[i]));
     detRP->set_double_param("place_y", 0);
-
     detRP->set_double_param("place_z", rp_zCent[i] - hFarFwdBeamLine::enclosure_center);
-
     detRP->set_double_param("rot_y", AngleFlip(-0.035 * TMath::RadToDeg()));
     detRP->set_double_param("size_x", 25);  // Original design specification
     detRP->set_double_param("size_y", 20);  // Original design specification
     detRP->set_double_param("size_z", 0.03);
     detRP->set_string_param("material", "G4_Si");
     detRP->OverlapCheck(overlapCheck);
-
     detRP->SetMotherSubsystem(hFarFwdBeamLine::hFarFwdBeamLineEnclosure);
-
     detRP->SetActive();
-    if (verbosity)
-      detRP->Verbosity(verbosity);
+    if (verbosity) detRP->Verbosity(verbosity);
     g4Reco->registerSubsystem(detRP);
   }
 
@@ -525,25 +524,26 @@ void hFarFwdDefineDetectorsIP8(PHG4Reco *g4Reco)
 
   for (int i = 0; i < rp2ndDetNr; i++)
   {
-    auto *detRP_2nd = new PHG4BlockSubsystem(Form("rpTruth2_%d", i), i);
-    detRP_2nd->SuperDetector("rpTruth2");
+    auto *detRP_2nd = new PHG4BlockSubsystem(Form("RomanPots_2nd_%d", i),i);
+    detRP_2nd->SuperDetector(Form("SDRomanPots_2nd_%d", i));
     detRP_2nd->set_double_param("place_x", PosFlip(rp_2nd_xCent[i]));
     detRP_2nd->set_double_param("place_y", 0);
     detRP_2nd->set_double_param("place_z", rp_2nd_zCent[i] - hFarFwdBeamLine::enclosure_center);
-
     detRP_2nd->set_double_param("rot_y", AngleFlip(-0.029 * TMath::RadToDeg()));
     detRP_2nd->set_double_param("size_x", 25);
     detRP_2nd->set_double_param("size_y", 20);
     detRP_2nd->set_double_param("size_z", 0.03);
     detRP_2nd->set_string_param("material", "G4_Si");
-
     detRP_2nd->OverlapCheck(overlapCheck);
     detRP_2nd->SetMotherSubsystem(hFarFwdBeamLine::hFarFwdBeamLineEnclosure);
-
     detRP_2nd->SetActive();
-    if (verbosity)
-      detRP_2nd->Verbosity(verbosity);
+    if (verbosity) detRP_2nd->Verbosity(verbosity);
     g4Reco->registerSubsystem(detRP_2nd);
+  }
+
+  if (verbosity > 0)
+  {
+    std::cout << "B0Magnet can be mother = " << hFarFwdBeamLine::B0Magnet->CanBeMotherSubsystem() << std::endl;
   }
 
   const int b0DetNr = 4;
@@ -551,21 +551,18 @@ void hFarFwdDefineDetectorsIP8(PHG4Reco *g4Reco)
   const double b0Mag_zLen = 120;
   for (int i = 0; i < b0DetNr; i++)
   {
-    auto *detB0 = new PHG4CylinderSubsystem(Form("b0Truth_%d", i), i);
-    detB0->SuperDetector("b0Truth");
+    auto *detB0 = new PHG4CylinderSubsystem(Form("b0Truth_%d", i),i);
+    detB0->SuperDetector("b0truth");
     detB0->set_double_param("radius", 0);
     detB0->set_double_param("thickness", 20);
     detB0->set_double_param("length", 0.1);
     detB0->set_string_param("material", "G4_Si");
     detB0->set_double_param("place_y", 0);
     detB0->set_double_param("place_z", b0Mag_zLen / (b0DetNr + 1) * (i - b0DetNr / 2));  
-
     detB0->OverlapCheck(overlapCheck);
     detB0->SetMotherSubsystem(hFarFwdBeamLine::B0Magnet);
-
     detB0->SetActive(true);
-    if (verbosity)
-      detB0->Verbosity(verbosity);
+    if (verbosity) detB0->Verbosity(verbosity);
     g4Reco->registerSubsystem(detB0);
   }
 }

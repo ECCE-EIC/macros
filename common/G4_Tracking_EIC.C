@@ -29,16 +29,45 @@ namespace G4TRACKING
   bool PROJECTION_EEMC = false;
   bool PROJECTION_EHCAL = false;
   bool PROJECTION_CEMC = false;
+  bool PROJECTION_BECAL = false;
   bool PROJECTION_HCALOUT = false;
   bool PROJECTION_FEMC = false;
   bool PROJECTION_FHCAL = false;
+  bool PROJECTION_LFHCAL = false;
 }  // namespace G4TRACKING
 
 //-----------------------------------------------------------------------------//
 void TrackingInit()
 {
   TRACKING::FastKalmanFilter = new PHG4TrackFastSim("PHG4TrackFastSim");
+  TRACKING::FastKalmanFilterSiliconTrack = new PHG4TrackFastSim("FastKalmanFilterSiliconTrack");
+  TRACKING::FastKalmanFilterInnerTrack = new PHG4TrackFastSim("FastKalmanFilterInnerTrack");
 }
+
+void InitFastKalmanFilter(PHG4TrackFastSim *kalman_filter)
+{
+  //  kalman_filter->Smearing(false);
+  if (G4TRACKING::DISPLACED_VERTEX)
+  {
+    // do not use truth vertex in the track fitting,
+    // which would lead to worse momentum resolution for prompt tracks
+    // but this allows displaced track analysis including DCA and vertex finding
+    kalman_filter->set_use_vertex_in_fitting(false);
+    kalman_filter->set_vertex_xy_resolution(0);  // do not smear the vertex used in the built-in DCA calculation
+    kalman_filter->set_vertex_z_resolution(0);   // do not smear the vertex used in the built-in DCA calculation
+    kalman_filter->enable_vertexing(true);       // enable vertex finding and fitting
+  }
+  else
+  {
+    // constraint to a primary vertex and use it as part of the fitting level arm
+    kalman_filter->set_use_vertex_in_fitting(true);
+    kalman_filter->set_vertex_xy_resolution(50e-4);
+    kalman_filter->set_vertex_z_resolution(50e-4);
+  }
+
+  kalman_filter->set_sub_top_node_name("TRACKS");
+}
+
 //-----------------------------------------------------------------------------//
 void Tracking_Reco()
 {
@@ -55,27 +84,8 @@ void Tracking_Reco()
     exit(1);
   }
 
+  InitFastKalmanFilter(TRACKING::FastKalmanFilter);
   TRACKING::FastKalmanFilter->Verbosity(verbosity);
-  //  TRACKING::FastKalmanFilter->Smearing(false);
-  if (G4TRACKING::DISPLACED_VERTEX)
-  {
-    // do not use truth vertex in the track fitting,
-    // which would lead to worse momentum resolution for prompt tracks
-    // but this allows displaced track analysis including DCA and vertex finding
-    TRACKING::FastKalmanFilter->set_use_vertex_in_fitting(false);
-    TRACKING::FastKalmanFilter->set_vertex_xy_resolution(0);  // do not smear the vertex used in the built-in DCA calculation
-    TRACKING::FastKalmanFilter->set_vertex_z_resolution(0);   // do not smear the vertex used in the built-in DCA calculation
-    TRACKING::FastKalmanFilter->enable_vertexing(true);       // enable vertex finding and fitting
-  }
-  else
-  {
-    // constraint to a primary vertex and use it as part of the fitting level arm
-    TRACKING::FastKalmanFilter->set_use_vertex_in_fitting(true);
-    TRACKING::FastKalmanFilter->set_vertex_xy_resolution(50e-4);
-    TRACKING::FastKalmanFilter->set_vertex_z_resolution(50e-4);
-  }
-
-  TRACKING::FastKalmanFilter->set_sub_top_node_name("TRACKS");
   TRACKING::FastKalmanFilter->set_trackmap_out_name(TRACKING::TrackNodeName);
 
   //-------------------------
@@ -97,12 +107,28 @@ void Tracking_Reco()
     TRACKING::ProjectionNames.insert("FHCAL");
   }
   //-------------------------
+  // LFHCAL
+  //-------------------------
+  if (Enable::LFHCAL && G4TRACKING::PROJECTION_LFHCAL)
+  {
+    TRACKING::FastKalmanFilter->add_state_name("LFHCAL");
+    TRACKING::ProjectionNames.insert("LFHCAL");
+  }
+  //-------------------------
   // CEMC
   //-------------------------
   if (Enable::CEMC && G4TRACKING::PROJECTION_CEMC)
   {
     TRACKING::FastKalmanFilter->add_state_name("CEMC");
     TRACKING::ProjectionNames.insert("CEMC");
+  }
+  //-------------------------
+  // BECAL
+  //-------------------------
+  if (Enable::BECAL && G4TRACKING::PROJECTION_BECAL)
+  {
+    TRACKING::FastKalmanFilter->add_state_name("BECAL");
+    TRACKING::ProjectionNames.insert("BECAL");
   }
   //-------------------------
   // HCALOUT
@@ -130,6 +156,29 @@ void Tracking_Reco()
   }
 
   se->registerSubsystem(TRACKING::FastKalmanFilter);
+
+  // next, tracks with partial usage of the tracker stack
+  if (TRACKING::FastKalmanFilterInnerTrack == nullptr)
+  {
+    cout << __PRETTY_FUNCTION__ << " : missing the expected initialization for TRACKING::FastKalmanFilterInnerTrack." << endl;
+    exit(1);
+  }
+  InitFastKalmanFilter(TRACKING::FastKalmanFilterInnerTrack);
+  TRACKING::FastKalmanFilterInnerTrack->Verbosity(verbosity);
+  TRACKING::FastKalmanFilterInnerTrack->set_trackmap_out_name("InnerTrackMap");
+  TRACKING::FastKalmanFilterInnerTrack->enable_vertexing(false);
+  se->registerSubsystem(TRACKING::FastKalmanFilterInnerTrack);
+
+  if (TRACKING::FastKalmanFilterSiliconTrack == nullptr)
+  {
+    cout << __PRETTY_FUNCTION__ << " : missing the expected initialization for TRACKING::FastKalmanFilterSiliconTrack." << endl;
+    exit(1);
+  }
+  InitFastKalmanFilter(TRACKING::FastKalmanFilterSiliconTrack);
+  TRACKING::FastKalmanFilterSiliconTrack->Verbosity(verbosity);
+  TRACKING::FastKalmanFilterSiliconTrack->set_trackmap_out_name("SiliconTrackMap");
+  TRACKING::FastKalmanFilterSiliconTrack->enable_vertexing(false);
+  se->registerSubsystem(TRACKING::FastKalmanFilterSiliconTrack);
   return;
 }
 
@@ -171,6 +220,19 @@ void Tracking_Eval(const std::string &outputfile)
   }
   cout << "};" << endl;  // override the TRACKING::ProjectionNames in eval macros
 
+  se->registerSubsystem(fast_sim_eval);
+
+  // now partial track fits
+  fast_sim_eval = new PHG4TrackFastSimEval("FastTrackingEval_InnerTrackMap");
+  fast_sim_eval->set_trackmapname("InnerTrackMap");
+  fast_sim_eval->set_filename(outputfile + ".InnerTrackMap.root");
+  fast_sim_eval->Verbosity(verbosity);
+  se->registerSubsystem(fast_sim_eval);
+
+  fast_sim_eval = new PHG4TrackFastSimEval("FastTrackingEval_SiliconTrackMap");
+  fast_sim_eval->set_trackmapname("SiliconTrackMap");
+  fast_sim_eval->set_filename(outputfile + ".SiliconTrackMap.root");
+  fast_sim_eval->Verbosity(verbosity);
   se->registerSubsystem(fast_sim_eval);
 }
 #endif
