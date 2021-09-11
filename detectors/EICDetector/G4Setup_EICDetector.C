@@ -181,7 +181,7 @@ int G4Setup()
   if (Enable::HFARBWD_VIRTUAL_DETECTORS_IP8) hFarBwdDefineDetectorsIP8(g4Reco);
 
   //Barrel
-  if (Enable::TrackingService) radius = TrackingService(g4Reco, radius);
+  if (Enable::TrackingService) TrackingService(g4Reco, radius);
 
   if (Enable::RWELL) RWellSetup(g4Reco);
   if (Enable::FST) FSTSetup(g4Reco);

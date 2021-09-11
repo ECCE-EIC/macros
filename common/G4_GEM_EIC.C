@@ -48,7 +48,7 @@ void BGEM_Init()
 
 void EGEMSetup(PHG4Reco *g4Reco)
 {
-  make_GEM_station("EGEM_0", g4Reco, -120.0, -1.65, -3.5);
+  make_GEM_station("EGEM_0", g4Reco, -120.0, -1.68, -3.5);
   //  make_GEM_station("EGEM_1", g4Reco, -190.0, -1.85, -3.6); // replaced by LGAD-TTL
 }
 

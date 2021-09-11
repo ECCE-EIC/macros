@@ -264,13 +264,13 @@ int Fun4All_G4_EICDetector(
   // whether to simulate the Be section of the beam pipe
   Enable::PIPE = true;
   // If need to disable EIC beam pipe extension beyond the Be-section:
-  // G4PIPE::use_forward_pipes = false;
+   G4PIPE::use_forward_pipes = false;
   //EIC hadron far forward magnets and detectors. IP6 and IP8 are incompatible (pick either or);
-  //Enable::HFARFWD_MAGNETS = true;
-  //Enable::HFARFWD_VIRTUAL_DETECTORS = true;
+  Enable::HFARFWD_MAGNETS = true;
+  Enable::HFARFWD_VIRTUAL_DETECTORS = true;
 
-  //Enable::HFARBWD_MAGNETS = true;
-  //Enable::HFARBWD_VIRTUAL_DETECTORS = true;
+  Enable::HFARBWD_MAGNETS = true;
+  Enable::HFARBWD_VIRTUAL_DETECTORS = true;
 
   // gems
   Enable::EGEM = true;
@@ -309,7 +309,7 @@ int Fun4All_G4_EICDetector(
   Enable::BECAL_CLUSTER = Enable::BECAL_TOWER && true;
   Enable::BECAL_EVAL    = Enable::BECAL_CLUSTER && false;
 
-  Enable::HCALIN = true;
+  Enable::HCALIN = false;
   //  Enable::HCALIN_ABSORBER = true;
   Enable::HCALIN_CELL = Enable::HCALIN && true;
   Enable::HCALIN_TOWER = Enable::HCALIN_CELL && true;
@@ -326,7 +326,7 @@ int Fun4All_G4_EICDetector(
   Enable::HCALOUT_EVAL = Enable::HCALOUT_CLUSTER && true;
 
   // EICDetector geometry - barrel
-  Enable::DIRC = true;
+  Enable::DIRC = false;
 
   // EICDetector geometry - 'hadron' direction
   Enable::RICH = true;
@@ -347,7 +347,7 @@ int Fun4All_G4_EICDetector(
   Enable::DRCALO_EVAL = Enable::DRCALO_CLUSTER && false;
   G4TTL::SETTING::optionDR = 1;
 
-  Enable::LFHCAL = true;
+  Enable::LFHCAL = false;
   G4LFHCAL::SETTING::longer = true;
   G4LFHCAL::SETTING::asymmetric = true;
   Enable::LFHCAL_ABSORBER = false;

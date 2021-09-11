@@ -133,7 +133,7 @@ void FTTLSetup(PHG4Reco *g4Reco, TString fttloption = "")
   for (Int_t i = 0; i < G4TTL::layer[2]; i++){
     cout << G4TTL::positionToVtx[2][i] << "\t" << G4TTL::minExtension[2][i] << "\t" << G4TTL::maxExtension[2][i] << endl;
     if(!G4TTL::SETTING::optionBasicGeo){
-      make_forward_station(Form("FTTL_%d", i), g4Reco, G4TTL::positionToVtx[2][i],  G4TTL::minExtension[2][i], G4TTL::maxExtension[2][i], 85*um, 6.0);
+      make_forward_station(Form("FTTL_%d", i), g4Reco, G4TTL::positionToVtx[2][i],  G4TTL::minExtension[2][i], G4TTL::maxExtension[2][i], 85*um, -6.0);
     } else {
       make_forward_station_basic(Form("FTTL_%d", i), g4Reco, G4TTL::positionToVtx[2][i],  G4TTL::minExtension[2][i], G4TTL::maxExtension[2][i], 85*um);
     }
