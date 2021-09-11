@@ -78,22 +78,35 @@ double Pipe(PHG4Reco* g4Reco,
   cyl->set_double_param("length", be_pipe_length);
   cyl->set_double_param("place_z", be_pipe_center);
   cyl->set_string_param("material", "G4_Galactic");
-  cyl->set_double_param("thickness", G4PIPE::be_pipe_radius);
+  cyl->set_double_param("thickness", be_pipe_radius- 2e-4);
   cyl->SuperDetector("PIPE");
-  cyl->OverlapCheck(OverlapCheck);
-  if (AbsorberActive) cyl->SetActive();
+  cyl->OverlapCheck(true);
+  if (absorberactive) cyl->SetActive();
+  g4Reco->registerSubsystem(cyl);
+
+  // 2um Au coating for X-ray absorption
+  cyl = new PHG4CylinderSubsystem("Au_PIPE", 2);
+  cyl->set_double_param("radius", be_pipe_radius - 2e-4);
+  cyl->set_int_param("lengthviarapidity", 0);
+  cyl->set_double_param("length", be_pipe_length);
+  cyl->set_double_param("place_z", be_pipe_center);
+  cyl->set_string_param("material", "G4_Au");
+  cyl->set_double_param("thickness", 2e-4);
+  cyl->SuperDetector("PIPE");
+  cyl->OverlapCheck(true);
+  cyl->SetActive(AbsorberActive);
   g4Reco->registerSubsystem(cyl);
 
   cyl = new PHG4CylinderSubsystem("BE_PIPE", 1);
-  cyl->set_double_param("radius", G4PIPE::be_pipe_radius);
+  cyl->set_double_param("radius", be_pipe_radius);
   cyl->set_int_param("lengthviarapidity", 0);
   cyl->set_double_param("length", be_pipe_length);
   cyl->set_double_param("place_z", be_pipe_center);
   cyl->set_string_param("material", "G4_Be");
-  cyl->set_double_param("thickness", G4PIPE::be_pipe_thickness);
+  cyl->set_double_param("thickness", be_pipe_thickness);
   cyl->SuperDetector("PIPE");
-  cyl->OverlapCheck(OverlapCheck);
-  if (AbsorberActive) cyl->SetActive();
+  cyl->OverlapCheck(true);
+  cyl->SetActive(AbsorberActive);
   g4Reco->registerSubsystem(cyl);
 
   radius = G4PIPE::be_pipe_radius + G4PIPE::be_pipe_thickness;
