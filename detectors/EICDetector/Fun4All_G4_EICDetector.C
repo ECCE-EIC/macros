@@ -48,7 +48,7 @@ int Fun4All_G4_EICDetector(
   // which will produce identical results so you can debug your code
   // rc->set_IntFlag("RANDOMSEED", 12345);
 
-  bool generate_seed = false;
+  bool generate_seed = true;
 
   if (generate_seed)
   {
@@ -102,7 +102,7 @@ int Fun4All_G4_EICDetector(
   //   Input::SARTRE = true;
 
   // Simple multi particle generator in eta/phi/pt ranges
-  Input::SIMPLE = true;
+  // Input::SIMPLE = true;
   // Input::SIMPLE_NUMBER = 2; // if you need 2 of them
   // Input::SIMPLE_VERBOSITY = 1;
 
@@ -119,7 +119,7 @@ int Fun4All_G4_EICDetector(
   // And/Or read generated particles from file
 
   // eic-smear output
-  //  Input::READEIC = true;
+  Input::READEIC = true;
   INPUTREADEIC::filename = inputFile;
 
   // HepMC2 files
@@ -242,7 +242,7 @@ int Fun4All_G4_EICDetector(
   // Write the DST
   //======================
 
-  // Enable::DSTOUT = true;
+  Enable::DSTOUT = true;
   DstOut::OutputDir = outdir;
   DstOut::OutputFile = outputFile;
   Enable::DSTOUT_COMPRESS = true;  // Compress DST files
@@ -264,13 +264,13 @@ int Fun4All_G4_EICDetector(
   // whether to simulate the Be section of the beam pipe
   Enable::PIPE = true;
   // If need to disable EIC beam pipe extension beyond the Be-section:
-  // G4PIPE::use_forward_pipes = false;
+   G4PIPE::use_forward_pipes = false;
   //EIC hadron far forward magnets and detectors. IP6 and IP8 are incompatible (pick either or);
-  //Enable::HFARFWD_MAGNETS = true;
-  //Enable::HFARFWD_VIRTUAL_DETECTORS = true;
+  Enable::HFARFWD_MAGNETS = true;
+  Enable::HFARFWD_VIRTUAL_DETECTORS = true;
 
-  //Enable::HFARBWD_MAGNETS = true;
-  //Enable::HFARBWD_VIRTUAL_DETECTORS = true;
+  Enable::HFARBWD_MAGNETS = true;
+  Enable::HFARBWD_VIRTUAL_DETECTORS = true;
 
   // gems
   Enable::EGEM = true;
@@ -309,12 +309,12 @@ int Fun4All_G4_EICDetector(
   Enable::BECAL_CLUSTER = Enable::BECAL_TOWER && true;
   Enable::BECAL_EVAL    = Enable::BECAL_CLUSTER && false;
 
-  Enable::HCALIN = true;
+  Enable::HCALIN = false;
   //  Enable::HCALIN_ABSORBER = true;
   Enable::HCALIN_CELL = Enable::HCALIN && true;
   Enable::HCALIN_TOWER = Enable::HCALIN_CELL && true;
   Enable::HCALIN_CLUSTER = Enable::HCALIN_TOWER && true;
-  Enable::HCALIN_EVAL = Enable::HCALIN_CLUSTER && true;
+  Enable::HCALIN_EVAL = Enable::HCALIN_CLUSTER && false;
 
   Enable::MAGNET = true;
 
@@ -323,10 +323,10 @@ int Fun4All_G4_EICDetector(
   Enable::HCALOUT_CELL = Enable::HCALOUT && true;
   Enable::HCALOUT_TOWER = Enable::HCALOUT_CELL && true;
   Enable::HCALOUT_CLUSTER = Enable::HCALOUT_TOWER && true;
-  Enable::HCALOUT_EVAL = Enable::HCALOUT_CLUSTER && true;
+  Enable::HCALOUT_EVAL = Enable::HCALOUT_CLUSTER && false;
 
   // EICDetector geometry - barrel
-  Enable::DIRC = true;
+  Enable::DIRC = false;
 
   // EICDetector geometry - 'hadron' direction
   Enable::RICH = true;
@@ -338,7 +338,7 @@ int Fun4All_G4_EICDetector(
   //  Enable::FEMC_ABSORBER = true;
   Enable::FEMC_TOWER = Enable::FEMC && true;
   Enable::FEMC_CLUSTER = Enable::FEMC_TOWER && true;
-  Enable::FEMC_EVAL = Enable::FEMC_CLUSTER && true;
+  Enable::FEMC_EVAL = Enable::FEMC_CLUSTER && false;
 
   //Enable::DRCALO = false;
   Enable::DRCALO_CELL = Enable::DRCALO && true;
@@ -347,7 +347,7 @@ int Fun4All_G4_EICDetector(
   Enable::DRCALO_EVAL = Enable::DRCALO_CLUSTER && false;
   G4TTL::SETTING::optionDR = 1;
 
-  Enable::LFHCAL = true;
+  Enable::LFHCAL = false;
   G4LFHCAL::SETTING::longer = true;
   G4LFHCAL::SETTING::asymmetric = true;
   Enable::LFHCAL_ABSORBER = false;
@@ -383,7 +383,7 @@ int Fun4All_G4_EICDetector(
 
   // jet reconstruction
   Enable::FWDJETS = true;
-  Enable::FWDJETS_EVAL = Enable::FWDJETS && true;
+  Enable::FWDJETS_EVAL = Enable::FWDJETS && false;
 
   // new settings using Enable namespace in GlobalVariables.C
   Enable::BLACKHOLE = true;
@@ -395,7 +395,7 @@ int Fun4All_G4_EICDetector(
   // Enable::ZDC_DISABLE_BLACKHOLE = true;
 
   // Enabling the event evaluator?
-  Enable::EVENT_EVAL = true;
+  Enable::EVENT_EVAL = false;
   // EVENT_EVALUATOR::Verbosity = 1;
   // EVENT_EVALUATOR::EnergyThreshold = 0.05; // GeV
 
