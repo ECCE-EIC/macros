@@ -326,7 +326,7 @@ int Fun4All_G4_EICDetector(
   Enable::HCALOUT_EVAL = Enable::HCALOUT_CLUSTER && true;
 
   // EICDetector geometry - barrel
-  Enable::DIRC = true;
+  Enable::DIRC = false;
 
   // EICDetector geometry - 'hadron' direction
   Enable::RICH = true;
@@ -347,7 +347,7 @@ int Fun4All_G4_EICDetector(
   Enable::DRCALO_EVAL = Enable::DRCALO_CLUSTER && false;
   G4TTL::SETTING::optionDR = 1;
 
-  Enable::LFHCAL = true;
+  Enable::LFHCAL = false;
   G4LFHCAL::SETTING::longer = true;
   G4LFHCAL::SETTING::asymmetric = true;
   Enable::LFHCAL_ABSORBER = false;
