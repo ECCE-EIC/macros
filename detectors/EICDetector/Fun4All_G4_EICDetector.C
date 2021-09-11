@@ -621,4 +621,4 @@ int Fun4All_G4_EICDetector(
   gSystem->Exit(0);
   return 0;
 }
-aendif
+#endif
