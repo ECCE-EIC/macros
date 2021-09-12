@@ -102,7 +102,7 @@ int Fun4All_G4_EICDetector(
   //   Input::SARTRE = true;
 
   // Simple multi particle generator in eta/phi/pt ranges
-  Input::SIMPLE = true;
+   Input::SIMPLE = true;
   // Input::SIMPLE_NUMBER = 2; // if you need 2 of them
   // Input::SIMPLE_VERBOSITY = 1;
 
@@ -119,7 +119,7 @@ int Fun4All_G4_EICDetector(
   // And/Or read generated particles from file
 
   // eic-smear output
-  //  Input::READEIC = true;
+  // Input::READEIC = true;
   INPUTREADEIC::filename = inputFile;
 
   // HepMC2 files
@@ -307,7 +307,7 @@ int Fun4All_G4_EICDetector(
   Enable::BECAL_CELL    = Enable::BECAL && true;
   Enable::BECAL_TOWER   = Enable::BECAL_CELL && true;
   Enable::BECAL_CLUSTER = Enable::BECAL_TOWER && true;
-  Enable::BECAL_EVAL    = Enable::BECAL_CLUSTER && false;
+  Enable::BECAL_EVAL    = Enable::BECAL_CLUSTER && true;
 
   Enable::HCALIN = false;
   //  Enable::HCALIN_ABSORBER = true;
@@ -354,7 +354,7 @@ int Fun4All_G4_EICDetector(
   Enable::LFHCAL_CELL = Enable::LFHCAL && true;
   Enable::LFHCAL_TOWER = Enable::LFHCAL_CELL && true;
   Enable::LFHCAL_CLUSTER = Enable::LFHCAL_TOWER && true;
-  Enable::LFHCAL_EVAL = Enable::LFHCAL_CLUSTER && false;
+  Enable::LFHCAL_EVAL = Enable::LFHCAL_CLUSTER && true;
 
   // EICDetector geometry - 'electron' direction
   Enable::EEMCH = true;
@@ -371,7 +371,7 @@ int Fun4All_G4_EICDetector(
   Enable::EHCAL_CELL = Enable::EHCAL && true;
   Enable::EHCAL_TOWER = Enable::EHCAL_CELL && true;
   Enable::EHCAL_CLUSTER = Enable::EHCAL_TOWER && true;
-  Enable::EHCAL_EVAL = Enable::EHCAL_CLUSTER && false;
+  Enable::EHCAL_EVAL = Enable::EHCAL_CLUSTER && true;
 
   Enable::FFR_EVAL = Enable::HFARFWD_MAGNETS && Enable::HFARFWD_VIRTUAL_DETECTORS && true;
 
