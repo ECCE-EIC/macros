@@ -56,7 +56,7 @@ double Pipe(PHG4Reco* g4Reco,
             double radius)
 {
   bool AbsorberActive = Enable::ABSORBER || Enable::PIPE_ABSORBER;
-  bool OverlapCheck = Enable::PIPE_OVERLAPCHECK;  // detach from Enable::OVERLAPCHECK ||  to suppress GDML validation messages
+  bool OverlapCheck = Enable::PIPE_OVERLAPCHECK or Enable::OVERLAPCHECK; // ||  to suppress GDML validation messages
   int verbosity = std::max(Enable::VERBOSITY, Enable::PIPE_VERBOSITY);
   // process pipe extentions?
   const bool do_pipe_hadron_forward_extension = G4PIPE::use_forward_pipes && true;
@@ -81,7 +81,7 @@ double Pipe(PHG4Reco* g4Reco,
   cyl->set_string_param("material", "G4_Galactic");
   cyl->set_double_param("thickness", G4PIPE::be_pipe_radius- G4PIPE::Au_coating_thickness);
   cyl->SuperDetector("PIPE");
-  cyl->OverlapCheck(true);
+  cyl->OverlapCheck(OverlapCheck);
   g4Reco->registerSubsystem(cyl);
 
   // 2um Au coating for X-ray absorption
@@ -93,7 +93,7 @@ double Pipe(PHG4Reco* g4Reco,
   cyl->set_string_param("material", "G4_Au");
   cyl->set_double_param("thickness", G4PIPE::Au_coating_thickness);
   cyl->SuperDetector("PIPE");
-  cyl->OverlapCheck(true);
+  cyl->OverlapCheck(OverlapCheck);
   if (AbsorberActive) cyl->SetActive();
   g4Reco->registerSubsystem(cyl);
 
@@ -105,7 +105,7 @@ double Pipe(PHG4Reco* g4Reco,
   cyl->set_string_param("material", "G4_Be");
   cyl->set_double_param("thickness", G4PIPE::be_pipe_thickness);
   cyl->SuperDetector("PIPE");
-  cyl->OverlapCheck(true);
+  cyl->OverlapCheck(OverlapCheck);
   if (AbsorberActive) cyl->SetActive();
   g4Reco->registerSubsystem(cyl);
 
