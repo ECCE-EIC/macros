@@ -46,7 +46,7 @@ void DIRCSetup(PHG4Reco* g4Reco)
   dircSubsys->set_double_param("Radius", 75.0 * Enable::DIRC_SCALE);
   dircSubsys->set_double_param("Prizm_width", 38.65 * Enable::DIRC_SCALE);
   dircSubsys->set_double_param("Prizm_length", 30.0 * Enable::DIRC_SCALE);
-  dircSubsys->set_double_param("Prizm_height_at_lens", 3.7 * Enable::DIRC_SCALE);
+  dircSubsys->set_double_param("Prizm_height_at_lens", 5 * Enable::DIRC_SCALE); // override internal default
   dircSubsys->set_double_param("Bar_thickness", 1.7 * Enable::DIRC_SCALE);
   dircSubsys->set_double_param("Bar_width", 3.5 * Enable::DIRC_SCALE);
   dircSubsys->set_double_param("BarL_length", 122.5 * Enable::DIRC_SCALE);
