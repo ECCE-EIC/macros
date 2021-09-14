@@ -40,7 +40,7 @@ namespace Enable
 
 namespace hFarBwdBeamLine
 {
-  double starting_z = -450;  //cm as center-forward interface
+  double starting_z = -410;  //cm as center-forward interface
   double enclosure_z_max = NAN;
   double enclosure_r_max = NAN;
   double enclosure_center = NAN;
@@ -276,12 +276,37 @@ void hFarBwdDefineMagnets(PHG4Reco *g4Reco)
 
 void hFarBwdDefineDetectorsIP6(PHG4Reco *g4Reco)
 {
-  bool overlapCheck = Enable::OVERLAPCHECK || Enable::HFARFWD_OVERLAPCHECK;
-  if (Enable::HFARFWD_VIRTUAL_DETECTORS_IP6 && Enable::HFARFWD_VIRTUAL_DETECTORS_IP8)
+  bool overlapCheck = Enable::OVERLAPCHECK || Enable::HFARBWD_OVERLAPCHECK;
+  if (Enable::HFARBWD_VIRTUAL_DETECTORS_IP6 && Enable::HFARBWD_VIRTUAL_DETECTORS_IP8)
   {
     cout << "You cannot have detectors enabled for both IP6 and IP8 ON at the same time" << endl;
     gSystem->Exit(1);
   }
+ 
+   int verbosity = std::max(Enable::VERBOSITY, Enable::HFARBWD_VERBOSITY);
+
+   auto *detBackward = new PHG4CylinderSubsystem("detBackward");
+    detBackward->SuperDetector("backTruth");
+    detBackward->set_double_param("place_x", 0);
+    detBackward->set_double_param("place_y", 0);
+//    detBackward->set_double_param("place_z", -500);
+    detBackward->set_double_param("place_z", -500 - hFarBwdBeamLine::enclosure_center);
+    detBackward->set_double_param("rot_y", 0);
+    detBackward->set_double_param("radius", 0);
+    detBackward->set_double_param("thickness", 30);  // This is intentionally made large 25cm radius
+    detBackward->set_double_param("length", 0.03);
+    detBackward->set_string_param("material", "G4_Si");
+
+    detBackward->SetMotherSubsystem(hFarBwdBeamLine::hFarBwdBeamLineEnclosure);
+
+
+    detBackward->SetActive();
+    detBackward->OverlapCheck(overlapCheck);
+    detBackward->set_color(1, 0, 0, 0.5);
+
+    detBackward->BlackHole();
+    if (verbosity) detBackward->Verbosity(verbosity);
+    g4Reco->registerSubsystem(detBackward);
 
 //  int verbosity = std::max(Enable::VERBOSITY, Enable::HFARFWD_VERBOSITY);
 
@@ -292,12 +317,36 @@ void hFarBwdDefineDetectorsIP8(PHG4Reco *g4Reco)
 //  cout << __PRETTY_FUNCTION__ << " : IP8 setup is not yet validated!" << endl;
 //  gSystem->Exit(1);
 
-  bool overlapCheck = Enable::OVERLAPCHECK || Enable::HFARFWD_OVERLAPCHECK;
-  if (Enable::HFARFWD_VIRTUAL_DETECTORS_IP6 && Enable::HFARFWD_VIRTUAL_DETECTORS_IP8)
+  bool overlapCheck = Enable::OVERLAPCHECK || Enable::HFARBWD_OVERLAPCHECK;
+  if (Enable::HFARBWD_VIRTUAL_DETECTORS_IP6 && Enable::HFARBWD_VIRTUAL_DETECTORS_IP8)
   {
     cout << "You cannot have detectors enabled for both IP6 and IP8 ON at the same time" << endl;
     gSystem->Exit(1);
   }
+
+   int verbosity = std::max(Enable::VERBOSITY, Enable::HFARBWD_VERBOSITY);
+
+   auto *detBackward = new PHG4CylinderSubsystem("detBackward");
+    detBackward->SuperDetector("backTruth");
+    detBackward->set_double_param("place_x", 0);
+    detBackward->set_double_param("place_y", 0);
+//    detBackward->set_double_param("place_z", -500);
+    detBackward->set_double_param("place_z", -500 - hFarBwdBeamLine::enclosure_center);
+    detBackward->set_double_param("rot_y", 0);
+    detBackward->set_double_param("radius", 0);
+    detBackward->set_double_param("thickness", 30);  // This is intentionally made large 25cm radius
+    detBackward->set_double_param("length", 0.03);
+    detBackward->set_string_param("material", "G4_Si");
+
+    detBackward->SetMotherSubsystem(hFarBwdBeamLine::hFarBwdBeamLineEnclosure);
+
+    detBackward->SetActive();
+    detBackward->OverlapCheck(overlapCheck);
+    detBackward->set_color(1, 0, 0, 0.5);
+
+    detBackward->BlackHole();
+    if (verbosity) detBackward->Verbosity(verbosity);
+    g4Reco->registerSubsystem(detBackward);
 
 //  int verbosity = std::max(Enable::VERBOSITY, Enable::HFARFWD_VERBOSITY);
 
