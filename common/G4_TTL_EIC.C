@@ -201,7 +201,7 @@ int make_forward_station(string name, PHG4Reco *g4Reco,
   ttl->set_double_param("offset_x", xoffset * cm);                    //
   ttl->set_double_param("tSilicon", tSilicon);                    //
 //   ttl->OverlapCheck(true);
-  ttl->OverlapCheck(false);
+  ttl->OverlapCheck(Enable::OVERLAPCHECK);
   
   g4Reco->registerSubsystem(ttl);
 
@@ -312,7 +312,7 @@ int make_barrel_layer(string name, PHG4Reco *g4Reco,
   ttl->set_double_param("rMin", radius * cm);                    //
   ttl->set_double_param("length", 2.0 * halflength * cm);
   ttl->set_double_param("tSilicon", tSilicon);                    //
-  ttl->OverlapCheck(false);
+  ttl->OverlapCheck(Enable::OVERLAPCHECK);
 
   g4Reco->registerSubsystem(ttl);
 
