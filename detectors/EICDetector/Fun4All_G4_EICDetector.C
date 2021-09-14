@@ -309,7 +309,7 @@ int Fun4All_G4_EICDetector(
   Enable::BECAL_CLUSTER = Enable::BECAL_TOWER && true;
   Enable::BECAL_EVAL    = Enable::BECAL_CLUSTER && true;
 
-  Enable::HCALIN = false;
+  Enable::HCALIN = true;
   //  Enable::HCALIN_ABSORBER = true;
   Enable::HCALIN_CELL = Enable::HCALIN && true;
   Enable::HCALIN_TOWER = Enable::HCALIN_CELL && true;
@@ -326,7 +326,7 @@ int Fun4All_G4_EICDetector(
   Enable::HCALOUT_EVAL = Enable::HCALOUT_CLUSTER && true;
 
   // EICDetector geometry - barrel
-  Enable::DIRC = false;
+  Enable::DIRC = true;
 
   // EICDetector geometry - 'hadron' direction
   Enable::RICH = true;
