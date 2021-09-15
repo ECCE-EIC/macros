@@ -53,7 +53,7 @@ namespace Enable
 
 namespace hFarFwdBeamLine
 {
-  double starting_z = 450;  //cm as center-forward interface
+  double starting_z = 500;  //cm as center-forward interface
   double enclosure_z_max = NAN;
   double enclosure_r_max = NAN;
   double enclosure_center = NAN;
