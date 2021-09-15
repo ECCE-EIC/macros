@@ -12,6 +12,9 @@
 
 #include <g4main/PHG4Reco.h>
 
+#include <eiccaloreco/RawClusterBuilderkMA.h>
+#include <eiccaloreco/RawClusterBuilderHelper.h>
+
 #include <caloreco/RawClusterBuilderFwd.h>
 #include <caloreco/RawClusterBuilderTemplate.h>
 #include <caloreco/RawTowerCalibration.h>
@@ -209,6 +212,13 @@ void LFHCAL_Towers()
 
 void LFHCAL_Clusters()
 {
+  Fun4AllServer *se = Fun4AllServer::instance();
+
+  RawClusterBuilderHelper *ClusterBuilder = new RawClusterBuilderkMA("LFHCALRawClusterBuilderkMA");
+  ClusterBuilder->Detector("LFHCAL");
+  ClusterBuilder->set_seed_e(0.1);
+  ClusterBuilder->set_agg_e(0.001);
+  se->registerSubsystem(ClusterBuilder);
 
   return;
 }
