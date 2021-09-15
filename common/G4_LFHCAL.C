@@ -54,11 +54,11 @@ namespace G4LFHCAL
   {
     bool FullEtaAcc = false;
     bool HC2x = false;
-    bool asymmetric = false;
+    bool asymmetric = true;
     bool wDR = false;
     bool FwdSquare = false;
     bool FwdConfig = false;
-    bool longer = false;
+    bool longer = true;
   }  // namespace SETTING
 }  // namespace G4LFHCAL
 

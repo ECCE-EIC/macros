@@ -56,8 +56,8 @@ namespace G4FEMC
     bool FullEtaAcc = false;
     bool fsPHENIX = false;
     bool EC2x = false;
-    bool readoutsplit = false;
-    bool asymmetric = false;
+    bool readoutsplit = true;
+    bool asymmetric = true;
     bool wDR = false;
     bool FwdSquare = false;
   }  // namespace SETTING
