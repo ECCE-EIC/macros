@@ -56,8 +56,8 @@ int Fun4All_G4_EICDetector(
     string inputFileName = inputFile.substr(findSlash + 1, inputFile.size());
 
     RooRealVar dummyVal("dummy", "", 0);
-    RooUnblindPrecision blindVal("blindVal", "blindVal", inputFileName.c_str(), nEvents, skip+1, dummyVal, kFALSE);
-    rc->set_IntFlag("RANDOMSEED", abs(ceil(blindVal.getVal()*1e2)));
+    RooUnblindPrecision blindVal("blindVal", "blindVal", inputFileName.c_str(), nEvents, skip + 1, dummyVal, kFALSE);
+    rc->set_IntFlag("RANDOMSEED", abs(ceil(blindVal.getVal() * 1e2)));
   }
 
   //===============
@@ -69,8 +69,8 @@ int Fun4All_G4_EICDetector(
   Enable::IP6 = true;
   // Enable::IP8 = true;
 
-  // Setting proton beam pipe energy. If you don't know what to set here, leave it at 275 
-  Enable::HFARFWD_ION_ENERGY=275;
+  // Setting proton beam pipe energy. If you don't know what to set here, leave it at 275
+  Enable::HFARFWD_ION_ENERGY = 275;
 
   // Either:
   // read previously generated g4-hits files, in this case it opens a DST and skips
@@ -102,7 +102,7 @@ int Fun4All_G4_EICDetector(
   //   Input::SARTRE = true;
 
   // Simple multi particle generator in eta/phi/pt ranges
-   Input::SIMPLE = true;
+  Input::SIMPLE = true;
   // Input::SIMPLE_NUMBER = 2; // if you need 2 of them
   // Input::SIMPLE_VERBOSITY = 1;
 
@@ -264,7 +264,7 @@ int Fun4All_G4_EICDetector(
   // whether to simulate the Be section of the beam pipe
   Enable::PIPE = true;
   // If need to disable EIC beam pipe extension beyond the Be-section:
-   G4PIPE::use_forward_pipes = false;
+  G4PIPE::use_forward_pipes = false;
   //EIC hadron far forward magnets and detectors. IP6 and IP8 are incompatible (pick either or);
   Enable::HFARFWD_MAGNETS = true;
   Enable::HFARFWD_VIRTUAL_DETECTORS = true;
@@ -283,17 +283,18 @@ int Fun4All_G4_EICDetector(
   Enable::BARREL = true;
   // fst
   Enable::FST = true;
-  G4FST::SETTING::SUPPORTCYL = false; // if want to disable support
 
   // TOFs
   Enable::FTTL = true;
   Enable::ETTL = true;
   Enable::CTTL = true;
+  G4TTL::SETTING::optionCEMC = false;
+  G4TTL::SETTING::optionGeo = 1;
 
   Enable::TRACKING = true;
   Enable::TRACKING_EVAL = Enable::TRACKING && true;
   G4TRACKING::DISPLACED_VERTEX = true;  // this option exclude vertex in the track fitting and use RAVE to reconstruct primary and 2ndary vertexes
-                                         // projections to calorimeters
+                                        // projections to calorimeters
   G4TRACKING::PROJECTION_EEMC = true;
   G4TRACKING::PROJECTION_BECAL = true;
   G4TRACKING::PROJECTION_EHCAL = true;
@@ -304,12 +305,12 @@ int Fun4All_G4_EICDetector(
   G4TRACKING::PROJECTION_LFHCAL = true;
 
   Enable::BECAL = true;
-  Enable::BECAL_CELL    = Enable::BECAL && true;
-  Enable::BECAL_TOWER   = Enable::BECAL_CELL && true;
+  Enable::BECAL_CELL = Enable::BECAL && true;
+  Enable::BECAL_TOWER = Enable::BECAL_CELL && true;
   Enable::BECAL_CLUSTER = Enable::BECAL_TOWER && true;
-  Enable::BECAL_EVAL    = Enable::BECAL_CLUSTER && true;
+  Enable::BECAL_EVAL = Enable::BECAL_CLUSTER && true;
 
-  Enable::HCALIN = false;
+  Enable::HCALIN = true;
   //  Enable::HCALIN_ABSORBER = true;
   Enable::HCALIN_CELL = Enable::HCALIN && true;
   Enable::HCALIN_TOWER = Enable::HCALIN_CELL && true;
@@ -326,7 +327,7 @@ int Fun4All_G4_EICDetector(
   Enable::HCALOUT_EVAL = Enable::HCALOUT_CLUSTER && true;
 
   // EICDetector geometry - barrel
-  Enable::DIRC = false;
+  Enable::DIRC = true;
 
   // EICDetector geometry - 'hadron' direction
   Enable::RICH = true;
@@ -347,9 +348,7 @@ int Fun4All_G4_EICDetector(
   Enable::DRCALO_EVAL = Enable::DRCALO_CLUSTER && false;
   G4TTL::SETTING::optionDR = 1;
 
-  Enable::LFHCAL = false;
-  G4LFHCAL::SETTING::longer = true;
-  G4LFHCAL::SETTING::asymmetric = true;
+  Enable::LFHCAL = true;
   Enable::LFHCAL_ABSORBER = false;
   Enable::LFHCAL_CELL = Enable::LFHCAL && true;
   Enable::LFHCAL_TOWER = Enable::LFHCAL_CELL && true;
@@ -358,14 +357,10 @@ int Fun4All_G4_EICDetector(
 
   // EICDetector geometry - 'electron' direction
   Enable::EEMCH = true;
-  G4EEMCH::SETTING::USECEMCGeo  = false;
-  G4EEMCH::SETTING::USEHYBRID = false;
   Enable::EEMCH_TOWER = Enable::EEMCH && true;
   Enable::EEMCH_CLUSTER = Enable::EEMCH_TOWER && true;
   Enable::EEMCH_EVAL = Enable::EEMCH_CLUSTER && true;
   G4TTL::SETTING::optionEEMCH = Enable::EEMCH && true;
-  G4TTL::SETTING::optionCEMC = false;
-  G4TTL::SETTING::optionGeo = 1;
 
   Enable::EHCAL = true;
   Enable::EHCAL_CELL = Enable::EHCAL && true;
@@ -378,7 +373,7 @@ int Fun4All_G4_EICDetector(
   Enable::PLUGDOOR = false;
 
   // Other options
-  Enable::GLOBAL_RECO = G4TRACKING::DISPLACED_VERTEX; // use reco vertex for global event vertex
+  Enable::GLOBAL_RECO = G4TRACKING::DISPLACED_VERTEX;  // use reco vertex for global event vertex
   Enable::GLOBAL_FASTSIM = true;
 
   // jet reconstruction
@@ -389,7 +384,7 @@ int Fun4All_G4_EICDetector(
   Enable::BLACKHOLE = true;
   //Enable::BLACKHOLE_SAVEHITS = false; // turn off saving of bh hits
   //BlackHoleGeometry::visible = true;
-  
+
   // ZDC
   // Enable::ZDC = true;
   // Enable::ZDC_DISABLE_BLACKHOLE = true;
@@ -481,6 +476,9 @@ int Fun4All_G4_EICDetector(
   if (Enable::EEMC_TOWER) EEMC_Towers();
   if (Enable::EEMC_CLUSTER) EEMC_Clusters();
 
+  if (Enable::EEMCH_TOWER) EEMCH_Towers();
+  if (Enable::EEMCH_CLUSTER) EEMCH_Clusters();
+
   if (Enable::EHCAL_TOWER) EHCAL_Towers();
   if (Enable::EHCAL_CLUSTER) EHCAL_Clusters();
 
@@ -549,7 +547,6 @@ int Fun4All_G4_EICDetector(
   if (Enable::FWDJETS_EVAL) Jet_FwdEval();
 
   if (Enable::USER) UserAnalysisInit();
-
 
   //--------------
   // Set up Input Managers
