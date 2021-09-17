@@ -136,9 +136,9 @@ double Pipe(PHG4Reco* g4Reco,
   {
     if (Enable::IP6)
     {
-      PHG4GDMLSubsystem* gdml = new PHG4GDMLSubsystem("HadronForwardEnvelope");
+      PHG4GDMLSubsystem* gdml = new PHG4GDMLSubsystem("HadronForwardChamber");
       gdml->set_string_param("GDMPath", string(getenv("CALIBRATIONROOT")) + "Beam/ConstructSimplifiedBeamChamber.gdml");
-      gdml->set_string_param("TopVolName", "HadronForwardEnvelope");
+      gdml->set_string_param("TopVolName", "HadronForwardChamber");
       gdml->set_int_param("skip_DST_geometry_export", 1);  // do not export extended beam pipe as it is not supported by TGeo and outside Kalman filter acceptance
       gdml->OverlapCheck(OverlapCheck);
       g4Reco->registerSubsystem(gdml);
