@@ -40,7 +40,7 @@ void PipeInit()
   if (G4PIPE::use_forward_pipes)
   {
     BlackHoleGeometry::max_radius = std::max(BlackHoleGeometry::max_radius, 23.);
-    BlackHoleGeometry::max_z = std::max(BlackHoleGeometry::max_z, 450.);
+    BlackHoleGeometry::max_z = std::max(BlackHoleGeometry::max_z, 500.);
     BlackHoleGeometry::min_z = std::min(BlackHoleGeometry::min_z, -463.);
   }
   else
@@ -117,11 +117,9 @@ double Pipe(PHG4Reco* g4Reco,
   {
     if (Enable::IP6)
     {
-      PHG4GDMLSubsystem* gdml = new PHG4GDMLSubsystem("ElectronForwardEnvelope");
-      gdml->set_string_param("GDMPath", string(getenv("CALIBRATIONROOT")) + "/Beam/Detector_chamber_3-20-20.G4Import.v2.gdml");
-      gdml->set_string_param("TopVolName", "ElectronForwardEnvelope");
-      gdml->set_double_param("rot_z", 180); // flip crossing sign convension after July-2021
-      gdml->set_int_param("skip_DST_geometry_export", 1);  // do not export extended beam pipe as it is not supported by TGeo and outside Kalman filter acceptance
+      PHG4GDMLSubsystem* gdml = new PHG4GDMLSubsystem("ElectronForwardChamber");
+      gdml->set_string_param("GDMPath", string(getenv("CALIBRATIONROOT")) + "/Beam/ConstructSimplifiedBeamChamber.gdml");
+      gdml->set_string_param("TopVolName", "ElectronForwardChamber");
       gdml->OverlapCheck(OverlapCheck);
       g4Reco->registerSubsystem(gdml);
     }
@@ -139,7 +137,6 @@ double Pipe(PHG4Reco* g4Reco,
       PHG4GDMLSubsystem* gdml = new PHG4GDMLSubsystem("HadronForwardChamber");
       gdml->set_string_param("GDMPath", string(getenv("CALIBRATIONROOT")) + "Beam/ConstructSimplifiedBeamChamber.gdml");
       gdml->set_string_param("TopVolName", "HadronForwardChamber");
-      gdml->set_int_param("skip_DST_geometry_export", 1);  // do not export extended beam pipe as it is not supported by TGeo and outside Kalman filter acceptance
       gdml->OverlapCheck(OverlapCheck);
       g4Reco->registerSubsystem(gdml);
     }
