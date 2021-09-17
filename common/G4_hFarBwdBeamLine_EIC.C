@@ -40,7 +40,7 @@ namespace Enable
 
 namespace hFarBwdBeamLine
 {
-  double starting_z = -410;  //cm as center-forward interface
+  double starting_z = -463;  //cm clear the backward beam chamber
   double enclosure_z_max = NAN;
   double enclosure_r_max = NAN;
   double enclosure_center = NAN;
