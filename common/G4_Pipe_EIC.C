@@ -137,10 +137,9 @@ double Pipe(PHG4Reco* g4Reco,
     if (Enable::IP6)
     {
       PHG4GDMLSubsystem* gdml = new PHG4GDMLSubsystem("HadronForwardEnvelope");
-      gdml->set_string_param("GDMPath", string(getenv("CALIBRATIONROOT")) + "/Beam/Detector_chamber_3-20-20.G4Import.v2.gdml");
+      gdml->set_string_param("GDMPath", string(getenv("CALIBRATIONROOT")) + "Beam/ConstructSimplifiedBeamChamber.gdml");
       gdml->set_string_param("TopVolName", "HadronForwardEnvelope");
       gdml->set_int_param("skip_DST_geometry_export", 1);  // do not export extended beam pipe as it is not supported by TGeo and outside Kalman filter acceptance
-      gdml->set_double_param("rot_z", 180); // flip crossing sign convension after July-2021
       gdml->OverlapCheck(OverlapCheck);
       g4Reco->registerSubsystem(gdml);
     }
