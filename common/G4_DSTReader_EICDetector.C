@@ -59,10 +59,6 @@ void G4DSTreader_EICDetector(const string &outputFile = "G4sPHENIXCells.root")
 	  ana->AddNode(Form("LBLVTX_CENTRAL_%d", i));
 	}
     }
-    if (Enable::MVTX)
-    {
-      ana->AddNode("MVTX");
-    }
 
     if (Enable::EGEM)
     {
@@ -221,7 +217,7 @@ void G4DSTreader_EICDetector(const string &outputFile = "G4sPHENIXCells.root")
     ana->AddTower("RAW_FEMC");
     ana->AddTower("CALIB_FEMC");
   }
-  if (Enable::EEMC_TOWER)
+  if (Enable::EEMC_TOWER or Enable::EEMCH_TOWER)
   {
     ana->AddTower("SIM_EEMC");
     ana->AddTower("RAW_EEMC");

@@ -54,57 +54,72 @@ namespace G4LFHCAL
   {
     bool FullEtaAcc = false;
     bool HC2x = false;
-    bool asymmetric = false;
+    bool asymmetric = true;
     bool wDR = false;
     bool FwdSquare = false;
-    bool longer = false;
+    bool FwdConfig = false;
+    bool longer = true;
   }  // namespace SETTING
 }  // namespace G4LFHCAL
 
 TString GetMappingFile(){
-  TString mappingFileName = getenv("CALIBRATIONROOT");
+  TString mappinFileName = getenv("CALIBRATIONROOT");
   if (G4LFHCAL::SETTING::HC2x )
   {
     if (G4LFHCAL::SETTING::longer)
-      mappingFileName += "/LFHcal/mapping/towerMap_LFHCAL_2x-long.txt";
+      mappinFileName += "/LFHcal/mapping/towerMap_LFHCAL_2x-long.txt";
     else 
-      mappingFileName +=  "/LFHcal/mapping/towerMap_LFHCAL_2x.txt";
+      mappinFileName +=  "/LFHcal/mapping/towerMap_LFHCAL_2x.txt";
   }
   // HCal Fe-Scint surrounding dual readout calorimeter R>50cm
   else if (G4LFHCAL::SETTING::wDR)
   {
     if (G4LFHCAL::SETTING::longer)
-      mappingFileName +=  "/LFHcal/mapping/towerMap_LFHCAL_wDR-long.txt";
+      mappinFileName +=  "/LFHcal/mapping/towerMap_LFHCAL_wDR-long.txt";
     else 
-      mappingFileName +=  "/LFHcal/mapping/towerMap_LFHCAL_wDR.txt";
+      mappinFileName +=  "/LFHcal/mapping/towerMap_LFHCAL_wDR.txt";
+  }
+  // HCal Fe-Scint surrounding dual readout calorimeter R>50cm
+  else if (G4LFHCAL::SETTING::FwdConfig)
+  {
+    if (G4LFHCAL::SETTING::longer)
+      mappinFileName += "/LFHcal/mapping/towerMap_LFHCAL_FwdConfig-long.txt";
+    else 
+      mappinFileName += "/LFHcal/mapping/towerMap_LFHCAL_FwdConfig.txt";
   }
   // HCal Fe-Scint surrounding dual readout calorimeter R>50cm
   else if (G4LFHCAL::SETTING::FwdSquare)
   {
     if (G4LFHCAL::SETTING::longer)
-      mappingFileName += "/LFHcal/mapping/towerMap_LFHCAL_FwdSquare-long.txt";
+      mappinFileName += "/LFHcal/mapping/towerMap_LFHCAL_FwdSquare-long.txt";
     else 
-      mappingFileName += "/LFHcal/mapping/towerMap_LFHCAL_FwdSquare.txt";
+      mappinFileName += "/LFHcal/mapping/towerMap_LFHCAL_FwdSquare.txt";
   }
   // full HCal Fe-Scint with asymmetric centering around beampipe
   else if (G4LFHCAL::SETTING::asymmetric)
   {
-    if (G4LFHCAL::SETTING::longer)
-      mappingFileName += "/LFHcal/mapping/towerMap_LFHCAL_asymmetric-long.txt";
-    else 
-      mappingFileName += "/LFHcal/mapping/towerMap_LFHCAL_asymmetric.txt";
-      
+    if (Enable::IP6){
+      if (G4LFHCAL::SETTING::longer)
+        mappinFileName += "/LFHcal/mapping/towerMap_LFHCAL_IP6-asymmetric-long.txt";
+      else 
+        mappinFileName += "/LFHcal/mapping/towerMap_LFHCAL_IP6-asymmetric.txt";
+    } else {
+      if (G4LFHCAL::SETTING::longer)
+        mappinFileName += "/LFHcal/mapping/towerMap_LFHCAL_asymmetric-long.txt";
+      else 
+        mappinFileName += "/LFHcal/mapping/towerMap_LFHCAL_asymmetric.txt";      
+    }
   }
   //  PSD like HCal Fe-Scint with enlarged beam pipe opening for Mar 2020 beam pipe
   else
   {
     if (G4LFHCAL::SETTING::longer)
-      mappingFileName +=  "/LFHcal/mapping/towerMap_LFHCAL_default-long.txt";
+      mappinFileName +=  "/LFHcal/mapping/towerMap_LFHCAL_default-long.txt";
     else
-      mappingFileName +=  "/LFHcal/mapping/towerMap_LFHCAL_default.txt";
+      mappinFileName +=  "/LFHcal/mapping/towerMap_LFHCAL_default.txt";
   }
 
-  return mappingFileName;
+  return mappinFileName;
   
 }
 
@@ -124,6 +139,7 @@ void LFHCALInit()
  
   BlackHoleGeometry::max_radius = std::max(BlackHoleGeometry::max_radius, G4LFHCAL::outer_radius);
   BlackHoleGeometry::max_z = std::max(BlackHoleGeometry::max_z, G4LFHCAL::Gz0 + G4LFHCAL::Gdz / 2.);
+  BlackHoleGeometry::min_z = std::min(BlackHoleGeometry::min_z, -10*cm);
 }
 
 void LFHCALSetup(PHG4Reco *g4Reco)

@@ -141,7 +141,7 @@ void Tracking_Reco()
   //-------------------------
   // EEMC
   //-------------------------
-  if (Enable::EEMC && G4TRACKING::PROJECTION_EEMC)
+  if ((Enable::EEMC or Enable::EEMCH)&& G4TRACKING::PROJECTION_EEMC)
   {
     TRACKING::FastKalmanFilter->add_state_name("EEMC");
     TRACKING::ProjectionNames.insert("EEMC");
