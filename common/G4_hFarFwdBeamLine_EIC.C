@@ -390,8 +390,12 @@ void hFarFwdDefineDetectorsIP6(PHG4Reco *g4Reco)
  
    //---------------------------------
    // B0 implementation
+   // Three choices: 1. Realistic detector; 2. Circulat plane; 3. hit plane with realistic detector goemetry
+
 
     if (Enable::B0_DISABLE_HITPLANE) {
+
+	// Choice 1 realistic detector
 
         const int b0DetNr = 4;
         const double b0Mag_zCent = 590;
@@ -510,6 +514,8 @@ void hFarFwdDefineDetectorsIP6(PHG4Reco *g4Reco)
 
        if (Enable::B0_FULLHITPLANE) {
 
+	// Choice 2 circular hit planes
+
        	    const int b0DetNr = 4;
        	    
        	    // Sep 09 2021 by Bill: 
@@ -542,6 +548,7 @@ void hFarFwdDefineDetectorsIP6(PHG4Reco *g4Reco)
 	} else {
 
         /// Fun4All default B0 planes
+	/// Choice 3 Hit planes with real detector geometry
         	
 	    const int b0DetNr = 4;
 	    const double b0Mag_zCent = 590;
