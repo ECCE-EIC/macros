@@ -130,10 +130,14 @@ void FTTLSetup(PHG4Reco *g4Reco, TString fttloption = "")
   const double mm = .1 * cm;
   const double um = 1e-3 * mm;
 
+  double xoffset = 0;
+  if (Enable::IP6) xoffset = -6.0;
+  if (Enable::IP8) xoffset = 8.4;
+
   for (Int_t i = 0; i < G4TTL::layer[2]; i++){
     cout << G4TTL::positionToVtx[2][i] << "\t" << G4TTL::minExtension[2][i] << "\t" << G4TTL::maxExtension[2][i] << endl;
     if(!G4TTL::SETTING::optionBasicGeo){
-      make_forward_station(Form("FTTL_%d", i), g4Reco, G4TTL::positionToVtx[2][i],  G4TTL::minExtension[2][i], G4TTL::maxExtension[2][i], 85*um, -6.0);
+      make_forward_station(Form("FTTL_%d", i), g4Reco, G4TTL::positionToVtx[2][i],  G4TTL::minExtension[2][i], G4TTL::maxExtension[2][i], 85*um, xoffset);
     } else {
       make_forward_station_basic(Form("FTTL_%d", i), g4Reco, G4TTL::positionToVtx[2][i],  G4TTL::minExtension[2][i], G4TTL::maxExtension[2][i], 85*um);
     }
