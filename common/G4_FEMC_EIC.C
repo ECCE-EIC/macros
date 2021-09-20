@@ -13,6 +13,9 @@
 
 #include <g4main/PHG4Reco.h>
 
+#include <eiccaloreco/RawClusterBuilderkMA.h>
+#include <eiccaloreco/RawClusterBuilderHelper.h>
+
 #include <caloreco/RawClusterBuilderFwd.h>
 #include <caloreco/RawClusterBuilderTemplate.h>
 #include <caloreco/RawTowerCalibration.h>
@@ -340,6 +343,12 @@ void FEMC_Clusters()
 
   if (G4FEMC::Femc_clusterizer == G4FEMC::kFemcTemplateClusterizer)
   {
+    RawClusterBuilderHelper *ClusterBuilder = new RawClusterBuilderkMA("FEMCRawClusterBuilderkMA");
+    ClusterBuilder->Detector("FEMC");
+    ClusterBuilder->set_seed_e(0.1);
+    ClusterBuilder->set_agg_e(0.005);
+    se->registerSubsystem(ClusterBuilder);
+    /*
     RawClusterBuilderTemplate *ClusterBuilder = new RawClusterBuilderTemplate("EmcRawClusterBuilderTemplateFEMC");
     ClusterBuilder->Detector("FEMC");
     ClusterBuilder->Verbosity(verbosity);
@@ -348,6 +357,7 @@ void FEMC_Clusters()
     femc_prof += "/EmcProfile/FEMCprof_Thresh20MeV.root";
     ClusterBuilder->LoadProfile(femc_prof.c_str());
     se->registerSubsystem(ClusterBuilder);
+    */
   }
   else if (G4FEMC::Femc_clusterizer == G4FEMC::kFemcGraphClusterizer)
   {

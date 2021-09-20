@@ -395,6 +395,10 @@ int Fun4All_G4_EICDetector(
   // Enable::ZDC = true;
   // Enable::ZDC_DISABLE_BLACKHOLE = true;
 
+  // B0
+  // Enable::B0_DISABLE_HITPLANE = true;
+  // Enable::B0_FULLHITPLANE = true;
+
   // Enabling the event evaluator?
   Enable::EVENT_EVAL = true;
   // EVENT_EVALUATOR::Verbosity = 1;
