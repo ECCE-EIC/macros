@@ -12,6 +12,9 @@
 
 #include <g4main/PHG4Reco.h>
 
+#include <eiccaloreco/RawClusterBuilderkMA.h>
+#include <eiccaloreco/RawClusterBuilderHelper.h>
+
 #include <caloreco/RawClusterBuilderFwd.h>
 #include <caloreco/RawClusterBuilderTemplate.h>
 #include <caloreco/RawTowerCalibration.h>
@@ -253,7 +256,12 @@ void EEMCH_Clusters()
 
   if (G4EEMCH::Eemc_clusterizer == G4EEMCH::kEemcTemplateClusterizer)
   {
-    
+    RawClusterBuilderHelper *ClusterBuilder = new RawClusterBuilderkMA("EEMCRawClusterBuilderkMA");
+    ClusterBuilder->Detector("EEMC");
+    ClusterBuilder->set_seed_e(0.1);
+    ClusterBuilder->set_agg_e(0.001);
+    se->registerSubsystem(ClusterBuilder);
+    /*    
     RawClusterBuilderTemplate *ClusterBuilder_crystal = new RawClusterBuilderTemplate("EEMCRawClusterBuilderTemplate_crystal");
     ClusterBuilder_crystal->Detector("EEMC");
     ClusterBuilder_crystal->Verbosity(2);
@@ -265,6 +273,7 @@ void EEMCH_Clusters()
       ClusterBuilder_glass->Verbosity(verbosity);
       se->registerSubsystem(ClusterBuilder_glass);
     }
+    */
   }
   else if (G4EEMCH::Eemc_clusterizer == G4EEMCH::kEemcGraphClusterizer)
   {
