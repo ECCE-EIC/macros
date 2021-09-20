@@ -48,7 +48,7 @@ int Fun4All_G4_EICDetector(
   // which will produce identical results so you can debug your code
   // rc->set_IntFlag("RANDOMSEED", 12345);
 
-  bool generate_seed = false;
+  bool generate_seed = true;
 
   if (generate_seed)
   {
@@ -102,7 +102,7 @@ int Fun4All_G4_EICDetector(
   //   Input::SARTRE = true;
 
   // Simple multi particle generator in eta/phi/pt ranges
-  Input::SIMPLE = true;
+  //Input::SIMPLE = true;
   // Input::SIMPLE_NUMBER = 2; // if you need 2 of them
   // Input::SIMPLE_VERBOSITY = 1;
 
@@ -119,7 +119,7 @@ int Fun4All_G4_EICDetector(
   // And/Or read generated particles from file
 
   // eic-smear output
-  // Input::READEIC = true;
+  Input::READEIC = true;
   INPUTREADEIC::filename = inputFile;
 
   // HepMC2 files
@@ -292,7 +292,7 @@ int Fun4All_G4_EICDetector(
   G4TTL::SETTING::optionGeo = 1;
 
   Enable::TRACKING = true;
-  Enable::TRACKING_EVAL = Enable::TRACKING && true;
+  Enable::TRACKING_EVAL = Enable::TRACKING && false;
   G4TRACKING::DISPLACED_VERTEX = true;  // this option exclude vertex in the track fitting and use RAVE to reconstruct primary and 2ndary vertexes
                                         // projections to calorimeters
   G4TRACKING::PROJECTION_EEMC = true;
@@ -308,14 +308,14 @@ int Fun4All_G4_EICDetector(
   Enable::BECAL_CELL = Enable::BECAL && true;
   Enable::BECAL_TOWER = Enable::BECAL_CELL && true;
   Enable::BECAL_CLUSTER = Enable::BECAL_TOWER && true;
-  Enable::BECAL_EVAL = Enable::BECAL_CLUSTER && true;
+  Enable::BECAL_EVAL = Enable::BECAL_CLUSTER && false;
 
   Enable::HCALIN = true;
   //  Enable::HCALIN_ABSORBER = true;
   Enable::HCALIN_CELL = Enable::HCALIN && true;
   Enable::HCALIN_TOWER = Enable::HCALIN_CELL && true;
   Enable::HCALIN_CLUSTER = Enable::HCALIN_TOWER && true;
-  Enable::HCALIN_EVAL = Enable::HCALIN_CLUSTER && true;
+  Enable::HCALIN_EVAL = Enable::HCALIN_CLUSTER && false;
 
   Enable::MAGNET = true;
 
@@ -324,7 +324,7 @@ int Fun4All_G4_EICDetector(
   Enable::HCALOUT_CELL = Enable::HCALOUT && true;
   Enable::HCALOUT_TOWER = Enable::HCALOUT_CELL && true;
   Enable::HCALOUT_CLUSTER = Enable::HCALOUT_TOWER && true;
-  Enable::HCALOUT_EVAL = Enable::HCALOUT_CLUSTER && true;
+  Enable::HCALOUT_EVAL = Enable::HCALOUT_CLUSTER && false;
 
   // EICDetector geometry - barrel
   Enable::DIRC = true;
@@ -339,7 +339,7 @@ int Fun4All_G4_EICDetector(
   //  Enable::FEMC_ABSORBER = true;
   Enable::FEMC_TOWER = Enable::FEMC && true;
   Enable::FEMC_CLUSTER = Enable::FEMC_TOWER && true;
-  Enable::FEMC_EVAL = Enable::FEMC_CLUSTER && true;
+  Enable::FEMC_EVAL = Enable::FEMC_CLUSTER && false;
 
   //Enable::DRCALO = false;
   Enable::DRCALO_CELL = Enable::DRCALO && true;
@@ -359,18 +359,16 @@ int Fun4All_G4_EICDetector(
   Enable::EEMCH = true;
   Enable::EEMCH_TOWER = Enable::EEMCH && true;
   Enable::EEMCH_CLUSTER = Enable::EEMCH_TOWER && true;
-  Enable::EEMCH_EVAL = Enable::EEMCH_CLUSTER && true;
+  Enable::EEMCH_EVAL = Enable::EEMCH_CLUSTER && false;
   G4TTL::SETTING::optionEEMCH = Enable::EEMCH && true;
 
   Enable::EHCAL = true;
   Enable::EHCAL_CELL = Enable::EHCAL && true;
   Enable::EHCAL_TOWER = Enable::EHCAL_CELL && true;
   Enable::EHCAL_CLUSTER = Enable::EHCAL_TOWER && true;
-  Enable::EHCAL_EVAL = Enable::EHCAL_CLUSTER && true;
+  Enable::EHCAL_EVAL = Enable::EHCAL_CLUSTER && false;
 
-  Enable::FFR_EVAL = Enable::HFARFWD_MAGNETS && Enable::HFARFWD_VIRTUAL_DETECTORS && true;
-
-  Enable::FFR_EVAL = Enable::HFARFWD_MAGNETS && Enable::HFARFWD_VIRTUAL_DETECTORS && true;
+  Enable::FFR_EVAL = Enable::HFARFWD_MAGNETS && Enable::HFARFWD_VIRTUAL_DETECTORS && false;
 
   Enable::PLUGDOOR = false;
 
@@ -380,7 +378,7 @@ int Fun4All_G4_EICDetector(
 
   // jet reconstruction
   Enable::FWDJETS = true;
-  Enable::FWDJETS_EVAL = Enable::FWDJETS && true;
+  Enable::FWDJETS_EVAL = Enable::FWDJETS && false;
 
   // new settings using Enable namespace in GlobalVariables.C
   Enable::BLACKHOLE = true;
@@ -400,7 +398,7 @@ int Fun4All_G4_EICDetector(
   // Enable::B0_FULLHITPLANE = true;
 
   // Enabling the event evaluator?
-  Enable::EVENT_EVAL = true;
+  Enable::EVENT_EVAL = false;
   // EVENT_EVALUATOR::Verbosity = 1;
   // EVENT_EVALUATOR::EnergyThreshold = 0.05; // GeV
 
