@@ -37,7 +37,7 @@ namespace G4FST
   namespace SETTING
   {
     bool FST_TPC = false;
-    bool SUPPORTCYL = true;
+    bool SUPPORTCYL = false;
   }  // namespace SETTING
 }  // namespace G4FST
 

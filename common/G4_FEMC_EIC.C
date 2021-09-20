@@ -13,6 +13,9 @@
 
 #include <g4main/PHG4Reco.h>
 
+#include <eiccaloreco/RawClusterBuilderkMA.h>
+#include <eiccaloreco/RawClusterBuilderHelper.h>
+
 #include <caloreco/RawClusterBuilderFwd.h>
 #include <caloreco/RawClusterBuilderTemplate.h>
 #include <caloreco/RawTowerCalibration.h>
@@ -56,20 +59,25 @@ namespace G4FEMC
     bool FullEtaAcc = false;
     bool fsPHENIX = false;
     bool EC2x = false;
+    bool readoutsplit = true;
+    bool asymmetric = true;
+    bool wDR = false;
+    bool FwdSquare = false;
   }  // namespace SETTING
 }  // namespace G4FEMC
 
 void FEMCInit()
 {
   // simple way to check if only 1 of the settings is true
-  if ((G4FEMC::SETTING::FullEtaAcc ? 1 : 0) + (G4FEMC::SETTING::fsPHENIX ? 1 : 0) > 1)
+  if ((G4FEMC::SETTING::FullEtaAcc ? 1 : 0) + (G4FEMC::SETTING::fsPHENIX ? 1 : 0) + (G4FEMC::SETTING::wDR ? 1 : 0) + (G4FEMC::SETTING::FwdSquare ? 1 : 0) + (G4FEMC::SETTING::asymmetric ? 1 : 0) > 1)
   {
-    cout << "use only  G4FHCAL::SETTING::FullEtaAcc=true or G4FHCAL::SETTING::fsPHENIX=true" << endl;
+    cout << "use only  G4FHCAL::SETTING::FullEtaAcc=true or G4FHCAL::SETTING::fsPHENIX=true or G4FHCAL::SETTING::wDR=true or G4FHCAL::SETTING::asymmetric=true" << endl;
     gSystem->Exit(1);
   }
 
   BlackHoleGeometry::max_radius = std::max(BlackHoleGeometry::max_radius, G4FEMC::outer_radius);
   BlackHoleGeometry::max_z = std::max(BlackHoleGeometry::max_z, G4FEMC::Gz0 + G4FEMC::Gdz / 2.);
+  BlackHoleGeometry::min_z = std::min(BlackHoleGeometry::min_z, -10.);
 }
 
 void FEMCSetup(PHG4Reco *g4Reco)
@@ -99,6 +107,34 @@ void FEMCSetup(PHG4Reco *g4Reco)
   {
     mapping_femc << getenv("CALIBRATIONROOT") << "/ForwardEcal/mapping/towerMap_FEMC_fsPHENIX_v004.txt";
   }
+  // asymmetric ECAL around beampipe
+  else if (G4FEMC::SETTING::asymmetric)
+  {
+    if (Enable::IP6){
+      if (G4FEMC::SETTING::readoutsplit)
+        mapping_femc << getenv("CALIBRATIONROOT") << "/ForwardEcal/mapping/towerMap_FEMC_IP6-asymmetric_ROS.txt";
+      else
+        mapping_femc << getenv("CALIBRATIONROOT") << "/ForwardEcal/mapping/towerMap_FEMC_IP6-asymmetric.txt";
+    } else {
+      if (G4FEMC::SETTING::readoutsplit)
+        mapping_femc << getenv("CALIBRATIONROOT") << "/ForwardEcal/mapping/towerMap_FEMC_asymmetric_ROS.txt";
+      else
+        mapping_femc << getenv("CALIBRATIONROOT") << "/ForwardEcal/mapping/towerMap_FEMC_asymmetric.txt";
+    }
+  }
+  // ECAL surrounding dual readout calorimeter
+  else if (G4FEMC::SETTING::FwdSquare)
+  {
+    if (G4FEMC::SETTING::readoutsplit)
+      mapping_femc << getenv("CALIBRATIONROOT") << "/ForwardEcal/mapping/towerMap_FEMC_FwdSquare_ROS.txt";
+    else
+      mapping_femc << getenv("CALIBRATIONROOT") << "/ForwardEcal/mapping/towerMap_FEMC_FwdSquare.txt";
+  }
+  // ECAL surrounding dual readout calorimeter
+  else if (G4FEMC::SETTING::wDR)
+  {
+    mapping_femc << getenv("CALIBRATIONROOT") << "/ForwardEcal/mapping/towerMap_FEMC_wDR.txt";
+  }
   // PbScint ECAL with enlarged beam pipe opening for Mar 2020 beam pipe
   else
   {
@@ -108,6 +144,7 @@ void FEMCSetup(PHG4Reco *g4Reco)
   femc->SetTowerMappingFile(mapping_femc.str());
   femc->OverlapCheck(OverlapCheck);
   femc->SetActive();
+  femc->SetDetailed(false);
   femc->SuperDetector("FEMC");
   if (AbsorberActive) femc->SetAbsorberActive();
 
@@ -145,6 +182,39 @@ void FEMC_Towers()
   else if (G4FEMC::SETTING::fsPHENIX)
   {
     mapping_femc << getenv("CALIBRATIONROOT") << "/ForwardEcal/mapping/towerMap_FEMC_fsPHENIX_v004.txt";
+  }
+  // ECAL surrounding dual readout calorimeter
+  else if (G4FEMC::SETTING::FwdSquare)
+  {
+    mapping_femc << getenv("CALIBRATIONROOT") << "/ForwardEcal/mapping/towerMap_FEMC_FwdSquare.txt";
+  }
+  // ECAL surrounding dual readout calorimeter
+  else if (G4FEMC::SETTING::wDR)
+  {
+    mapping_femc << getenv("CALIBRATIONROOT") << "/ForwardEcal/mapping/towerMap_FEMC_wDR.txt";
+  }
+  // asymmetric ECAL around beampipe
+  else if (G4FEMC::SETTING::asymmetric)
+  {
+    if (Enable::IP6){
+      if (G4FEMC::SETTING::readoutsplit)
+        mapping_femc << getenv("CALIBRATIONROOT") << "/ForwardEcal/mapping/towerMap_FEMC_IP6-asymmetric_ROS.txt";
+      else
+        mapping_femc << getenv("CALIBRATIONROOT") << "/ForwardEcal/mapping/towerMap_FEMC_IP6-asymmetric.txt";
+    } else {
+      if (G4FEMC::SETTING::readoutsplit)
+        mapping_femc << getenv("CALIBRATIONROOT") << "/ForwardEcal/mapping/towerMap_FEMC_asymmetric_ROS.txt";
+      else
+        mapping_femc << getenv("CALIBRATIONROOT") << "/ForwardEcal/mapping/towerMap_FEMC_asymmetric.txt";
+    }
+  }
+  // ECAL surrounding dual readout calorimeter
+  else if (G4FEMC::SETTING::FwdSquare)
+  {
+    if (G4FEMC::SETTING::readoutsplit)
+      mapping_femc << getenv("CALIBRATIONROOT") << "/ForwardEcal/mapping/towerMap_FEMC_FwdSquare_ROS.txt";
+    else
+      mapping_femc << getenv("CALIBRATIONROOT") << "/ForwardEcal/mapping/towerMap_FEMC_FwdSquare.txt";
   }
   // PbScint ECAL with enlarged beam pipe opening for Mar 2020 beam pipe
   else
@@ -220,7 +290,10 @@ void FEMC_Towers()
   TowerCalibration2->TowerType(2);
   TowerCalibration2->Verbosity(verbosity);
   TowerCalibration2->set_calib_algorithm(RawTowerCalibration::kSimple_linear_calibration);
-  TowerCalibration2->set_calib_const_GeV_ADC(1.0 / 0.249);  // sampling fraction = 0.249 for e-
+  if (G4FEMC::SETTING::readoutsplit)
+    TowerCalibration2->set_calib_const_GeV_ADC(1.0 / (0.249*0.84));  // sampling fraction = 0.249 for e-
+  else 
+    TowerCalibration2->set_calib_const_GeV_ADC(1.0 / 0.249);  // sampling fraction = 0.249 for e-
   TowerCalibration2->set_pedstal_ADC(0);
   se->registerSubsystem(TowerCalibration2);
 
@@ -270,6 +343,12 @@ void FEMC_Clusters()
 
   if (G4FEMC::Femc_clusterizer == G4FEMC::kFemcTemplateClusterizer)
   {
+    RawClusterBuilderHelper *ClusterBuilder = new RawClusterBuilderkMA("FEMCRawClusterBuilderkMA");
+    ClusterBuilder->Detector("FEMC");
+    ClusterBuilder->set_seed_e(0.1);
+    ClusterBuilder->set_agg_e(0.005);
+    se->registerSubsystem(ClusterBuilder);
+    /*
     RawClusterBuilderTemplate *ClusterBuilder = new RawClusterBuilderTemplate("EmcRawClusterBuilderTemplateFEMC");
     ClusterBuilder->Detector("FEMC");
     ClusterBuilder->Verbosity(verbosity);
@@ -278,6 +357,7 @@ void FEMC_Clusters()
     femc_prof += "/EmcProfile/FEMCprof_Thresh20MeV.root";
     ClusterBuilder->LoadProfile(femc_prof.c_str());
     se->registerSubsystem(ClusterBuilder);
+    */
   }
   else if (G4FEMC::Femc_clusterizer == G4FEMC::kFemcGraphClusterizer)
   {
