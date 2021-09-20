@@ -51,15 +51,6 @@ void G4DSTreader_EICDetector(const string &outputFile = "G4sPHENIXCells.root")
     {
       ana->AddNode("PIPE");
     }
-    if (Enable::BARREL)
-    {
-      int nBarrel=6;
-      for (int i = 10; i < 10+nBarrel; i++)
-	{
-	  ana->AddNode(Form("LBLVTX_CENTRAL_%d", i));
-	}
-    }
-
     if (Enable::EGEM)
     {
       ana->AddNode("EGEM_0");
@@ -159,7 +150,7 @@ void G4DSTreader_EICDetector(const string &outputFile = "G4sPHENIXCells.root")
 //    }
     if (Enable::DIRC)
     {
-      ana->AddNode("DIRC");
+      ana->AddNode("hpDIRC");
     }
     if (Enable::RICH)
     {
@@ -168,6 +159,7 @@ void G4DSTreader_EICDetector(const string &outputFile = "G4sPHENIXCells.root")
     if (Enable::mRICH)
     {
       ana->AddNode("mRICH");
+      ana->AddNode("ABSORBER_mRICH");
     }
 
     if (Enable::BLACKHOLE)
