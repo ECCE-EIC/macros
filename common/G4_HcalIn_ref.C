@@ -16,6 +16,9 @@
 
 #include <g4main/PHG4Reco.h>
 
+#include <eiccaloreco/RawClusterBuilderkV3.h>
+#include <eiccaloreco/RawClusterBuilderHelper.h>
+
 #include <caloreco/RawClusterBuilderGraph.h>
 #include <caloreco/RawClusterBuilderTemplate.h>
 #include <caloreco/RawTowerCalibration.h>
@@ -320,11 +323,18 @@ void HCALInner_Clusters()
 
   if (G4HCALIN::HCalIn_clusterizer == G4HCALIN::kHCalInTemplateClusterizer)
   {
+    RawClusterBuilderHelper *ClusterBuilder = new RawClusterBuilderkV3("HcalInRawClusterBuilderkV3");
+    ClusterBuilder->Detector("HCALIN");
+    ClusterBuilder->set_seed_e(0.5);
+    ClusterBuilder->set_agg_e(0.1);
+    se->registerSubsystem(ClusterBuilder);
+    /*
     RawClusterBuilderTemplate *ClusterBuilder = new RawClusterBuilderTemplate("HcalInRawClusterBuilderTemplate");
     ClusterBuilder->Detector("HCALIN");
     ClusterBuilder->SetCylindricalGeometry();  // has to be called after Detector()
     ClusterBuilder->Verbosity(verbosity);
     se->registerSubsystem(ClusterBuilder);
+    */
   }
   else if (G4HCALIN::HCalIn_clusterizer == G4HCALIN::kHCalInGraphClusterizer)
   {

@@ -13,6 +13,9 @@
 
 #include <g4main/PHG4Reco.h>
 
+#include <eiccaloreco/RawClusterBuilderkMA.h>
+#include <eiccaloreco/RawClusterBuilderHelper.h>
+
 #include <caloreco/RawClusterBuilderFwd.h>
 #include <caloreco/RawClusterBuilderTemplate.h>
 #include <caloreco/RawTowerCalibration.h>
@@ -314,12 +317,19 @@ void EHCAL_Clusters()
 
   if (G4EHCAL::EHCAL_clusterizer == G4EHCAL::kEHCALTemplateClusterizer)
   {
+    RawClusterBuilderHelper *ehcal_clusterbuilder = new RawClusterBuilderkMA("EhcalRawClusterBuilderkMA");
+    ehcal_clusterbuilder->Detector("EHCAL");
+    ehcal_clusterbuilder->set_seed_e(0.1);
+    ehcal_clusterbuilder->set_agg_e(0.005);
+    se->registerSubsystem(ehcal_clusterbuilder);
+    /*
     RawClusterBuilderTemplate *ClusterBuilder = new RawClusterBuilderTemplate("EHCALRawClusterBuilderTemplate");
     ClusterBuilder->Detector("EHCAL");
     ClusterBuilder->SetPlanarGeometry();  // has to be called after Detector()
     ClusterBuilder->Verbosity(verbosity);
     ClusterBuilder->set_threshold_energy(0.100);
     se->registerSubsystem(ClusterBuilder);
+    */
   }
   else if (G4EHCAL::EHCAL_clusterizer == G4EHCAL::kEHCALTemplateClusterizer)
   {

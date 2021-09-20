@@ -135,7 +135,7 @@ double Pipe(PHG4Reco* g4Reco,
     if (Enable::IP6)
     {
       PHG4GDMLSubsystem* gdml = new PHG4GDMLSubsystem("HadronForwardChamber");
-      gdml->set_string_param("GDMPath", string(getenv("CALIBRATIONROOT")) + "Beam/ConstructSimplifiedBeamChamber.gdml");
+      gdml->set_string_param("GDMPath", string(getenv("CALIBRATIONROOT")) + "/Beam/ConstructSimplifiedBeamChamber.gdml");
       gdml->set_string_param("TopVolName", "HadronForwardChamber");
       gdml->OverlapCheck(OverlapCheck);
       g4Reco->registerSubsystem(gdml);
