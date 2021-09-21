@@ -34,6 +34,8 @@ void Event_Eval(const std::string &filename)
     eval->set_do_PROJECTIONS(true);
     if (G4TRACKING::DISPLACED_VERTEX)
       eval->set_do_VERTEX(true);
+    if (Enable::DIRC_RECO or Enable::mRICH_RECO or Enable::RICH_RECO)
+      eval->set_do_PID_LogLikelihood(true);
   }
   if (Enable::CEMC_CLUSTER) eval->set_do_CEMC(true);
   if (Enable::EEMC_CLUSTER) eval->set_do_EEMC(true);
