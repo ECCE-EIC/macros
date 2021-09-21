@@ -6,7 +6,8 @@
 
 #include <g4mrich/PHG4mRICHSubsystem.h>
 #include <g4trackfastsim/PHG4TrackFastSim.h>
-//#include <g4rich/PHG4mRICHSubsystem.h>
+#include <eccefastpidreco/ECCEFastPIDReco.h>
+#include <eccefastpidreco/ECCEmRICHFastPIDMap.h>
 /*!
  * \file G4_mRICH.C
  * \brief Aerogel mRICH for EIC detector
@@ -14,10 +15,14 @@
  * \date $Date: 2020/7/2  $
  */
 
+R__LOAD_LIBRARY(libECCEFastPIDReco.so)
+
 namespace Enable
 {
   bool mRICH = false;
+  bool mRICH_RECO = false;
   bool mRICH_OVERLAPCHECK = false;
+  int mRICH_VERBOSITY = 0;
 }  // namespace Enable
 
 void mRICHInit()
@@ -52,9 +57,26 @@ void mRICHSetup(PHG4Reco *g4Reco, const int detectorSetup = 1,  //1: full setup;
   if (TRACKING::FastKalmanFilter)
   {
     // project to an reference plane at z=170 cm
-    TRACKING::FastKalmanFilter-> add_zplane_state("mRICH", -170);
+    TRACKING::FastKalmanFilter-> add_zplane_state("mRICH", -125);
     TRACKING::ProjectionNames.insert("mRICH");
   }
+}
+
+
+void mRICHReco(int verbosity = 0)
+{
+  verbosity = std::max(Enable::VERBOSITY, verbosity);
+  verbosity = std::max(Enable::mRICH_VERBOSITY, verbosity);
+
+  Fun4AllServer *se = Fun4AllServer::instance();
+
+  ECCEmRICHFastPIDMap * pidmap = new ECCEmRICHFastPIDMap();
+  pidmap->Verbosity(verbosity);
+
+  ECCEFastPIDReco * reco = new ECCEFastPIDReco(pidmap, EICPIDDefs::mRICH, "ECCEFastPIDReco-mRICH");
+  reco->Verbosity(verbosity);
+
+  se->registerSubsystem(reco);
 }
 
 void mRICH_Eval(std::string outputfile, int verbosity = 0)

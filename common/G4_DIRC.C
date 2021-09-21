@@ -12,18 +12,25 @@
 
 #include <g4eicdirc/G4EicDircSubsystem.h>
 #include <g4trackfastsim/PHG4TrackFastSim.h>
+#include <eccefastpidreco/ECCEFastPIDReco.h>
+#include <eccefastpidreco/ECCEhpDIRCFastPIDMap.h>
 
 #include <g4main/PHG4Reco.h>
 
 R__LOAD_LIBRARY(libg4detectors.so)
 R__LOAD_LIBRARY(libg4eicdirc.so)
+R__LOAD_LIBRARY(libECCEFastPIDReco.so)
 
 namespace Enable
 {
   bool DIRC = false;
+  bool DIRC_RECO = false;
   bool DIRC_OVERLAPCHECK = false;
   int DIRC_VERBOSITY = 0;
   double DIRC_SCALE = 10; //DIRC class is in mm, ECCE is in cm
+
+  // temp setting to disable DIRC photon simulation in production
+  bool DIRC_DISABLE_PHOTON_SIMULATION = true;
 }  // namespace Enable
 
 void DIRCInit()
@@ -60,6 +67,9 @@ void DIRCSetup(PHG4Reco* g4Reco)
   dircSubsys->set_int_param("NBoxes",12);
   dircSubsys->set_int_param("Bar_pieces", 4);
 
+  if (Enable::DIRC_DISABLE_PHOTON_SIMULATION)
+    dircSubsys->set_int_param("disable_photon_sim", 1);
+
   dircSubsys->OverlapCheck(OverlapCheck);
   dircSubsys->Verbosity(verbosity);
   dircSubsys->SetActive();
@@ -69,9 +79,27 @@ void DIRCSetup(PHG4Reco* g4Reco)
   if (TRACKING::FastKalmanFilter)
   {
     // project to an reference plane at z=170 cm
-    TRACKING::FastKalmanFilter-> add_zplane_state("DIRC", 185);
-    TRACKING::ProjectionNames.insert("DIRC");
+    TRACKING::FastKalmanFilter-> add_cylinder_state("hpDIRC", 70);
+    TRACKING::ProjectionNames.insert("hpDIRC");
   }
 
 }
+
+void DIRCReco()
+{
+  int verbosity = std::max(Enable::VERBOSITY, Enable::DIRC_VERBOSITY);
+  Fun4AllServer *se = Fun4AllServer::instance();
+
+  ECCEhpDIRCFastPIDMap * pidmap = new ECCEhpDIRCFastPIDMap();
+  pidmap->ReadMap( string(getenv("CALIBRATIONROOT")) + string("/hpDIRC/FastPID/ctr_map_p1_0.95.root") );
+
+  ECCEFastPIDReco * reco = new ECCEFastPIDReco(pidmap, EICPIDDefs::DIRC, "ECCEFastPIDReco-DIRC");
+  reco->setMatchG4Hit("G4HIT_hpDIRC");
+  reco->Verbosity(verbosity);
+
+
+  se->registerSubsystem(reco);
+}
+
+
 #endif
