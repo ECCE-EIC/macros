@@ -564,7 +564,7 @@ int Fun4All_G4_EICDetector(
 
   if (Enable::FFR_EVAL) FFR_Eval(outputroot + "_g4ffr_eval.root");
 
-  if (Enable::FWDJETS_EVAL) Jet_FwdEval();
+  if (Enable::FWDJETS_EVAL) Jet_FwdEval(outputroot);
 
   if (Enable::USER) UserAnalysisInit();
 
