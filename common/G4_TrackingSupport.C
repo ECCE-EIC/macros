@@ -226,13 +226,13 @@ double TrackingService(PHG4Reco* g4Reco, double radius)
   cones.push_back(new ServiceProperties("ETrackingConeService_5", 9, 0, 0.56, 0.32, shellX0, 0, -107, -80, 47.1, 44));
   cones.push_back(new ServiceProperties("ETrackingConeService_6", 7.5, 0, 0.42, 0.24, shellX0, 0, -80, -56.9, 44, 42.7));
   cones.push_back(new ServiceProperties("ETrackingConeService_7", 6, 0, 0.14, 0.159, shellX0, 0, -56.9, -34, 42.7, 24));
-  cones.push_back(new ServiceProperties("ETrackingConeService_8", 3, 0, 0, 0.079, shellX0, 0, -34, -18, 24, 7.5));
+  cones.push_back(new ServiceProperties("ETrackingConeService_8", 3, 0, 0, 0.079, shellX0, 0, -34, -18, 24, 8.2));
 
   cylinders.push_back(new ServiceProperties("BTrackingCylinderService_1", 0, 0, 0, 0, 0.1, 0, -56.8, 56.8, 48, 0));
   cylinders.push_back(new ServiceProperties("BTrackingCylinderService_2", 0, 0, 0, 0, 0.1, 0, -33.6, 33.6, 24, 0));
-  cylinders.push_back(new ServiceProperties("BTrackingCylinderService_3", 0, 0, 0, 0, shellX0, 0, -17.8, 17.8, 7.5, 0));
+  cylinders.push_back(new ServiceProperties("BTrackingCylinderService_3", 0, 0, 0, 0, shellX0, 0, -17.8, 17.8, 8.2, 0));
 
-  cones.push_back(new ServiceProperties("HTrackingConeService_1", 3, 0, 0, 0.079, shellX0, 0, 18, 34, 7.5, 24));
+  cones.push_back(new ServiceProperties("HTrackingConeService_1", 3, 0, 0, 0.079, shellX0, 0, 18, 34, 8.2, 24));
   cones.push_back(new ServiceProperties("HTrackingConeService_2", 6, 0, 0.14, 0.159, shellX0, 0, 34, 56.9, 24, 42.7));
   cones.push_back(new ServiceProperties("HTrackingConeService_3", 7.5, 0, 0.28, 0.24, shellX0, 0, 56.9, 79.9, 42.7, 44.1));
   cones.push_back(new ServiceProperties("HTrackingConeService_4", 9, 0, 0.42, 0.32, shellX0, 0, 79.9, 114.9, 44.1, 47.2));
