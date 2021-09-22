@@ -16,6 +16,9 @@
 
 #include <g4main/PHG4Reco.h>
 
+#include <eiccaloreco/RawClusterBuilderkV3.h>
+#include <eiccaloreco/RawClusterBuilderHelper.h>
+
 #include <caloreco/RawClusterBuilderGraph.h>
 #include <caloreco/RawClusterBuilderTemplate.h>
 #include <caloreco/RawTowerCalibration.h>
@@ -131,7 +134,7 @@ double HCalInner(PHG4Reco *g4Reco,
 
   hcal->set_double_param("outer_radius", 138.5);
   hcal->set_double_param("scinti_outer_radius", 138.0);
-  hcal->set_double_param("inner_radius", 134.0);
+  hcal->set_double_param("inner_radius", 135.0);
   hcal->set_double_param("tilt_angle", 36.15);
   hcal->set_double_param("size_z", length);
   hcal->set_int_param("n_scinti_tiles", 0);
@@ -320,11 +323,18 @@ void HCALInner_Clusters()
 
   if (G4HCALIN::HCalIn_clusterizer == G4HCALIN::kHCalInTemplateClusterizer)
   {
+    RawClusterBuilderHelper *ClusterBuilder = new RawClusterBuilderkV3("HcalInRawClusterBuilderkV3");
+    ClusterBuilder->Detector("HCALIN");
+    ClusterBuilder->set_seed_e(0.5);
+    ClusterBuilder->set_agg_e(0.1);
+    se->registerSubsystem(ClusterBuilder);
+    /*
     RawClusterBuilderTemplate *ClusterBuilder = new RawClusterBuilderTemplate("HcalInRawClusterBuilderTemplate");
     ClusterBuilder->Detector("HCALIN");
     ClusterBuilder->SetCylindricalGeometry();  // has to be called after Detector()
     ClusterBuilder->Verbosity(verbosity);
     se->registerSubsystem(ClusterBuilder);
+    */
   }
   else if (G4HCALIN::HCalIn_clusterizer == G4HCALIN::kHCalInGraphClusterizer)
   {

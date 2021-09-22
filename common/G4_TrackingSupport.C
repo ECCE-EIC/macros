@@ -31,6 +31,7 @@ class ServiceProperties
                                const double &rad_len_water,
                                const double &rad_len_plastic,
                                const double &rad_len_carbon,
+                               const double &rad_len_iron,
                                const double &z_south,
                                const double &z_north,
                                const double &r_south,
@@ -44,6 +45,7 @@ class ServiceProperties
     const double get_rad_len_water();
     const double get_rad_len_plastic();
     const double get_rad_len_carbon();
+    const double get_rad_len_iron();
     const double get_z_south();
     const double get_z_north();
     const double get_r_south();
@@ -56,6 +58,7 @@ class ServiceProperties
     const double m_rad_len_water = 0.0;
     const double m_rad_len_plastic = 0.0;
     const double m_rad_len_carbon = 0.0;
+    const double m_rad_len_iron = 0.0;
     const double m_z_south = 0.0;
     const double m_z_north = 0.0;
     const double m_r_south = 0.0;
@@ -68,6 +71,7 @@ ServiceProperties::ServiceProperties(const string &name,
                                      const double &rad_len_water,
                                      const double &rad_len_plastic,
                                      const double &rad_len_carbon,
+                                     const double &rad_len_iron,
                                      const double &z_south,
                                      const double &z_north,
                                      const double &r_south,
@@ -78,6 +82,7 @@ ServiceProperties::ServiceProperties(const string &name,
   , m_rad_len_water(rad_len_water)
   , m_rad_len_plastic(rad_len_plastic)
   , m_rad_len_carbon(rad_len_carbon)
+  , m_rad_len_iron(rad_len_iron)
   , m_z_south(z_south)
   , m_z_north(z_north)
   , m_r_south(r_south)
@@ -90,6 +95,7 @@ const double ServiceProperties::get_rad_len_aluminum() { return m_rad_len_alumin
 const double ServiceProperties::get_rad_len_water() { return m_rad_len_water; }
 const double ServiceProperties::get_rad_len_plastic() { return m_rad_len_plastic; }
 const double ServiceProperties::get_rad_len_carbon() { return m_rad_len_carbon; }
+const double ServiceProperties::get_rad_len_iron() { return m_rad_len_iron; }
 const double ServiceProperties::get_z_south() { return m_z_south; }
 const double ServiceProperties::get_z_north() { return m_z_north; }
 const double ServiceProperties::get_r_south() { return m_r_south; }
@@ -106,14 +112,16 @@ namespace Enable
 
 namespace G4TrackingService
 { //List materials and radiation length in cm
-  const int nMaterials = 5;
+  const int nMaterials = 6;
   pair<string, double> materials[nMaterials] = { make_pair("G4_Cu", 1.436)
                                                , make_pair("G4_Al",  8.897)
                                                , make_pair("G4_WATER",  36.08)
                                                , make_pair("G4_POLYETHYLENE", 50.31)
-                                               , make_pair("PEEK", 30.00) };
+                                               , make_pair("PEEK", 30.00)
+                                               , make_pair("G4_Fe", 1.757) };
   
   double GlobalOffset = 0.0;
+  double ShellThickness = 0.3; //Thickness in cm
   int subsysID = 0;
 }  // namespace G4TrackingService
 
@@ -123,7 +131,8 @@ vector<double> get_thickness(ServiceProperties *object)
                              ,(object->get_rad_len_aluminum()/100)*G4TrackingService::materials[1].second
                              ,(object->get_rad_len_water()/100)*G4TrackingService::materials[2].second
                              ,(object->get_rad_len_plastic()/100)*G4TrackingService::materials[3].second
-                             ,(object->get_rad_len_carbon()/100)*G4TrackingService::materials[4].second};
+                             ,(object->get_rad_len_carbon()/100)*G4TrackingService::materials[4].second
+                             ,(object->get_rad_len_iron()/100)*G4TrackingService::materials[5].second};
   return thickness;
 }
 
@@ -152,7 +161,7 @@ double TrackingServiceCone(ServiceProperties *object, PHG4Reco* g4Reco, double r
     cone->SetR1(innerRadiusSouth, innerRadiusSouth + thickness[i]);
     cone->SetR2(innerRadiusNorth, innerRadiusNorth + thickness[i]);
     cone->SetPlaceZ(object->get_z_south() + length/2 + G4TrackingService::GlobalOffset);
-    cone->SetZlength(length);
+    cone->SetZlength(length/2);
     cone->SetMaterial(G4TrackingService::materials[i].first);
     cone->SuperDetector("TrackingService");
     if (AbsorberActive) cone->SetActive();
@@ -205,16 +214,35 @@ double TrackingService(PHG4Reco* g4Reco, double radius)
 {
   vector<ServiceProperties*> cylinders, cones;
 
-  cylinders.push_back(new ServiceProperties("ETrackingCylinderService", 1, 0, 0.01, 0.1, 1, -80, -50, 10.75, 10.75));
-  cylinders.push_back(new ServiceProperties("BTrackingCylinderService_1", 0.1, 0, 0.001, 0.01, 0.1, -50, 50, 10.75, 10.75));
-  cylinders.push_back(new ServiceProperties("BTrackingCylinderService_2", 0.1, 0, 0.001, 0.01, 0.1, -40, 40, 7, 7));
-  cylinders.push_back(new ServiceProperties("BTrackingCylinderService_3", 0.1, 0, 0.001, 0.01, 0.1, -30, 30, 5, 5));
-  cylinders.push_back(new ServiceProperties("HTrackingCylinderService", 1, 0, 0.01, 0.1, 1, 50, 80, 10.75, 10.75));
+  double shellX0 = 100*G4TrackingService::ShellThickness/G4TrackingService::materials[4].second;
+
+  cylinders.push_back(new ServiceProperties("ETrackingCylinderService_1", 9, 0, 0.42, 0.32, shellX0, 0, -400, -310, 270, 0));
+  cones.push_back(new ServiceProperties("ETrackingConeService_1", 9, 0, 0.42, 0.32, shellX0, 0, -310, -300, 270, 68));
+  cylinders.push_back(new ServiceProperties("ETrackingCylinderService_2", 17, 0, 0.56, 0.64, shellX0, 0, -300, -200, 68, 0));
+  cylinders.push_back(new ServiceProperties("ETrackingCylinderService_3", 15, 0, 0.56, 0.56, shellX0, 0, -200, -152, 68, 0));
+  cones.push_back(new ServiceProperties("ETrackingConeService_2", 13, 0, 0.56, 0.48, shellX0, 0, -152, -132.1, 68, 63.2));
+  cones.push_back(new ServiceProperties("ETrackingConeService_3", 13, 0, 0.56, 0.48, shellX0, 0, -132.1, -119.9, 63.2, 50.2));
+  cones.push_back(new ServiceProperties("ETrackingConeService_4", 11, 0, 0.56, 0.40, shellX0, 0, -119.9, -107, 50.2, 47.1));
+  cones.push_back(new ServiceProperties("ETrackingConeService_5", 9, 0, 0.56, 0.32, shellX0, 0, -107, -80, 47.1, 44));
+  cones.push_back(new ServiceProperties("ETrackingConeService_6", 7.5, 0, 0.42, 0.24, shellX0, 0, -80, -56.9, 44, 42.7));
+  cones.push_back(new ServiceProperties("ETrackingConeService_7", 6, 0, 0.14, 0.159, shellX0, 0, -56.9, -34, 42.7, 24));
+  cones.push_back(new ServiceProperties("ETrackingConeService_8", 3, 0, 0, 0.079, shellX0, 0, -34, -18, 24, 8.2));
+
+  cylinders.push_back(new ServiceProperties("BTrackingCylinderService_1", 0, 0, 0, 0, 0.1, 0, -56.8, 56.8, 48, 0));
+  cylinders.push_back(new ServiceProperties("BTrackingCylinderService_2", 0, 0, 0, 0, 0.1, 0, -33.6, 33.6, 24, 0));
+  cylinders.push_back(new ServiceProperties("BTrackingCylinderService_3", 0, 0, 0, 0, shellX0, 0, -17.8, 17.8, 8.2, 0));
+
+  cones.push_back(new ServiceProperties("HTrackingConeService_1", 3, 0, 0, 0.079, shellX0, 0, 18, 34, 8.2, 24));
+  cones.push_back(new ServiceProperties("HTrackingConeService_2", 6, 0, 0.14, 0.159, shellX0, 0, 34, 56.9, 24, 42.7));
+  cones.push_back(new ServiceProperties("HTrackingConeService_3", 7.5, 0, 0.28, 0.24, shellX0, 0, 56.9, 79.9, 42.7, 44.1));
+  cones.push_back(new ServiceProperties("HTrackingConeService_4", 9, 0, 0.42, 0.32, shellX0, 0, 79.9, 114.9, 44.1, 47.2));
+  cones.push_back(new ServiceProperties("HTrackingConeService_5", 11, 0, 0.56, 0.40, shellX0, 0, 114.9, 124.9, 47.2, 47.5));
+  cones.push_back(new ServiceProperties("HTrackingConeService_6", 13, 0, 0.70, 0.48, shellX0, 0, 124.9, 157.9, 47.5, 69.2));
+  cylinders.push_back(new ServiceProperties("HTrackingCylinderService_1", 15, 0, 0.84, 0.56, shellX0, 0, 157.9, 173, 69.2, 0));
+  cones.push_back(new ServiceProperties("HTrackingConeService_7", 13, 0, 0.70, 0.48, shellX0, 0, 173, 180, 69.2, 85));
+  cones.push_back(new ServiceProperties("HTrackingConeService_8", 13, 0, 0.70, 0.48, shellX0, 0, 180, 195, 85, 100));
  
-  cones.push_back(new ServiceProperties("ETrackingConeService_1", 1, 0, 0.01, 0.1, 1, -50, -30, 10.75, 7));
-  cones.push_back(new ServiceProperties("ETrackingConeService_2", 1, 0, 0.01, 0.1, 1, -30, -20, 7, 5));
-  cones.push_back(new ServiceProperties("HTrackingConeService_1", 1, 0, 0.01, 0.1, 1, 30, 50, 7, 10.75));
-  cones.push_back(new ServiceProperties("HTrackingConeService_2", 1, 0, 0.01, 0.1, 1, 20, 30, 5, 7));
+  cylinders.push_back(new ServiceProperties("EEMCalSupport", 0, 0, 0, 0, 0, 171, -200, -197, 62, 0));
 
   for (ServiceProperties *cylinder : cylinders) radius += TrackingServiceCylinder(cylinder, g4Reco, radius); 
   for (ServiceProperties *cone : cones) radius += TrackingServiceCone(cone, g4Reco, radius);

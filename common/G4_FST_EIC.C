@@ -37,7 +37,7 @@ namespace G4FST
   namespace SETTING
   {
     bool FST_TPC = false;
-    bool SUPPORTCYL = true;
+    bool SUPPORTCYL = false;
   }  // namespace SETTING
 }  // namespace G4FST
 
@@ -133,6 +133,20 @@ int make_LANL_FST_station(string name, PHG4Reco *g4Reco,
   if (TRACKING::FastKalmanFilter)
   {
     TRACKING::FastKalmanFilter->add_phg4hits(string("G4HIT_") + name,           //      const std::string& phg4hitsNames,
+                                             PHG4TrackFastSim::Vertical_Plane,  //      const DETECTOR_TYPE phg4dettype,
+                                             pitch / sqrt(12.),                 //      const float radres,
+                                             pitch / sqrt(12.),                 //      const float phires,
+                                             50e-4 / sqrt(12.),                 //      const float lonres, *ignored in plane detector*
+                                             1,                                 //      const float eff,
+                                             0);                                //      const float noise
+    TRACKING::FastKalmanFilterInnerTrack->add_phg4hits(string("G4HIT_") + name,           //      const std::string& phg4hitsNames,
+                                             PHG4TrackFastSim::Vertical_Plane,  //      const DETECTOR_TYPE phg4dettype,
+                                             pitch / sqrt(12.),                 //      const float radres,
+                                             pitch / sqrt(12.),                 //      const float phires,
+                                             50e-4 / sqrt(12.),                 //      const float lonres, *ignored in plane detector*
+                                             1,                                 //      const float eff,
+                                             0);                                //      const float noise
+    TRACKING::FastKalmanFilterSiliconTrack->add_phg4hits(string("G4HIT_") + name,           //      const std::string& phg4hitsNames,
                                              PHG4TrackFastSim::Vertical_Plane,  //      const DETECTOR_TYPE phg4dettype,
                                              pitch / sqrt(12.),                 //      const float radres,
                                              pitch / sqrt(12.),                 //      const float phires,

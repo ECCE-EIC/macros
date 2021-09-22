@@ -12,6 +12,8 @@
 #include <eicg4zdc/EICG4ZDCNtuple.h>
 #include <eicg4zdc/EICG4ZDCSubsystem.h>
 
+#include <eicg4b0/EICG4B0Subsystem.h>
+
 #include <eiceval/FarForwardEvaluator.h>
 
 #include <g4main/PHG4Reco.h>
@@ -36,6 +38,8 @@ namespace Enable
   bool HFARFWD_OVERLAPCHECK = false;
   int HFARFWD_VERBOSITY = 0;
   bool ZDC_DISABLE_BLACKHOLE = false;
+  bool B0_DISABLE_HITPLANE = false;
+  bool B0_FULLHITPLANE = false;
 
   //enabled automatically in hFarFwdBeamLineInit(), unless overridden by user
   bool HFARFWD_MAGNETS_IP6 = false;
@@ -53,7 +57,7 @@ namespace Enable
 
 namespace hFarFwdBeamLine
 {
-  double starting_z = 450;  //cm as center-forward interface
+  double starting_z = 500;  //cm as center-forward interface
   double enclosure_z_max = NAN;
   double enclosure_r_max = NAN;
   double enclosure_center = NAN;
@@ -88,7 +92,7 @@ void hFarFwdBeamLineInit()
   {
     hFarFwdBeamLine::enclosure_z_max = 4500.;
     BlackHoleGeometry::min_z = std::min(BlackHoleGeometry::min_z, hFarFwdBeamLine::starting_z);
-    hFarFwdBeamLine::enclosure_r_max = 200.; 
+    hFarFwdBeamLine::enclosure_r_max = 200.;
   }
 
   hFarFwdBeamLine::enclosure_center = 0.5 * (hFarFwdBeamLine::starting_z + hFarFwdBeamLine::enclosure_z_max);
@@ -366,7 +370,7 @@ void hFarFwdDefineDetectorsIP6(PHG4Reco *g4Reco)
     //// Disk design
     //// 50 cm in x
 
-    auto *detRP = new PHG4CylinderSubsystem(Form("rpTruth_%d", i),i);
+    auto *detRP = new PHG4CylinderSubsystem(Form("rpTruth_%d", i), i);
     detRP->SuperDetector("rpTruth");
     detRP->set_double_param("place_x", PosFlip(rp_xCent[i]));
     detRP->set_double_param("place_y", 0);
@@ -383,29 +387,213 @@ void hFarFwdDefineDetectorsIP6(PHG4Reco *g4Reco)
     if (verbosity) detRP->Verbosity(verbosity);
     g4Reco->registerSubsystem(detRP);
   }
+ 
+   //---------------------------------
+   // B0 implementation
+   // Three choices: 1. Realistic detector; 2. Circulat plane; 3. hit plane with realistic detector goemetry
 
-  const int b0DetNr = 4;
-  const double b0Mag_zCent = 590;
-  const double b0Mag_zLen = 120;
 
+    if (Enable::B0_DISABLE_HITPLANE) {
 
-  for (int i = 0; i < b0DetNr; i++)
-  {
-    auto *detB0 = new PHG4CylinderSubsystem(Form("b0Truth_%d", i),i);
-    detB0->SuperDetector("b0Truth");
-    detB0->set_double_param("radius", 0);
-    detB0->set_double_param("thickness", 20);
-    detB0->set_double_param("length", 0.1);
-    detB0->set_string_param("material", "G4_Si");
-    detB0->set_double_param("place_z", b0Mag_zLen / (b0DetNr + 1) * (i - b0DetNr / 2));  
-    detB0->SetActive(true);
-    if (verbosity) detB0->Verbosity(verbosity);
-    detB0->OverlapCheck(overlapCheck);
+	// Choice 1 realistic detector
 
-    detB0->SetMotherSubsystem(hFarFwdBeamLine::B0Magnet);
+        const int b0DetNr = 4;
+        const double b0Mag_zCent = 590;
+        const double b0Mag_zLen = 120;
+        const double b0Cu_zLen = .2; //B0 dead material length
+        const double b0Si_zLen = .1; //B0 Si length
+        const double b0Ecal_zLen = 20.; //B0 Ecal length
+        const double pipe_hole = 5.0; //detector cut off for beam pipe
+        const double pipe_x = -3.4; //pipe hole position
+        const double d_radius = 7.0; //detector cut off Packman
+        const double b0_radius = 20.0; //outer radius of B0-detector
+        const double spanning_angle = 240; //spanning angle Packman
+        const double b0Ecal_z = 48;
+        double start_angle = spanning_angle - 360; //start angle Packman
+      
+        for (int i = 0; i < b0DetNr; i++)
+        {
+          auto *detB0 = new EICG4B0Subsystem(Form("b0Truth_%d", 2*i), 2*i);
+          detB0->SuperDetector("b0Truth");
+          detB0->set_double_param("place_x", 0);
+          detB0->set_double_param("place_y", 0);
+      //  detB0->set_int_param("ispipe", 0); //for future pipe implementation
+          detB0->set_double_param("pipe_hole", pipe_hole);
+          detB0->set_double_param("outer_radius", b0_radius);
+          detB0->set_double_param("d_radius", d_radius);
+          detB0->set_double_param("length", b0Si_zLen);
+          detB0->set_string_param("material", "G4_Si");
+          detB0->set_double_param("detid",2*i);
+          detB0->set_double_param("startAngle",start_angle);
+          detB0->set_double_param("spanningAngle",spanning_angle);
+          detB0->set_double_param("pipe_x", pipe_x);
+          detB0->set_double_param("pipe_y", 0);
+          detB0->set_double_param("pipe_z", 0);
+          detB0->set_double_param("place_z", b0Mag_zLen / (b0DetNr + 1) * (i - b0DetNr / 2));  // relative to B0 magnet
+          detB0->SetActive(true);
+          if (verbosity)
+            detB0->Verbosity(verbosity);
+          detB0->OverlapCheck(overlapCheck);
+          detB0->SetMotherSubsystem(hFarFwdBeamLine::B0Magnet);
+          g4Reco->registerSubsystem(detB0);
+      
+          auto *detB0e = new EICG4B0Subsystem(Form("b0Truth_%d", 2*i+1), 2*i+1);
+          detB0e->SuperDetector("b0Truth");
+      //  detB0e->set_int_param("ispipe", 0); //for future pipe implementation
+          detB0e->set_double_param("pipe_hole", pipe_hole);
+          detB0e->set_double_param("place_x", 0);
+          detB0e->set_double_param("place_y", 0);
+          detB0e->set_double_param("d_radius", d_radius);
+          detB0e->set_double_param("pipe_x", pipe_x);
+          detB0e->set_double_param("pipe_y", 0);
+          detB0e->set_double_param("pipe_z", 0);
+          detB0e->set_double_param("outer_radius", b0_radius);
+          detB0e->set_double_param("length", b0Cu_zLen);
+          detB0e->set_string_param("material", "G4_Cu");
+          detB0e->set_double_param("detid",2*i+1);
+          detB0e->set_double_param("startAngle",start_angle);
+          detB0e->set_double_param("spanningAngle",spanning_angle);
+          detB0e->set_double_param("place_z", (b0Mag_zLen / (b0DetNr + 1) * (i - b0DetNr / 2) +(b0Cu_zLen+b0Si_zLen)/2) );  // relative to B0 magnet
+          detB0e->SetActive(true);
+          if (verbosity)
+            detB0e->Verbosity(verbosity);
+          detB0e->OverlapCheck(overlapCheck);
+          detB0e->SetMotherSubsystem(hFarFwdBeamLine::B0Magnet);
+          g4Reco->registerSubsystem(detB0e);
+        }
+      
+        auto *B0Ecal = new EICG4B0Subsystem("B0Ecal", 2*b0DetNr);
+        B0Ecal->SuperDetector("b0Truth");
+      //  B0Ecal->set_int_param("ispipe", 0); //for future pipe implementation
+        B0Ecal->set_double_param("pipe_hole", pipe_hole);
+        B0Ecal->set_double_param("place_x", 0);
+        B0Ecal->set_double_param("place_y", 0);
+        B0Ecal->set_double_param("place_z", b0Ecal_z);
+        B0Ecal->set_double_param("pipe_x", pipe_x);
+        B0Ecal->set_double_param("pipe_y", 0);
+        B0Ecal->set_double_param("pipe_z", 0);
+        B0Ecal->set_double_param("length", b0Ecal_zLen);
+        B0Ecal->set_double_param("outer_radius", b0_radius);
+        B0Ecal->set_double_param("d_radius", d_radius);
+        B0Ecal->set_string_param("material", "G4_PbWO4");
+        B0Ecal->set_double_param("startAngle",start_angle);
+        B0Ecal->set_double_param("spanningAngle",spanning_angle);
+        B0Ecal->set_double_param("detid",2*b0DetNr);
+        B0Ecal->SetActive(true);
+        if (verbosity)
+          B0Ecal->Verbosity(verbosity);
+        B0Ecal->OverlapCheck(overlapCheck);
+        B0Ecal->SetMotherSubsystem(hFarFwdBeamLine::B0Magnet);
+        g4Reco->registerSubsystem(B0Ecal);
+      
+        auto *B0Ecale = new EICG4B0Subsystem("B0Ecale", 2*b0DetNr + 1);
+        B0Ecal->SuperDetector("b0Truth");
+      //  B0Ecale->set_int_param("ispipe", 0); //for future pipe implementation
+        B0Ecale->set_double_param("pipe_hole", pipe_hole);
+        B0Ecale->set_double_param("place_x", 0);
+        B0Ecale->set_double_param("place_y", 0);
+        B0Ecale->set_double_param("place_z", b0Ecal_z + (b0Ecal_zLen + b0Cu_zLen)/2);
+        B0Ecale->set_double_param("pipe_x", pipe_x);
+        B0Ecale->set_double_param("pipe_y", 0);
+        B0Ecale->set_double_param("pipe_z", 0);
+        B0Ecale->set_double_param("length", b0Cu_zLen);
+        B0Ecale->set_double_param("d_radius", d_radius);
+        B0Ecale->set_double_param("outer_radius", b0_radius);
+        B0Ecale->set_string_param("material", "G4_Cu");
+        B0Ecale->set_double_param("startAngle",start_angle);
+        B0Ecale->set_double_param("spanningAngle",spanning_angle);
+        B0Ecale->set_double_param("detid",2*b0DetNr+1);
+        B0Ecale->SetActive(true);
+        if (verbosity)
+          B0Ecale->Verbosity(verbosity);
+        B0Ecale->OverlapCheck(overlapCheck);
+        B0Ecale->SetMotherSubsystem(hFarFwdBeamLine::B0Magnet);
+        g4Reco->registerSubsystem(B0Ecale);
 
-    g4Reco->registerSubsystem(detB0);
-  }
+    } else {
+
+       if (Enable::B0_FULLHITPLANE) {
+
+	// Choice 2 circular hit planes
+
+       	    const int b0DetNr = 4;
+       	    
+       	    // Sep 09 2021 by Bill: 
+       	    // B0 magnet center location in z: 640
+       	    // B0 place location in z after 50cm shift: 592, 616, 640, 664
+       	    // B0 layers has the same x coordinate: -14.57
+       	    
+       	    const double b0Mag_zCent = 640;
+       	    const double b0Mag_zLen = 120;
+       	    
+       	    for (int i = 0; i < b0DetNr; i++)
+       	    {
+       	      auto *detB0 = new PHG4CylinderSubsystem(Form("b0Truth_%d", i), i);
+       	      detB0->SuperDetector("b0Truth");
+       	      detB0->set_double_param("radius", 0);
+       	      detB0->set_double_param("thickness", 20);
+       	      detB0->set_double_param("length", 0.1);
+       	      detB0->set_string_param("material", "G4_Si");
+       	      detB0->set_double_param("place_z", b0Mag_zLen / (b0DetNr + 1) * (i - b0DetNr / 2));  // relative to B0 magnet
+       	      detB0->SetActive(true);
+       	      if (verbosity) detB0->Verbosity(verbosity);
+       	      detB0->OverlapCheck(overlapCheck);
+       	    
+       	      detB0->SetMotherSubsystem(hFarFwdBeamLine::B0Magnet);
+       	    
+       	      g4Reco->registerSubsystem(detB0);
+       	    
+       	    }
+
+	} else {
+
+        /// Fun4All default B0 planes
+	/// Choice 3 Hit planes with real detector geometry
+        	
+	    const int b0DetNr = 4;
+	    const double b0Mag_zCent = 590;
+	    const double b0Mag_zLen = 120;
+	    const double b0Cu_zLen = .2; //B0 dead material length
+	    const double b0Si_zLen = .1; //B0 Si length
+	    const double b0Ecal_zLen = 20.; //B0 Ecal length
+	    const double pipe_hole = 5.0; //detector cut off for beam pipe
+	    const double pipe_x = -3.4; //pipe hole position
+	    const double d_radius = 7.0; //detector cut off Packman
+	    const double b0_radius = 20.0; //outer radius of B0-detector
+	    const double spanning_angle = 240; //spanning angle Packman
+	    const double b0Ecal_z = 48;
+	    double start_angle = spanning_angle - 360; //start angle Packman
+	    
+	    for (int i = 0; i < b0DetNr; i++) {
+	    
+	        auto *detB0 = new EICG4B0Subsystem(Form("b0Truth_%d", 2*i), 2*i);
+	        detB0->SuperDetector("b0Truth");
+	        detB0->set_double_param("place_x", 0);
+	        detB0->set_double_param("place_y", 0);
+	    //  detB0->set_int_param("ispipe", 0); //for future pipe implementation
+	        detB0->set_double_param("pipe_hole", pipe_hole);
+	        detB0->set_double_param("outer_radius", b0_radius);
+	        detB0->set_double_param("d_radius", d_radius);
+	        detB0->set_double_param("length", b0Si_zLen);
+	        detB0->set_string_param("material", "G4_Si");
+	        detB0->set_double_param("detid",2*i);
+	        detB0->set_double_param("startAngle",start_angle);
+	        detB0->set_double_param("spanningAngle",spanning_angle);
+	        detB0->set_double_param("pipe_x", pipe_x);
+	        detB0->set_double_param("pipe_y", 0);
+	        detB0->set_double_param("pipe_z", 0);
+	        detB0->set_double_param("place_z", b0Mag_zLen / (b0DetNr + 1) * (i - b0DetNr / 2));  // relative to B0 magnet
+	        detB0->SetActive(true);
+	        if (verbosity)
+	          detB0->Verbosity(verbosity);
+	        detB0->OverlapCheck(overlapCheck);
+	        detB0->SetMotherSubsystem(hFarFwdBeamLine::B0Magnet);
+	        g4Reco->registerSubsystem(detB0);
+	    }
+
+	} 
+    }
+
 }
 
 void hFarFwdDefineDetectorsIP8(PHG4Reco *g4Reco)
@@ -425,21 +613,17 @@ void hFarFwdDefineDetectorsIP8(PHG4Reco *g4Reco)
 
   int verbosity = std::max(Enable::VERBOSITY, Enable::HFARFWD_VERBOSITY);
 
-  //const int offMomDetNr = 3;
-  //const double om_xCent[offMomDetNr] = {100, 100, 100};
-  //const double om_zCent[offMomDetNr] = {4250, 4400, 4550};
-  
   const int offMomDetNr = 2;
   const double om_xCent[offMomDetNr] = {46, 49};
   const double om_zCent[offMomDetNr] = {3250, 3450};
 
   for (int i = 0; i < offMomDetNr; i++)
   {
-    auto *detOM = new PHG4BlockSubsystem(Form("offMomTruth_%d", i),i);
-    detOM->SuperDetector(Form("SDoffMomTruth_%d",i));
+    auto *detOM = new PHG4BlockSubsystem(Form("offMomTruth_%d", i), i);
+    detOM->SuperDetector("offMomTruth");
     detOM->set_double_param("place_x", PosFlip(om_xCent[i]));
     detOM->set_double_param("place_y", 0);
-    detOM->set_double_param("place_z", om_zCent[i] - hFarFwdBeamLine::enclosure_center);
+    detOM->set_double_param("place_z", PosFlip(om_zCent[i] - hFarFwdBeamLine::enclosure_center));
     detOM->set_double_param("rot_y", AngleFlip(-0.045 * TMath::RadToDeg()));
     detOM->set_double_param("size_x", 40);  // Original design specification
     detOM->set_double_param("size_y", 35);  // Original design specification
@@ -468,10 +652,10 @@ void hFarFwdDefineDetectorsIP8(PHG4Reco *g4Reco)
   detZDCsurrogate->OverlapCheck(overlapCheck);
   detZDCsurrogate->set_color(1, 0, 0, 0.5);
   if (!Enable::ZDC_DISABLE_BLACKHOLE) detZDCsurrogate->BlackHole();
-  if (verbosity) detZDCsurrogate->Verbosity(verbosity);
+  if (verbosity)
+    detZDCsurrogate->Verbosity(verbosity);
+  detZDCsurrogate->SetMotherSubsystem(hFarFwdBeamLine::hFarFwdBeamLineEnclosure);
   g4Reco->registerSubsystem(detZDCsurrogate);
-
-
 
   if (Enable::ZDC_DISABLE_BLACKHOLE)
   {
@@ -491,15 +675,13 @@ void hFarFwdDefineDetectorsIP8(PHG4Reco *g4Reco)
   // Roman pot set #1
   const int rpDetNr = 2;
 
-  //const double rp_xCent[rpDetNr] = {75, 75, 75, 75};
-  //const double rp_zCent[rpDetNr] = {2200, 2500, 2800, 3100};
   const double rp_xCent[rpDetNr] = {75.6, 78.15};
   const double rp_zCent[rpDetNr] = {2600, 2800};
 
   for (int i = 0; i < rpDetNr; i++)
   {
-    auto *detRP = new PHG4BlockSubsystem(Form("RomanPots_%d", i),i);
-    detRP->SuperDetector(Form("SDRomanPots_%d", i));
+    auto *detRP = new PHG4BlockSubsystem(Form("rpTruth_%d", i), i);
+    detRP->SuperDetector("rpTruth");
     detRP->set_double_param("place_x", PosFlip(rp_xCent[i]));
     detRP->set_double_param("place_y", 0);
     detRP->set_double_param("place_z", rp_zCent[i] - hFarFwdBeamLine::enclosure_center);
@@ -511,7 +693,8 @@ void hFarFwdDefineDetectorsIP8(PHG4Reco *g4Reco)
     detRP->OverlapCheck(overlapCheck);
     detRP->SetMotherSubsystem(hFarFwdBeamLine::hFarFwdBeamLineEnclosure);
     detRP->SetActive();
-    if (verbosity) detRP->Verbosity(verbosity);
+    if (verbosity)
+      detRP->Verbosity(verbosity);
     g4Reco->registerSubsystem(detRP);
   }
 
@@ -524,8 +707,8 @@ void hFarFwdDefineDetectorsIP8(PHG4Reco *g4Reco)
 
   for (int i = 0; i < rp2ndDetNr; i++)
   {
-    auto *detRP_2nd = new PHG4BlockSubsystem(Form("RomanPots_2nd_%d", i),i);
-    detRP_2nd->SuperDetector(Form("SDRomanPots_2nd_%d", i));
+    auto *detRP_2nd = new PHG4BlockSubsystem(Form("rpTruth2_%d", i), i);
+    detRP_2nd->SuperDetector("rpTruth2");
     detRP_2nd->set_double_param("place_x", PosFlip(rp_2nd_xCent[i]));
     detRP_2nd->set_double_param("place_y", 0);
     detRP_2nd->set_double_param("place_z", rp_2nd_zCent[i] - hFarFwdBeamLine::enclosure_center);
@@ -537,7 +720,8 @@ void hFarFwdDefineDetectorsIP8(PHG4Reco *g4Reco)
     detRP_2nd->OverlapCheck(overlapCheck);
     detRP_2nd->SetMotherSubsystem(hFarFwdBeamLine::hFarFwdBeamLineEnclosure);
     detRP_2nd->SetActive();
-    if (verbosity) detRP_2nd->Verbosity(verbosity);
+    if (verbosity)
+      detRP_2nd->Verbosity(verbosity);
     g4Reco->registerSubsystem(detRP_2nd);
   }
 
@@ -551,8 +735,8 @@ void hFarFwdDefineDetectorsIP8(PHG4Reco *g4Reco)
   const double b0Mag_zLen = 120;
   for (int i = 0; i < b0DetNr; i++)
   {
-    auto *detB0 = new PHG4CylinderSubsystem(Form("b0Truth_%d", i),i);
-    detB0->SuperDetector("b0truth");
+    auto *detB0 = new PHG4CylinderSubsystem(Form("b0Truth_%d", i), i);
+    detB0->SuperDetector("b0Truth");
     detB0->set_double_param("radius", 0);
     detB0->set_double_param("thickness", 20);
     detB0->set_double_param("length", 0.1);
@@ -562,7 +746,8 @@ void hFarFwdDefineDetectorsIP8(PHG4Reco *g4Reco)
     detB0->OverlapCheck(overlapCheck);
     detB0->SetMotherSubsystem(hFarFwdBeamLine::B0Magnet);
     detB0->SetActive(true);
-    if (verbosity) detB0->Verbosity(verbosity);
+    if (verbosity)
+      detB0->Verbosity(verbosity);
     g4Reco->registerSubsystem(detB0);
   }
 }

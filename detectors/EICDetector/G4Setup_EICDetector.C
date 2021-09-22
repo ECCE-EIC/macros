@@ -6,34 +6,37 @@
 #include <G4_BlackHole.C>
 
 //#include <G4_AllSilicon.C>
-#include <G4_Barrel_EIC.C>
+//#include <G4_Mvtx_EIC.C>
 #include <G4_BECAL.C>
+#include <G4_Barrel_EIC.C>
 #include <G4_CEmc_EIC.C>
 #include <G4_DIRC.C>
 #include <G4_DRCALO.C>
-#include <G4_dRICH.C>
 #include <G4_EEMC.C>
 #include <G4_EEMC_hybrid.C>
 #include <G4_EHCAL.C>
 #include <G4_FEMC_EIC.C>
 #include <G4_FHCAL.C>
+#include <G4_FST_EIC.C>
 #include <G4_GEM_EIC.C>
 #include <G4_HcalIn_ref.C>
 #include <G4_HcalOut_ref.C>
-#include <G4_hFarFwdBeamLine_EIC.C>
-#include <G4_hFarBwdBeamLine_EIC.C>
 #include <G4_Input.C>
 #include <G4_LFHCAL.C>
-#include <G4_FST_EIC.C>
 #include <G4_Magnet.C>
-#include <G4_mRICH.C>
-#include <G4_mRwell_EIC.C>
-#include <G4_Mvtx_EIC.C>
 #include <G4_Pipe_EIC.C>
 #include <G4_PlugDoor_EIC.C>
-#include <G4_Tracking_EIC.C>
-#include <G4_TrackingSupport.C>
 #include <G4_TTL_EIC.C>
+#include <G4_TrackingSupport.C>
+#include <G4_Tracking_EIC.C>
+#include <G4_dRICH.C>
+#include <G4_mRICH.C>
+#include <G4_mRwell_EIC.C>
+
+// these two has to be ordered this way for now.
+#include <G4_hFarFwdBeamLine_EIC.C>
+
+#include <G4_hFarBwdBeamLine_EIC.C>
 
 #include <G4_User.C>
 #include <G4_World.C>
@@ -70,9 +73,14 @@ void G4Init()
     gSystem->Exit(1);
   }
 
-  if(Enable::EEMC and Enable::EEMCH)
+  if (Enable::EEMC and Enable::EEMCH)
   {
     cout << "Can not enable EEMC and EEMCH at the same time!" << endl;
+    gSystem->Exit(1);
+  }
+  if (Enable::CEMC and Enable::BECAL)
+  {
+    cout << "Can not enable CEMC and BECAL at the same time!" << endl;
     gSystem->Exit(1);
   }
 
@@ -82,12 +90,11 @@ void G4Init()
   if (Enable::TRACKING) TrackingInit();
 
   //Farforward/backward
-  //if (Enable::HFARFWD_MAGNETS) hFarBwdBeamLineInit(); //Shouldnt this be far backward enables
-  //if (Enable::HFARFWD_MAGNETS) hFarFwdBeamLineInit();
+  if (Enable::HFARFWD_MAGNETS) hFarBwdBeamLineInit();  //Shouldnt this be far backward enables
+  if (Enable::HFARFWD_MAGNETS) hFarFwdBeamLineInit();
 
   //Barrel
-  //if (Enable::ALLSILICON) AllSiliconInit();
-  if (Enable::TrackingService) TrackingServiceInit(); 
+  if (Enable::TrackingService) TrackingServiceInit();
   if (Enable::BARREL) BarrelInit();
   if (Enable::RWELL) RWellInit();
   if (Enable::CEMC) CEmcInit(72);  // make it 2*2*2*3*3 so we can try other combinations
@@ -97,7 +104,7 @@ void G4Init()
   MagnetFieldInit();  // We want the field - even if the magnet volume is disabled
   if (Enable::HCALOUT) HCalOuterInit();
   if (Enable::DIRC) DIRCInit();
-  
+
   //Forward
   if (Enable::FGEM) FGEM_Init();
   if (Enable::FEMC) FEMCInit();
@@ -105,18 +112,17 @@ void G4Init()
   if (Enable::FHCAL) FHCALInit();
   if (Enable::LFHCAL) LFHCALInit();
   if (Enable::RICH) RICHInit();
-  
+
   //Backward
   if (Enable::EGEM) EGEM_Init();
   if (Enable::EEMC) EEMCInit();
-  if (Enable::EEMCH) EEMCHInit();  
+  if (Enable::EEMCH) EEMCHInit();
   if (Enable::EHCAL) EHCALInit();
   if (Enable::mRICH) mRICHInit();
-  
+
   //Combined
   if (Enable::FST) FST_Init();
-  if (Enable::FTTL || Enable::ETTL  || Enable::CTTL) TTL_Init();
-
+  if (Enable::FTTL || Enable::ETTL || Enable::CTTL) TTL_Init();
 
   if (Enable::USER) UserInit();
   if (Enable::BLACKHOLE) BlackHoleInit();
@@ -182,9 +188,7 @@ int G4Setup()
   if (Enable::HFARBWD_VIRTUAL_DETECTORS_IP8) hFarBwdDefineDetectorsIP8(g4Reco);
 
   //Barrel
-  //if (Enable::ALLSILICON) AllSiliconSetup(g4Reco);
-
-  if (Enable::TrackingService) radius = TrackingService(g4Reco, radius);
+  if (Enable::TrackingService) TrackingService(g4Reco, radius);
 
   if (Enable::RWELL) RWellSetup(g4Reco);
   if (Enable::FST) FSTSetup(g4Reco);
@@ -299,7 +303,6 @@ void ShowerCompress()
   compress->AddTowerContainer("TOWER_SIM_DRCALO");
   compress->AddTowerContainer("TOWER_RAW_DRCALO");
   compress->AddTowerContainer("TOWER_CALIB_DRCALO");
-
 
   compress->AddHitContainer("G4HIT_FHCAL");
   compress->AddHitContainer("G4HIT_ABSORBER_FHCAL");

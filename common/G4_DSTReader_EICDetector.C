@@ -51,28 +51,38 @@ void G4DSTreader_EICDetector(const string &outputFile = "G4sPHENIXCells.root")
     {
       ana->AddNode("PIPE");
     }
-    if (Enable::BARREL)
-    {
-      int nBarrel=6;
-      for (int i = 10; i < 10+nBarrel; i++)
-	{
-	  ana->AddNode(Form("LBLVTX_CENTRAL_%d", i));
-	}
-    }
-    if (Enable::MVTX)
-    {
-      ana->AddNode("MVTX");
-    }
-
     if (Enable::EGEM)
     {
       ana->AddNode("EGEM_0");
-      ana->AddNode("EGEM_1");
     }
     if (Enable::FGEM)
     {
       ana->AddNode("FGEM_0");
-      ana->AddNode("FGEM_1");
+    }
+    if (Enable::FTTL)
+    {
+      ana->AddNode("FTTL_0");
+      ana->AddNode("FTTL_1");
+    }
+    if (Enable::ETTL)
+    {
+      ana->AddNode("ETTL_0");
+      ana->AddNode("ETTL_1");
+    }
+    if (Enable::CTTL)
+    {
+      ana->AddNode("CTTL_0");
+    }
+    if (Enable::RWELL)
+    {
+      ana->AddNode("RWELL_0");
+      ana->AddNode("RWELL_1");
+      ana->AddNode("RWELL_2");
+    }
+    if (Enable::BARREL)
+    {
+      ana->AddNode("SVTX");
+      ana->AddNode("BARR");
     }
     if (Enable::FST)
     {
@@ -81,67 +91,75 @@ void G4DSTreader_EICDetector(const string &outputFile = "G4sPHENIXCells.root")
       ana->AddNode("FST_2");
       ana->AddNode("FST_3");
       ana->AddNode("FST_4");
-      ana->AddNode("FST_5");
+      ana->AddNode("EFST_0");
+      ana->AddNode("EFST_1");
+      ana->AddNode("EFST_2");
+      ana->AddNode("EFST_3");
     }
-
-    if (Enable::CEMC)
-    {
-      ana->AddNode("CEMC");
-      if (Enable::ABSORBER || Enable::CEMC_ABSORBER)
-      {
-        ana->AddNode("ABSORBER_CEMC");
-        ana->AddNode("CEMC_ELECTRONICS_0");
-      }
-    }
-
-    if (Enable::HCALIN)
-    {
-      ana->AddNode("HCALIN");
-      if (Enable::ABSORBER || Enable::HCALIN_ABSORBER)
-      {
-        ana->AddNode("ABSORBER_HCALIN");
-        ana->AddNode("HCALIN_SPT");
-      }
-    }
-
-    if (Enable::MAGNET)
-    {
-      if (Enable::ABSORBER || Enable::MAGNET_ABSORBER)
-        ana->AddNode("MAGNET");
-    }
-
-    if (Enable::HCALOUT)
-    {
-      ana->AddNode("HCALOUT");
-      if (Enable::ABSORBER || Enable::HCALOUT_ABSORBER)
-        ana->AddNode("ABSORBER_HCALOUT");
-    }
-
-    if (Enable::FHCAL)
-    {
-      ana->AddNode("FHCAL");
-      if (Enable::ABSORBER || Enable::FHCAL_ABSORBER)
-        ana->AddNode("ABSORBER_FHCAL");
-    }
-
-    if (Enable::FEMC)
-    {
-      ana->AddNode("FEMC");
-      if (Enable::ABSORBER || Enable::FEMC_ABSORBER)
-        ana->AddNode("ABSORBER_FEMC");
-    }
-
-    if (Enable::EEMC)
-    {
-      ana->AddNode("EEMC");
-    }
+//
+//    if (Enable::CEMC)
+//    {
+//      ana->AddNode("CEMC");
+//      if (Enable::ABSORBER || Enable::CEMC_ABSORBER)
+//      {
+//        ana->AddNode("ABSORBER_CEMC");
+//        ana->AddNode("CEMC_ELECTRONICS_0");
+//      }
+//    }
+//
+//    if (Enable::HCALIN)
+//    {
+//      ana->AddNode("HCALIN");
+//      if (Enable::ABSORBER || Enable::HCALIN_ABSORBER)
+//      {
+//        ana->AddNode("ABSORBER_HCALIN");
+//        ana->AddNode("HCALIN_SPT");
+//      }
+//    }
+//
+//    if (Enable::MAGNET)
+//    {
+//      if (Enable::ABSORBER || Enable::MAGNET_ABSORBER)
+//        ana->AddNode("MAGNET");
+//    }
+//
+//    if (Enable::HCALOUT)
+//    {
+//      ana->AddNode("HCALOUT");
+//      if (Enable::ABSORBER || Enable::HCALOUT_ABSORBER)
+//        ana->AddNode("ABSORBER_HCALOUT");
+//    }
+//
+//    if (Enable::FHCAL)
+//    {
+//      ana->AddNode("FHCAL");
+//      if (Enable::ABSORBER || Enable::FHCAL_ABSORBER)
+//        ana->AddNode("ABSORBER_FHCAL");
+//    }
+//
+//    if (Enable::FEMC)
+//    {
+//      ana->AddNode("FEMC");
+//      if (Enable::ABSORBER || Enable::FEMC_ABSORBER)
+//        ana->AddNode("ABSORBER_FEMC");
+//    }
+//
+//    if (Enable::EEMC)
+//    {
+//      ana->AddNode("EEMC");
+//    }
     if (Enable::DIRC)
     {
-      ana->AddNode("DIRC");
+      ana->AddNode("hpDIRC");
     }
     if (Enable::RICH)
     {
-      ana->AddNode("RICH");
+      ana->AddNode("dRICh_0");
+    }
+    if (Enable::mRICH)
+    {
+      ana->AddNode("mRICH");
+      ana->AddNode("ABSORBER_mRICH");
     }
 
     if (Enable::BLACKHOLE)
@@ -191,7 +209,7 @@ void G4DSTreader_EICDetector(const string &outputFile = "G4sPHENIXCells.root")
     ana->AddTower("RAW_FEMC");
     ana->AddTower("CALIB_FEMC");
   }
-  if (Enable::EEMC_TOWER)
+  if (Enable::EEMC_TOWER or Enable::EEMCH_TOWER)
   {
     ana->AddTower("SIM_EEMC");
     ana->AddTower("RAW_EEMC");

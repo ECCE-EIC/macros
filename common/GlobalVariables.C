@@ -64,6 +64,10 @@ namespace TRACKING
 
   PHG4TrackFastSim * FastKalmanFilter(nullptr);
 
+  PHG4TrackFastSim * FastKalmanFilterSiliconTrack(nullptr);
+
+  PHG4TrackFastSim * FastKalmanFilterInnerTrack(nullptr);
+
   std::set<std::string> ProjectionNames;
 }
 
