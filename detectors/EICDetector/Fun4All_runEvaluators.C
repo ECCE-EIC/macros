@@ -76,6 +76,7 @@ int Fun4All_runEvaluators(
   Enable::EEMCH_EVAL = true;
   Enable::EHCAL_EVAL = true;
   Enable::FWDJETS_EVAL = true;
+  Enable::FFR_EVAL = true;
 
   map<string, string> evaluatorNames;
   evaluatorNames["event"] = "_g4event_eval.root";
@@ -87,6 +88,7 @@ int Fun4All_runEvaluators(
   evaluatorNames["fhcal"] = "_g4fhcal_eval.root";
   evaluatorNames["eemch"] = "_g4eemch_eval.root";
   evaluatorNames["ehcal"] = "_g4ehcal_eval.root";
+  evaluatorNames["farfwd"] = "_g4farfwd_eval.root";
 
   /*
    * Enable extra features in the evaluators
@@ -97,7 +99,7 @@ int Fun4All_runEvaluators(
   Enable::HCALIN_CLUSTER = true;
   Enable::HCALOUT_CLUSTER = true;
   Enable::FEMC_CLUSTER = true;
-  Enable::FHCAL_CLUSTER = true;
+  Enable::LFHCAL_CLUSTER = true;
   Enable::EEMCH_CLUSTER = true;
   Enable::EHCAL_CLUSTER = true;
 
@@ -116,7 +118,6 @@ int Fun4All_runEvaluators(
                               ,"hpDIRC"
                               ,"mRICH"
                               };
-
 
   Enable::DIRC_RECO = true;
   Enable::mRICH_RECO = true;
@@ -182,7 +183,8 @@ int Fun4All_runEvaluators(
   if (Enable::FHCAL_EVAL) FHCAL_Eval(outputroot + evaluatorNames.find("fhcal")->second);
   if (Enable::EEMCH_EVAL) EEMCH_Eval(outputroot + evaluatorNames.find("eemch")->second);
   if (Enable::EHCAL_EVAL) EHCAL_Eval(outputroot + evaluatorNames.find("ehcal")->second);
-  if (Enable::FWDJETS_EVAL) Jet_FwdEval();
+  if (Enable::FWDJETS_EVAL) Jet_FwdEval(outputroot);
+  if (Enable::FFR_EVAL) FFR_Eval(outputroot + evaluatorNames.find("farfwd")->second);
 
   //--------------
   // Set up Input Managers
