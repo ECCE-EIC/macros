@@ -88,6 +88,10 @@ int Fun4All_runEvaluators(
   evaluatorNames["eemch"] = "_g4eemch_eval.root";
   evaluatorNames["ehcal"] = "_g4ehcal_eval.root";
 
+  /*
+   * Enable extra features in the evaluators
+   * WARNING!!! Ensure your DST has the right nodes
+   */
   Enable::TRACKING = true;
   Enable::BECAL_CLUSTER = true;
   Enable::HCALIN_CLUSTER = true;
@@ -96,6 +100,27 @@ int Fun4All_runEvaluators(
   Enable::FHCAL_CLUSTER = true;
   Enable::EEMCH_CLUSTER = true;
   Enable::EHCAL_CLUSTER = true;
+
+  TRACKING::ProjectionNames = {"BECAL"
+                              ,"CTTL_0"
+                              ,"EEMC"
+                              ,"EHCAL"
+                              ,"ETTL_0"
+                              ,"ETTL_1" 
+                              ,"FEMC"
+                              ,"FTTL_0" 
+                              ,"FTTL_1"
+                              ,"HCALOUT"
+                              ,"LFHCAL"
+                              ,"RICH"
+                              ,"hpDIRC"
+                              ,"mRICH"
+                              };
+
+
+  Enable::DIRC_RECO = true;
+  Enable::mRICH_RECO = true;
+  Enable::RICH_RECO = true;
 
   //-----
   // Output file headers and path
