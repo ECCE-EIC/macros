@@ -264,7 +264,7 @@ int Fun4All_G4_EICDetector(
   // whether to simulate the Be section of the beam pipe
   Enable::PIPE = true;
   // If need to disable EIC beam pipe extension beyond the Be-section:
-  G4PIPE::use_forward_pipes = false;
+  G4PIPE::use_forward_pipes = true;
   //EIC hadron far forward magnets and detectors. IP6 and IP8 are incompatible (pick either or);
   Enable::HFARFWD_MAGNETS = true;
   Enable::HFARFWD_VIRTUAL_DETECTORS = true;
@@ -328,12 +328,18 @@ int Fun4All_G4_EICDetector(
 
   // EICDetector geometry - barrel
   Enable::DIRC = true;
+  Enable::DIRC_RECO = Enable::DIRC && true;
+  // Enable::DIRC_VERBOSITY = 2;
 
   // EICDetector geometry - 'hadron' direction
   Enable::RICH = true;
+  Enable::RICH_RECO = Enable::DIRC && true;
+  // Enable::RICH_VERBOSITY = 2;
 
   // EICDetector geometry - 'electron' direction
   Enable::mRICH = true;
+  Enable::mRICH_RECO = Enable::DIRC && true;
+  // Enable::mRICH_VERBOSITY = 2;
 
   Enable::FEMC = true;
   //  Enable::FEMC_ABSORBER = true;
@@ -388,6 +394,10 @@ int Fun4All_G4_EICDetector(
   // ZDC
   // Enable::ZDC = true;
   // Enable::ZDC_DISABLE_BLACKHOLE = true;
+
+  // B0
+  // Enable::B0_DISABLE_HITPLANE = true;
+  // Enable::B0_FULLHITPLANE = true;
 
   // Enabling the event evaluator?
   Enable::EVENT_EVAL = true;
@@ -488,10 +498,16 @@ int Fun4All_G4_EICDetector(
   if (Enable::DSTOUT_COMPRESS) ShowerCompress();
 
   //--------------
-  // SVTX tracking
+  // Tracking and PID
   //--------------
 
   if (Enable::TRACKING) Tracking_Reco();
+
+  if (Enable::DIRC_RECO) DIRCReco();
+
+  if (Enable::mRICH_RECO ) mRICHReco();
+
+  if (Enable::RICH_RECO) RICHReco();
 
   //-----------------
   // Global Vertexing
