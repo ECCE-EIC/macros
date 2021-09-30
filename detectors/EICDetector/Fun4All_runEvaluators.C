@@ -75,7 +75,7 @@ int Fun4All_runEvaluators(
   Enable::LFHCAL_EVAL = true;
   Enable::EEMCH_EVAL = true;
   Enable::EHCAL_EVAL = true;
-  Enable::FWDJETS_EVAL = true;
+  Enable::FWDJETS_EVAL = false;
   Enable::FFR_EVAL = true;
 
   map<string, string> evaluatorNames;
@@ -95,13 +95,13 @@ int Fun4All_runEvaluators(
    * WARNING!!! Ensure your DST has the right nodes
    */
   Enable::TRACKING = true;
-  Enable::BECAL_CLUSTER = true;
-  Enable::HCALIN_CLUSTER = true;
-  Enable::HCALOUT_CLUSTER = true;
-  Enable::FEMC_CLUSTER = true;
-  Enable::LFHCAL_CLUSTER = true;
-  Enable::EEMCH_CLUSTER = true;
-  Enable::EHCAL_CLUSTER = true;
+  Enable::BECAL = true;
+  Enable::HCALIN = true;
+  Enable::HCALOUT = true;
+  Enable::FEMC = true;
+  Enable::LFHCAL = true;
+  Enable::EEMCH = true;
+  Enable::EHCAL = true;
 
   TRACKING::ProjectionNames = {"BECAL"
                               ,"CTTL_0"
