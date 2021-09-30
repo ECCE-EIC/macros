@@ -37,21 +37,22 @@ void Event_Eval(const std::string &filename)
     if (Enable::DIRC_RECO or Enable::mRICH_RECO or Enable::RICH_RECO)
       eval->set_do_PID_LogLikelihood(true);
   }
-  if (Enable::CEMC_CLUSTER) eval->set_do_CEMC(true);
-  if (Enable::EEMC_CLUSTER) eval->set_do_EEMC(true);
-  if (Enable::FEMC_CLUSTER) eval->set_do_FEMC(true);
-  if (Enable::HCALIN_CLUSTER) eval->set_do_HCALIN(true);
-  if (Enable::HCALOUT_CLUSTER) eval->set_do_HCALOUT(true);
-  if (Enable::FHCAL_CLUSTER) eval->set_do_FHCAL(true);
+  if (Enable::CEMC) eval->set_do_CEMC(true);
+  if (Enable::EEMC || Enable::EEMCH) eval->set_do_EEMC(true);
+  if (Enable::EEMCH && G4EEMCH::SETTING::USEHYBRID) eval->set_do_EEMCG(true);
+  if (Enable::FEMC) eval->set_do_FEMC(true);
+  if (Enable::EHCAL) eval->set_do_EHCAL(true);
+  if (Enable::HCALIN) eval->set_do_HCALIN(true);
+  if (Enable::HCALOUT) eval->set_do_HCALOUT(true);
+  if (Enable::FHCAL) eval->set_do_FHCAL(true);
   if (Enable::FHCAL_CLUSTER || Enable::FEMC_CLUSTER || Enable::EEMC_CLUSTER) eval->set_do_CLUSTERS(true);
-  if (Enable::DRCALO_CLUSTER) eval->set_do_DRCALO(true);
-  if (Enable::LFHCAL_CLUSTER) eval->set_do_LFHCAL(true);
+  if (Enable::DRCALO) eval->set_do_DRCALO(true);
+  if (Enable::LFHCAL) eval->set_do_LFHCAL(true);
   if (Enable::BECAL) eval->set_do_BECAL(true);
 
   eval->set_do_MCPARTICLES(true);
-  eval->set_do_HEPMC(Input::PYTHIA6 or Input::PYTHIA8 or Input::SARTRE or Input::HEPMC
-      or Input::READEIC  );
-  eval->set_do_store_event_level_info( Input::PYTHIA6 or Input::PYTHIA8 or Input::READEIC  );
+  eval->set_do_HEPMC(Input::PYTHIA6 or Input::PYTHIA8 or Input::SARTRE or Input::HEPMC or Input::READEIC);
+  eval->set_do_store_event_level_info(Input::PYTHIA6 or Input::PYTHIA8 or Input::READEIC);
   se->registerSubsystem(eval);
 
   return;
