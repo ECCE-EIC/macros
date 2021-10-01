@@ -234,7 +234,8 @@ void hFarFwdDefineMagnets(PHG4Reco *g4Reco)
 	  if( Enable::HFARFWD_ION_ENERGY != 275 ) {
              float scaleFactor = Enable::HFARFWD_ION_ENERGY / 275. ;
 	     dipole_field_x = dipole_field_x*scaleFactor;
-   	  }
+	     fieldgradient = fieldgradient*scaleFactor;
+	  }
 
           if (magnetlist.empty() || magnetlist.find(imagnet) != magnetlist.end())
           {
