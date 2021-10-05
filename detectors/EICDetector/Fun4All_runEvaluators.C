@@ -126,11 +126,17 @@ int Fun4All_runEvaluators(
   //----
   // Enable HepMC writing
   //----
-  Input::HEPMC = true;
-  string singleParticles = "single";
-  size_t = inputFile.find(singleParticles);
-  if (pos == ring::npos) Input::HEPMC = false;
-  
+  Enable::EVENT_EVAL_DO_HEPMC = true;
+  Enable::EVENT_EVAL_DO_EVT_LVL = true;
+  size_t pos = inputFile.find("single");
+  if (pos != string::npos) 
+  {
+    Enable::EVENT_EVAL_DO_HEPMC = false;
+    Enable::EVENT_EVAL_DO_EVT_LVL = false;
+  }
+  pos = inputFile.find("SARTRE");
+  if (pos != string::npos) Enable::EVENT_EVAL_DO_EVT_LVL = false;
+
   //-----
   // Output file headers and path
   //-----
@@ -138,7 +144,7 @@ int Fun4All_runEvaluators(
   //Get base file name
   string baseFile = inputFile;
   string remove_this = ".root";
-  size_t pos = baseFile.find(remove_this);
+  pos = baseFile.find(remove_this);
   if (pos != string::npos)
   {
     baseFile.erase(pos, remove_this.length());
