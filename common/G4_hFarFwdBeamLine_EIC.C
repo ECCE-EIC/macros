@@ -114,6 +114,7 @@ void hFarFwdDefineMagnets(PHG4Reco *g4Reco)
   hFarFwdBeamLine::hFarFwdBeamLineEnclosure->set_string_param("material", "G4_Galactic");
   hFarFwdBeamLine::hFarFwdBeamLineEnclosure->set_color(.5, .5, .5, 0.2);
   hFarFwdBeamLine::hFarFwdBeamLineEnclosure->OverlapCheck(overlapCheck);
+  hFarFwdBeamLine::hFarFwdBeamLineEnclosure->SetActive();
   if (verbosity) hFarFwdBeamLine::hFarFwdBeamLineEnclosure->Verbosity(verbosity);
   g4Reco->registerSubsystem(hFarFwdBeamLine::hFarFwdBeamLineEnclosure);
 
@@ -134,7 +135,7 @@ void hFarFwdDefineMagnets(PHG4Reco *g4Reco)
   }
 
   // make magnet active volume if you want to study the hits
-  bool magnet_active = false;
+  bool magnet_active = true;
   int absorberactive = 0;
 
   // if you insert numbers it only displays those magnets, do not comment out the set declaration
@@ -255,6 +256,7 @@ void hFarFwdDefineMagnets(PHG4Reco *g4Reco)
             bl->set_double_param("inner_radius", inner_radius_zin);
             bl->set_double_param("outer_radius", outer_magnet_diameter / 2.);
             bl->SetActive(magnet_active);
+            bl->SetAbsorberActive();
             bl->BlackHole();
             bl->SetMotherSubsystem(hFarFwdBeamLine::hFarFwdBeamLineEnclosure);
             if (absorberactive)
