@@ -123,6 +123,14 @@ int Fun4All_runEvaluators(
   Enable::mRICH_RECO = true;
   Enable::RICH_RECO = true;
 
+  //----
+  // Enable HepMC writing
+  //----
+  Input::HEPMC = true;
+  string singleParticles = "single";
+  size_t = inputFile.find(singleParticles);
+  if (pos == ring::npos) Input::HEPMC = false;
+  
   //-----
   // Output file headers and path
   //-----
