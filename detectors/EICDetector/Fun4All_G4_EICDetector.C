@@ -408,7 +408,8 @@ int Fun4All_G4_EICDetector(
   Enable::EVENT_EVAL = false;
   // EVENT_EVALUATOR::Verbosity = 1;
   // EVENT_EVALUATOR::EnergyThreshold = 0.05; // GeV
-
+  Enable::EVENT_EVAL_DO_HEPMC = Input::PYTHIA6 or Input::PYTHIA8 or Input::SARTRE or Input::HEPMC or Input::READEIC;
+  Enable::EVENT_EVAL_DO_EVT_LVL = Input::PYTHIA6 or Input::PYTHIA8 or Input::READEIC;
   //Enable::USER = true;
 
   //---------------
