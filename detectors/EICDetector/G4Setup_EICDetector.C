@@ -41,6 +41,10 @@
 #include <G4_User.C>
 #include <G4_World.C>
 
+#include <G4_mRICH.C>
+#include <G4_TRD.C>
+
+
 #include <g4detectors/PHG4CylinderSubsystem.h>
 
 #include <g4eval/PHG4DstCompressReco.h>
@@ -102,6 +106,7 @@ void G4Init()
   if (Enable::HCALIN) HCalInnerInit(1);
   if (Enable::MAGNET) MagnetInit();
   MagnetFieldInit();  // We want the field - even if the magnet volume is disabled
+  if (Enable::TRD) TRDInit();
   if (Enable::HCALOUT) HCalOuterInit();
   if (Enable::DIRC) DIRCInit();
 
@@ -217,6 +222,7 @@ int G4Setup()
   if (Enable::EEMCH) EEMCHSetup(g4Reco);
   if (Enable::EHCAL) EHCALSetup(g4Reco);
   if (Enable::mRICH) mRICHSetup(g4Reco);
+  if (Enable::TRD)  TRDSetup(g4Reco);
 
   //----------------------------------------
   // sPHENIX forward flux return door

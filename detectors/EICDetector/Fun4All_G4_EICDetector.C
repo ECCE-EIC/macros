@@ -360,6 +360,10 @@ int Fun4All_G4_EICDetector(
   //EICDetector geometry - 'hadron' direction
   Enable::TRD = true;
 
+
+  //EICDetector geometry - 'hadron' direction
+  Enable::TRD = true;
+
   Enable::FEMC = true;
   //  Enable::FEMC_ABSORBER = true;
   Enable::FEMC_TOWER = Enable::FEMC && true;
