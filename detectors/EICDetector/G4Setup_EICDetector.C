@@ -5,34 +5,41 @@
 
 #include <G4_BlackHole.C>
 
+//#include <G4_AllSilicon.C>
+//#include <G4_Mvtx_EIC.C>
+#include <G4_BECAL.C>
+#include <G4_Barrel_EIC.C>
 #include <G4_CEmc_EIC.C>
 #include <G4_DIRC.C>
+#include <G4_DRCALO.C>
 #include <G4_EEMC.C>
+#include <G4_EEMC_hybrid.C>
 #include <G4_EHCAL.C>
 #include <G4_FEMC_EIC.C>
 #include <G4_FHCAL.C>
+#include <G4_FST_EIC.C>
+#include <G4_GEM_EIC.C>
 #include <G4_HcalIn_ref.C>
 #include <G4_HcalOut_ref.C>
 #include <G4_Input.C>
+#include <G4_LFHCAL.C>
 #include <G4_Magnet.C>
-#include <G4_Mvtx_EIC.C>
 #include <G4_Pipe_EIC.C>
 #include <G4_PlugDoor_EIC.C>
-#include <G4_dRICH.C>
-
-#include <G4_Barrel_EIC.C>
-#include <G4_FST_EIC.C>
-#include <G4_GEM_EIC.C>
-#include <G4_mRwell_EIC.C>
 #include <G4_TTL_EIC.C>
+#include <G4_TrackingSupport.C>
 #include <G4_Tracking_EIC.C>
+#include <G4_dRICH.C>
+#include <G4_mRICH.C>
+#include <G4_mRwell_EIC.C>
+
+// these two has to be ordered this way for now.
+#include <G4_hFarFwdBeamLine_EIC.C>
+
+#include <G4_hFarBwdBeamLine_EIC.C>
 
 #include <G4_User.C>
 #include <G4_World.C>
-#include <G4_hFarFwdBeamLine_EIC.C>
-#include <G4_hFarBwdBeamLine_EIC.C>
-#include <G4_mRICH.C>
-#include <G4_TRD.C>
 
 #include <g4detectors/PHG4CylinderSubsystem.h>
 
@@ -66,33 +73,57 @@ void G4Init()
     gSystem->Exit(1);
   }
 
+  if (Enable::EEMC and Enable::EEMCH)
+  {
+    cout << "Can not enable EEMC and EEMCH at the same time!" << endl;
+    gSystem->Exit(1);
+  }
+  if (Enable::CEMC and Enable::BECAL)
+  {
+    cout << "Can not enable CEMC and BECAL at the same time!" << endl;
+    gSystem->Exit(1);
+  }
+
   // load detector/material macros and execute Init() function
   if (Enable::PIPE) PipeInit();
-  if (Enable::HFARFWD_MAGNETS) hFarFwdBeamLineInit();
-  if (Enable::HFARFWD_MAGNETS) hFarBwdBeamLineInit();
   if (Enable::PLUGDOOR) PlugDoorInit();
-
   if (Enable::TRACKING) TrackingInit();
-  if (Enable::EGEM) EGEM_Init();
-  if (Enable::FGEM) FGEM_Init();
-  if (Enable::RWELL) RWellInit();
-  if (Enable::FST) FST_Init();
-  if (Enable::FTTL || Enable::ETTL  || Enable::CTTL) TTL_Init();
-  if (Enable::BARREL) BarrelInit();
 
+  //Farforward/backward
+  if (Enable::HFARFWD_MAGNETS) hFarBwdBeamLineInit();  //Shouldnt this be far backward enables
+  if (Enable::HFARFWD_MAGNETS) hFarFwdBeamLineInit();
+
+  //Barrel
+  if (Enable::TrackingService) TrackingServiceInit();
+  if (Enable::BARREL) BarrelInit();
+  if (Enable::RWELL) RWellInit();
   if (Enable::CEMC) CEmcInit(72);  // make it 2*2*2*3*3 so we can try other combinations
+  if (Enable::BECAL) BECALInit();
   if (Enable::HCALIN) HCalInnerInit(1);
   if (Enable::MAGNET) MagnetInit();
   MagnetFieldInit();  // We want the field - even if the magnet volume is disabled
-  if (Enable::TRD) TRDInit();
   if (Enable::HCALOUT) HCalOuterInit();
-  if (Enable::FEMC) FEMCInit();
-  if (Enable::FHCAL) FHCALInit();
-  if (Enable::EEMC) EEMCInit();
-  if (Enable::EHCAL) EHCALInit();
   if (Enable::DIRC) DIRCInit();
+
+  //Forward
+  if (Enable::FGEM) FGEM_Init();
+  if (Enable::FEMC) FEMCInit();
+  if (Enable::DRCALO) DRCALOInit();
+  if (Enable::FHCAL) FHCALInit();
+  if (Enable::LFHCAL) LFHCALInit();
   if (Enable::RICH) RICHInit();
+
+  //Backward
+  if (Enable::EGEM) EGEM_Init();
+  if (Enable::EEMC) EEMCInit();
+  if (Enable::EEMCH) EEMCHInit();
+  if (Enable::EHCAL) EHCALInit();
   if (Enable::mRICH) mRICHInit();
+
+  //Combined
+  if (Enable::FST) FST_Init();
+  if (Enable::FTTL || Enable::ETTL || Enable::CTTL) TTL_Init();
+
   if (Enable::USER) UserInit();
   if (Enable::BLACKHOLE) BlackHoleInit();
 }
@@ -145,6 +176,7 @@ int G4Setup()
   double radius = 0.;
 
   if (Enable::PIPE) radius = Pipe(g4Reco, radius);
+
   // Far Forward Region
   if (Enable::HFARFWD_MAGNETS_IP6 || Enable::HFARFWD_MAGNETS_IP8) hFarFwdDefineMagnets(g4Reco);
   if (Enable::HFARFWD_VIRTUAL_DETECTORS_IP6) hFarFwdDefineDetectorsIP6(g4Reco);
@@ -155,30 +187,36 @@ int G4Setup()
   if (Enable::HFARBWD_VIRTUAL_DETECTORS_IP6) hFarBwdDefineDetectorsIP6(g4Reco);
   if (Enable::HFARBWD_VIRTUAL_DETECTORS_IP8) hFarBwdDefineDetectorsIP8(g4Reco);
 
-  if (Enable::EGEM) EGEMSetup(g4Reco);
-  if (Enable::FGEM) FGEMSetup(g4Reco);
+  //Barrel
+  if (Enable::TrackingService) TrackingService(g4Reco, radius);
+
   if (Enable::RWELL) RWellSetup(g4Reco);
   if (Enable::FST) FSTSetup(g4Reco);
-  if (Enable::FTTL) FTTLSetup(g4Reco);
-  if (Enable::ETTL) ETTLSetup(g4Reco);
   if (Enable::CTTL) CTTLSetup(g4Reco);
   if (Enable::BARREL) Barrel(g4Reco);
   if (Enable::CEMC) radius = CEmc(g4Reco, radius);
+  if (Enable::BECAL) BECALSetup(g4Reco);
   if (Enable::HCALIN) radius = HCalInner(g4Reco, radius, 4);
   if (Enable::MAGNET) radius = Magnet(g4Reco, radius);
   if (Enable::HCALOUT) radius = HCalOuter(g4Reco, radius, 4);
-  if (Enable::FEMC) FEMCSetup(g4Reco);
-  if (Enable::FHCAL) FHCALSetup(g4Reco);
-  if (Enable::EEMC) EEMCSetup(g4Reco);
-  if (Enable::EHCAL) EHCALSetup(g4Reco);
-
-  //----------------------------------------
-  // PID
-
   if (Enable::DIRC) DIRCSetup(g4Reco);
+
+  //Forward
+  if (Enable::FGEM) FGEMSetup(g4Reco);
+  if (Enable::FTTL) FTTLSetup(g4Reco);
+  if (Enable::FEMC) FEMCSetup(g4Reco);
+  if (Enable::DRCALO) DRCALOSetup(g4Reco);
+  if (Enable::FHCAL) FHCALSetup(g4Reco);
+  if (Enable::LFHCAL) LFHCALSetup(g4Reco);
   if (Enable::RICH) RICHSetup(g4Reco);
+
+  //Backward
+  if (Enable::ETTL) ETTLSetup(g4Reco);
+  if (Enable::EGEM) EGEMSetup(g4Reco);
+  if (Enable::EEMC) EEMCSetup(g4Reco);
+  if (Enable::EEMCH) EEMCHSetup(g4Reco);
+  if (Enable::EHCAL) EHCALSetup(g4Reco);
   if (Enable::mRICH) mRICHSetup(g4Reco);
-  if (Enable::TRD)  TRDSetup(g4Reco);
 
   //----------------------------------------
   // sPHENIX forward flux return door
@@ -214,53 +252,82 @@ void ShowerCompress()
   //  compress->AddHitContainer("G4HIT_RomanPots");
   //  compress->AddHitContainer("G4HIT_B0detector");
   compress->AddHitContainer("G4HIT_FIELDCAGE");
+
   compress->AddHitContainer("G4HIT_CEMC_ELECTRONICS");
   compress->AddHitContainer("G4HIT_CEMC");
   compress->AddHitContainer("G4HIT_ABSORBER_CEMC");
   compress->AddHitContainer("G4HIT_CEMC_SPT");
-  compress->AddHitContainer("G4HIT_ABSORBER_HCALIN");
-  compress->AddHitContainer("G4HIT_HCALIN");
-  compress->AddHitContainer("G4HIT_HCALIN_SPT");
-  compress->AddHitContainer("G4HIT_MAGNET");
-  compress->AddHitContainer("G4HIT_ABSORBER_HCALOUT");
-  compress->AddHitContainer("G4HIT_HCALOUT");
-  compress->AddHitContainer("G4HIT_BH_1");
-  compress->AddHitContainer("G4HIT_BH_FORWARD_PLUS");
-  compress->AddHitContainer("G4HIT_BH_FORWARD_NEG");
   compress->AddCellContainer("G4CELL_CEMC");
-  compress->AddCellContainer("G4CELL_HCALIN");
-  compress->AddCellContainer("G4CELL_HCALOUT");
   compress->AddTowerContainer("TOWER_SIM_CEMC");
   compress->AddTowerContainer("TOWER_RAW_CEMC");
   compress->AddTowerContainer("TOWER_CALIB_CEMC");
+
+  compress->AddHitContainer("G4HIT_BECAL");
+  compress->AddHitContainer("G4HIT_ABSORBER_BECAL");
+  compress->AddCellContainer("G4CELL_BECAL");
+  compress->AddTowerContainer("TOWER_SIM_BECAL");
+  compress->AddTowerContainer("TOWER_RAW_BECAL");
+  compress->AddTowerContainer("TOWER_CALIB_BECAL");
+
+  compress->AddHitContainer("G4HIT_HCALIN");
+  compress->AddHitContainer("G4HIT_ABSORBER_HCALIN");
+  compress->AddHitContainer("G4HIT_HCALIN_SPT");
+  compress->AddCellContainer("G4CELL_HCALIN");
   compress->AddTowerContainer("TOWER_SIM_HCALIN");
   compress->AddTowerContainer("TOWER_RAW_HCALIN");
   compress->AddTowerContainer("TOWER_CALIB_HCALIN");
+
+  compress->AddHitContainer("G4HIT_MAGNET");
+
+  compress->AddHitContainer("G4HIT_HCALOUT");
+  compress->AddHitContainer("G4HIT_ABSORBER_HCALOUT");
+  compress->AddCellContainer("G4CELL_HCALOUT");
   compress->AddTowerContainer("TOWER_SIM_HCALOUT");
   compress->AddTowerContainer("TOWER_RAW_HCALOUT");
   compress->AddTowerContainer("TOWER_CALIB_HCALOUT");
 
+  compress->AddHitContainer("G4HIT_BH_1");
+  compress->AddHitContainer("G4HIT_BH_FORWARD_PLUS");
+  compress->AddHitContainer("G4HIT_BH_FORWARD_NEG");
+
   compress->AddHitContainer("G4HIT_FEMC");
   compress->AddHitContainer("G4HIT_ABSORBER_FEMC");
-  compress->AddHitContainer("G4HIT_FHCAL");
-  compress->AddHitContainer("G4HIT_ABSORBER_FHCAL");
-  compress->AddHitContainer("G4HIT_EHCAL");
-  compress->AddHitContainer("G4HIT_ABSORBER_EHCAL");
   compress->AddCellContainer("G4CELL_FEMC");
-  compress->AddCellContainer("G4CELL_FHCAL");
   compress->AddTowerContainer("TOWER_SIM_FEMC");
   compress->AddTowerContainer("TOWER_RAW_FEMC");
   compress->AddTowerContainer("TOWER_CALIB_FEMC");
+
+  compress->AddHitContainer("G4HIT_DRCALO");
+  compress->AddHitContainer("G4HIT_ABSORBER_DRCALO");
+  compress->AddCellContainer("G4CELL_DRCALO");
+  compress->AddTowerContainer("TOWER_SIM_DRCALO");
+  compress->AddTowerContainer("TOWER_RAW_DRCALO");
+  compress->AddTowerContainer("TOWER_CALIB_DRCALO");
+
+  compress->AddHitContainer("G4HIT_FHCAL");
+  compress->AddHitContainer("G4HIT_ABSORBER_FHCAL");
+  compress->AddCellContainer("G4CELL_FHCAL");
   compress->AddTowerContainer("TOWER_SIM_FHCAL");
   compress->AddTowerContainer("TOWER_RAW_FHCAL");
   compress->AddTowerContainer("TOWER_CALIB_FHCAL");
 
+  compress->AddHitContainer("G4HIT_LFHCAL");
+  compress->AddHitContainer("G4HIT_ABSORBER_LFHCAL");
+  compress->AddCellContainer("G4CELL_LFHCAL");
+  compress->AddTowerContainer("TOWER_SIM_LFHCAL");
+  compress->AddTowerContainer("TOWER_RAW_LFHCAL");
+  compress->AddTowerContainer("TOWER_CALIB_LFHCAL");
+
   compress->AddHitContainer("G4HIT_EEMC");
+  compress->AddHitContainer("G4HIT_EEMC_glass");
   compress->AddHitContainer("G4HIT_ABSORBER_EEMC");
   compress->AddCellContainer("G4CELL_EEMC");
   compress->AddTowerContainer("TOWER_SIM_EEMC");
   compress->AddTowerContainer("TOWER_RAW_EEMC");
   compress->AddTowerContainer("TOWER_CALIB_EEMC");
+
+  compress->AddHitContainer("G4HIT_EHCAL");
+  compress->AddHitContainer("G4HIT_ABSORBER_EHCAL");
   compress->AddTowerContainer("TOWER_SIM_EHCAL");
   compress->AddTowerContainer("TOWER_RAW_EHCAL");
   compress->AddTowerContainer("TOWER_CALIB_EHCAL");
@@ -288,27 +355,36 @@ void DstCompress(Fun4AllDstOutputManager *out)
     out->StripNode("G4HIT_CEMC");
     out->StripNode("G4HIT_ABSORBER_CEMC");
     out->StripNode("G4HIT_CEMC_SPT");
+    out->StripNode("G4CELL_CEMC");
+    out->StripNode("G4HIT_BECAL");
+    out->StripNode("G4CELL_BECAL");
+    out->StripNode("G4HIT_ABSORBER_BECAL");
     out->StripNode("G4HIT_ABSORBER_HCALIN");
     out->StripNode("G4HIT_HCALIN");
     out->StripNode("G4HIT_HCALIN_SPT");
+    out->StripNode("G4CELL_HCALIN");
     out->StripNode("G4HIT_MAGNET");
-    out->StripNode("G4HIT_ABSORBER_HCALOUT");
     out->StripNode("G4HIT_HCALOUT");
+    out->StripNode("G4HIT_ABSORBER_HCALOUT");
+    out->StripNode("G4CELL_HCALOUT");
     out->StripNode("G4HIT_BH_1");
     out->StripNode("G4HIT_BH_FORWARD_PLUS");
     out->StripNode("G4HIT_BH_FORWARD_NEG");
-    out->StripNode("G4CELL_CEMC");
-    out->StripNode("G4CELL_HCALIN");
-    out->StripNode("G4CELL_HCALOUT");
 
     out->StripNode("G4HIT_FEMC");
     out->StripNode("G4HIT_ABSORBER_FEMC");
     out->StripNode("G4HIT_FHCAL");
     out->StripNode("G4HIT_ABSORBER_FHCAL");
     out->StripNode("G4CELL_FEMC");
+    out->StripNode("G4HIT_DRCALO");
+    out->StripNode("G4HIT_ABSORBER_DRCALO");
+    out->StripNode("G4CELL_DRCALO");
     out->StripNode("G4CELL_FHCAL");
-
+    out->StripNode("G4HIT_LFHCAL");
+    out->StripNode("G4HIT_ABSORBER_LFHCAL");
+    out->StripNode("G4CELL_LFHCAL");
     out->StripNode("G4HIT_EEMC");
+    out->StripNode("G4HIT_EEMC_glass");
     out->StripNode("G4HIT_ABSORBER_EEMC");
     out->StripNode("G4CELL_EEMC");
     out->StripNode("G4HIT_EHCAL");
