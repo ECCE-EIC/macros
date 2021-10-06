@@ -34,6 +34,8 @@ void Event_Eval(const std::string &filename)
     eval->set_do_PROJECTIONS(true);
     if (G4TRACKING::DISPLACED_VERTEX)
       eval->set_do_VERTEX(true);
+    if (Enable::DIRC_RECO or Enable::mRICH_RECO or Enable::RICH_RECO)
+      eval->set_do_PID_LogLikelihood(true);
   }
   if (Enable::CEMC_CLUSTER) eval->set_do_CEMC(true);
   if (Enable::EEMC_CLUSTER) eval->set_do_EEMC(true);
@@ -47,8 +49,9 @@ void Event_Eval(const std::string &filename)
   if (Enable::BECAL) eval->set_do_BECAL(true);
 
   eval->set_do_MCPARTICLES(true);
-  eval->set_do_HEPMC(true);
-  eval->set_do_store_event_level_info(true);
+  eval->set_do_HEPMC(Input::PYTHIA6 or Input::PYTHIA8 or Input::SARTRE or Input::HEPMC
+      or Input::READEIC  );
+  eval->set_do_store_event_level_info( Input::PYTHIA6 or Input::PYTHIA8 or Input::READEIC  );
   se->registerSubsystem(eval);
 
   return;

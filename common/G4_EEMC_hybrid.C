@@ -12,6 +12,12 @@
 
 #include <g4main/PHG4Reco.h>
 
+<<<<<<< HEAD
+=======
+#include <eiccaloreco/RawClusterBuilderkMA.h>
+#include <eiccaloreco/RawClusterBuilderHelper.h>
+
+>>>>>>> upstream/master
 #include <caloreco/RawClusterBuilderFwd.h>
 #include <caloreco/RawClusterBuilderTemplate.h>
 #include <caloreco/RawTowerCalibration.h>
@@ -47,7 +53,11 @@ namespace G4EEMCH
   
   namespace SETTING
   {
+<<<<<<< HEAD
     bool USEHYBRID    = true;
+=======
+    bool USEHYBRID    = false;
+>>>>>>> upstream/master
     bool USECEMCGeo   = false;
   }  // namespace SETTING
   
@@ -90,7 +100,11 @@ void EEMCHSetup(PHG4Reco *g4Reco)
   /** Use dedicated EEMCH module */
   ostringstream mapping_eemc_1, mapping_eemc_2;
     
+<<<<<<< HEAD
   if (Enable::EEMCH_VERBOSITY > 0) cout << "hybrid: " << G4EEMCH::SETTING::USEHYBRID <<  "\t CEMC:" << G4EEMCH::SETTING::USECEMCGeo << endl;
+=======
+  cout << "hybrid: " << G4EEMCH::SETTING::USEHYBRID <<  "\t CEMC:" << G4EEMCH::SETTING::USECEMCGeo << endl;
+>>>>>>> upstream/master
   
   PHG4HybridHomogeneousCalorimeterSubsystem *eemc_crystal = new PHG4HybridHomogeneousCalorimeterSubsystem("EEMC");
   eemc_crystal->SuperDetector("EEMC");
@@ -103,6 +117,10 @@ void EEMCHSetup(PHG4Reco *g4Reco)
   else if (G4EEMCH::SETTING::USEHYBRID && G4EEMCH::SETTING::USECEMCGeo)
     mapping_eemc_1 << getenv("CALIBRATIONROOT") << "/CrystalCalorimeter/mapping/crystal_mapping/tower_map_crystal_200cm_CEMCBarrel.txt";
   else if (!G4EEMCH::SETTING::USEHYBRID && !G4EEMCH::SETTING::USECEMCGeo)
+<<<<<<< HEAD
+=======
+//     mapping_eemc_1 << getenv("CALIBRATIONROOT") << "/CrystalCalorimeter/mapping/crystal_mapping/tower_map_purecrystal_200cm_SciGlassBarrel.txt";
+>>>>>>> upstream/master
     mapping_eemc_1 << getenv("CALIBRATIONROOT") << "/CrystalCalorimeter/mapping/crystal_mapping/tower_map_purecrystal_185cm.txt";
   else if (!G4EEMCH::SETTING::USEHYBRID && G4EEMCH::SETTING::USECEMCGeo)
     mapping_eemc_1 << getenv("CALIBRATIONROOT") << "/CrystalCalorimeter/mapping/crystal_mapping/tower_map_purecrystal_200cm_CEMCBarrel.txt";
@@ -112,10 +130,18 @@ void EEMCHSetup(PHG4Reco *g4Reco)
     cout << "*******************************************************************************" << endl;
     return;
   }
+<<<<<<< HEAD
   if (Enable::EEMCH_VERBOSITY > 0) cout << "setting EEMC crystal mapping: " << mapping_eemc_1.str() << endl;
   eemc_crystal->set_string_param("mappingtower", mapping_eemc_1.str());    
   eemc_crystal->OverlapCheck(OverlapCheck);
 
+=======
+  cout << "setting EEMC crystal mapping: " << mapping_eemc_1.str() << endl;
+  eemc_crystal->set_string_param("mappingtower", mapping_eemc_1.str());    
+  eemc_crystal->OverlapCheck(OverlapCheck);
+//   eemc_crystal->OverlapCheck(true);
+  
+>>>>>>> upstream/master
   g4Reco->registerSubsystem(eemc_crystal);
   
   if (G4EEMCH::SETTING::USEHYBRID){
@@ -130,7 +156,11 @@ void EEMCHSetup(PHG4Reco *g4Reco)
       return;
     }
   
+<<<<<<< HEAD
     if (Enable::EEMCH_VERBOSITY > 0) cout << "setting EEMC glass mapping: " << mapping_eemc_2.str() << endl;
+=======
+    cout << "setting EEMC glass mapping: " << mapping_eemc_2.str() << endl;
+>>>>>>> upstream/master
     PHG4HybridHomogeneousCalorimeterSubsystem *eemc_glass = new PHG4HybridHomogeneousCalorimeterSubsystem("EEMC_glass");
     eemc_glass->SuperDetector("EEMC_glass");
     eemc_glass->SetActive();
@@ -161,6 +191,10 @@ void EEMCH_Towers()
   else if (G4EEMCH::SETTING::USEHYBRID && G4EEMCH::SETTING::USECEMCGeo)
     mapping_eemc_1 << getenv("CALIBRATIONROOT") << "/CrystalCalorimeter/mapping/crystal_mapping/tower_map_crystal_200cm_CEMCBarrel.txt";
   else if (!G4EEMCH::SETTING::USEHYBRID && !G4EEMCH::SETTING::USECEMCGeo)
+<<<<<<< HEAD
+=======
+//     mapping_eemc_1 << getenv("CALIBRATIONROOT") << "/CrystalCalorimeter/mapping/crystal_mapping/tower_map_purecrystal_200cm_SciGlassBarrel.txt";
+>>>>>>> upstream/master
     mapping_eemc_1 << getenv("CALIBRATIONROOT") << "/CrystalCalorimeter/mapping/crystal_mapping/tower_map_purecrystal_185cm.txt";
   else if (!G4EEMCH::SETTING::USEHYBRID && G4EEMCH::SETTING::USECEMCGeo)
     mapping_eemc_1 << getenv("CALIBRATIONROOT") << "/CrystalCalorimeter/mapping/crystal_mapping/tower_map_purecrystal_200cm_CEMCBarrel.txt";
@@ -250,7 +284,16 @@ void EEMCH_Clusters()
 
   if (G4EEMCH::Eemc_clusterizer == G4EEMCH::kEemcTemplateClusterizer)
   {
+<<<<<<< HEAD
     
+=======
+    RawClusterBuilderHelper *ClusterBuilder = new RawClusterBuilderkMA("EEMCRawClusterBuilderkMA");
+    ClusterBuilder->Detector("EEMC");
+    ClusterBuilder->set_seed_e(0.1);
+    ClusterBuilder->set_agg_e(0.001);
+    se->registerSubsystem(ClusterBuilder);
+    /*    
+>>>>>>> upstream/master
     RawClusterBuilderTemplate *ClusterBuilder_crystal = new RawClusterBuilderTemplate("EEMCRawClusterBuilderTemplate_crystal");
     ClusterBuilder_crystal->Detector("EEMC");
     ClusterBuilder_crystal->Verbosity(2);
@@ -262,6 +305,10 @@ void EEMCH_Clusters()
       ClusterBuilder_glass->Verbosity(verbosity);
       se->registerSubsystem(ClusterBuilder_glass);
     }
+<<<<<<< HEAD
+=======
+    */
+>>>>>>> upstream/master
   }
   else if (G4EEMCH::Eemc_clusterizer == G4EEMCH::kEemcGraphClusterizer)
   {

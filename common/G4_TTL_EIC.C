@@ -130,10 +130,21 @@ void FTTLSetup(PHG4Reco *g4Reco, TString fttloption = "")
   const double mm = .1 * cm;
   const double um = 1e-3 * mm;
 
+<<<<<<< HEAD
   for (Int_t i = 0; i < G4TTL::layer[2]; i++){
     cout << G4TTL::positionToVtx[2][i] << "\t" << G4TTL::minExtension[2][i] << "\t" << G4TTL::maxExtension[2][i] << endl;
     if(!G4TTL::SETTING::optionBasicGeo){
       make_forward_station(Form("FTTL_%d", i), g4Reco, G4TTL::positionToVtx[2][i],  G4TTL::minExtension[2][i], G4TTL::maxExtension[2][i], 85*um, 6.0);
+=======
+  double xoffset = 0;
+  if (Enable::IP6) xoffset = -6.0;
+  if (Enable::IP8) xoffset = 8.4;
+
+  for (Int_t i = 0; i < G4TTL::layer[2]; i++){
+    cout << G4TTL::positionToVtx[2][i] << "\t" << G4TTL::minExtension[2][i] << "\t" << G4TTL::maxExtension[2][i] << endl;
+    if(!G4TTL::SETTING::optionBasicGeo){
+      make_forward_station(Form("FTTL_%d", i), g4Reco, G4TTL::positionToVtx[2][i],  G4TTL::minExtension[2][i], G4TTL::maxExtension[2][i], 85*um, xoffset);
+>>>>>>> upstream/master
     } else {
       make_forward_station_basic(Form("FTTL_%d", i), g4Reco, G4TTL::positionToVtx[2][i],  G4TTL::minExtension[2][i], G4TTL::maxExtension[2][i], 85*um);
     }
@@ -201,7 +212,11 @@ int make_forward_station(string name, PHG4Reco *g4Reco,
   ttl->set_double_param("offset_x", xoffset * cm);                    //
   ttl->set_double_param("tSilicon", tSilicon);                    //
 //   ttl->OverlapCheck(true);
+<<<<<<< HEAD
   ttl->OverlapCheck(false);
+=======
+  ttl->OverlapCheck(Enable::OVERLAPCHECK);
+>>>>>>> upstream/master
   
   g4Reco->registerSubsystem(ttl);
 
@@ -312,7 +327,11 @@ int make_barrel_layer(string name, PHG4Reco *g4Reco,
   ttl->set_double_param("rMin", radius * cm);                    //
   ttl->set_double_param("length", 2.0 * halflength * cm);
   ttl->set_double_param("tSilicon", tSilicon);                    //
+<<<<<<< HEAD
   ttl->OverlapCheck(false);
+=======
+  ttl->OverlapCheck(Enable::OVERLAPCHECK);
+>>>>>>> upstream/master
 
   g4Reco->registerSubsystem(ttl);
 

@@ -28,6 +28,7 @@ namespace G4PIPE
   // directly implimenting the central Be section in G4 cylinder for max speed simulation in the detector region.
   // The jointer lip structure of the pipe R = 3.2cm x L=5mm is ignored here
   double be_pipe_radius = 3.1000;
+  double Au_coating_thickness = 2e-4; // 2um Au coating
   double be_pipe_thickness = 3.1762 - be_pipe_radius;  // 760 um for sPHENIX
   double be_pipe_length_plus = 66.8;                   // +z beam pipe extend.
   double be_pipe_length_neg = -79.8;                   // -z beam pipe extend.
@@ -39,7 +40,7 @@ void PipeInit()
   if (G4PIPE::use_forward_pipes)
   {
     BlackHoleGeometry::max_radius = std::max(BlackHoleGeometry::max_radius, 23.);
-    BlackHoleGeometry::max_z = std::max(BlackHoleGeometry::max_z, 450.);
+    BlackHoleGeometry::max_z = std::max(BlackHoleGeometry::max_z, 500.);
     BlackHoleGeometry::min_z = std::min(BlackHoleGeometry::min_z, -463.);
   }
   else
@@ -55,7 +56,7 @@ double Pipe(PHG4Reco* g4Reco,
             double radius)
 {
   bool AbsorberActive = Enable::ABSORBER || Enable::PIPE_ABSORBER;
-  bool OverlapCheck = Enable::PIPE_OVERLAPCHECK;  // detach from Enable::OVERLAPCHECK ||  to suppress GDML validation messages
+  bool OverlapCheck = Enable::PIPE_OVERLAPCHECK or Enable::OVERLAPCHECK; // ||  to suppress GDML validation messages
   int verbosity = std::max(Enable::VERBOSITY, Enable::PIPE_VERBOSITY);
   // process pipe extentions?
   const bool do_pipe_hadron_forward_extension = G4PIPE::use_forward_pipes && true;
@@ -78,7 +79,19 @@ double Pipe(PHG4Reco* g4Reco,
   cyl->set_double_param("length", be_pipe_length);
   cyl->set_double_param("place_z", be_pipe_center);
   cyl->set_string_param("material", "G4_Galactic");
-  cyl->set_double_param("thickness", G4PIPE::be_pipe_radius);
+  cyl->set_double_param("thickness", G4PIPE::be_pipe_radius- G4PIPE::Au_coating_thickness);
+  cyl->SuperDetector("PIPE");
+  cyl->OverlapCheck(OverlapCheck);
+  g4Reco->registerSubsystem(cyl);
+
+  // 2um Au coating for X-ray absorption
+  cyl = new PHG4CylinderSubsystem("Au_PIPE", 2);
+  cyl->set_double_param("radius", G4PIPE::be_pipe_radius - G4PIPE::Au_coating_thickness);
+  cyl->set_int_param("lengthviarapidity", 0);
+  cyl->set_double_param("length", be_pipe_length);
+  cyl->set_double_param("place_z", be_pipe_center);
+  cyl->set_string_param("material", "G4_Au");
+  cyl->set_double_param("thickness", G4PIPE::Au_coating_thickness);
   cyl->SuperDetector("PIPE");
   cyl->OverlapCheck(OverlapCheck);
   if (AbsorberActive) cyl->SetActive();
@@ -104,11 +117,9 @@ double Pipe(PHG4Reco* g4Reco,
   {
     if (Enable::IP6)
     {
-      PHG4GDMLSubsystem* gdml = new PHG4GDMLSubsystem("ElectronForwardEnvelope");
-      gdml->set_string_param("GDMPath", string(getenv("CALIBRATIONROOT")) + "/Beam/Detector_chamber_3-20-20.G4Import.v2.gdml");
-      gdml->set_string_param("TopVolName", "ElectronForwardEnvelope");
-      gdml->set_double_param("rot_z", 180); // flip crossing sign convension after July-2021
-      gdml->set_int_param("skip_DST_geometry_export", 1);  // do not export extended beam pipe as it is not supported by TGeo and outside Kalman filter acceptance
+      PHG4GDMLSubsystem* gdml = new PHG4GDMLSubsystem("ElectronForwardChamber");
+      gdml->set_string_param("GDMPath", string(getenv("CALIBRATIONROOT")) + "/Beam/ConstructSimplifiedBeamChamber.gdml");
+      gdml->set_string_param("TopVolName", "ElectronForwardChamber");
       gdml->OverlapCheck(OverlapCheck);
       g4Reco->registerSubsystem(gdml);
     }
@@ -123,11 +134,9 @@ double Pipe(PHG4Reco* g4Reco,
   {
     if (Enable::IP6)
     {
-      PHG4GDMLSubsystem* gdml = new PHG4GDMLSubsystem("HadronForwardEnvelope");
-      gdml->set_string_param("GDMPath", string(getenv("CALIBRATIONROOT")) + "/Beam/Detector_chamber_3-20-20.G4Import.v2.gdml");
-      gdml->set_string_param("TopVolName", "HadronForwardEnvelope");
-      gdml->set_int_param("skip_DST_geometry_export", 1);  // do not export extended beam pipe as it is not supported by TGeo and outside Kalman filter acceptance
-      gdml->set_double_param("rot_z", 180); // flip crossing sign convension after July-2021
+      PHG4GDMLSubsystem* gdml = new PHG4GDMLSubsystem("HadronForwardChamber");
+      gdml->set_string_param("GDMPath", string(getenv("CALIBRATIONROOT")) + "/Beam/ConstructSimplifiedBeamChamber.gdml");
+      gdml->set_string_param("TopVolName", "HadronForwardChamber");
       gdml->OverlapCheck(OverlapCheck);
       g4Reco->registerSubsystem(gdml);
     }

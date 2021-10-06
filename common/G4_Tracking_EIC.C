@@ -141,7 +141,7 @@ void Tracking_Reco()
   //-------------------------
   // EEMC
   //-------------------------
-  if (Enable::EEMC && G4TRACKING::PROJECTION_EEMC)
+  if ((Enable::EEMC or Enable::EEMCH)&& G4TRACKING::PROJECTION_EEMC)
   {
     TRACKING::FastKalmanFilter->add_state_name("EEMC");
     TRACKING::ProjectionNames.insert("EEMC");
@@ -220,6 +220,19 @@ void Tracking_Eval(const std::string &outputfile)
   }
   cout << "};" << endl;  // override the TRACKING::ProjectionNames in eval macros
 
+  se->registerSubsystem(fast_sim_eval);
+
+  // now partial track fits
+  fast_sim_eval = new PHG4TrackFastSimEval("FastTrackingEval_InnerTrackMap");
+  fast_sim_eval->set_trackmapname("InnerTrackMap");
+  fast_sim_eval->set_filename(outputfile + ".InnerTrackMap.root");
+  fast_sim_eval->Verbosity(verbosity);
+  se->registerSubsystem(fast_sim_eval);
+
+  fast_sim_eval = new PHG4TrackFastSimEval("FastTrackingEval_SiliconTrackMap");
+  fast_sim_eval->set_trackmapname("SiliconTrackMap");
+  fast_sim_eval->set_filename(outputfile + ".SiliconTrackMap.root");
+  fast_sim_eval->Verbosity(verbosity);
   se->registerSubsystem(fast_sim_eval);
 }
 #endif

@@ -10,6 +10,11 @@
 
 #include <GlobalVariables.C>
 
+<<<<<<< HEAD
+=======
+#include <eccefastpidreco/ECCEFastPIDReco.h>
+#include <eccefastpidreco/ECCEdRICHFastPIDMap.h>
+>>>>>>> upstream/master
 #include <g4drich/EICG4dRICHSubsystem.h>
 #include <g4trackfastsim/PHG4TrackFastSim.h>
 
@@ -17,10 +22,16 @@
 
 R__LOAD_LIBRARY(libg4detectors.so)
 R__LOAD_LIBRARY(libEICG4dRICH.so)
+<<<<<<< HEAD
+=======
+
+R__LOAD_LIBRARY(libECCEFastPIDReco.so)
+>>>>>>> upstream/master
 
 namespace Enable
 {
   bool RICH = false;
+  bool RICH_RECO = false;
   bool RICH_OVERLAPCHECK = false;
   int RICH_VERBOSITY = 0;
 }  // namespace Enable
@@ -36,10 +47,11 @@ void RICHInit()
 //- it starts 180 cm from IP
 //- radius of aerogel part starts at 110 cm at rises up to 120cm over 20 cm of length.
 //- at 175 cm from IP it rapidly grows radially to radius 210cm at stays constant like a cylinder until end at 280cm from the IP
-void RICHSetup(PHG4Reco* g4Reco)
+void RICHSetup(PHG4Reco *g4Reco)
 {
   bool OverlapCheck = Enable::OVERLAPCHECK || Enable::RICH_OVERLAPCHECK;
   int verbosity = std::max(Enable::VERBOSITY, Enable::RICH_VERBOSITY);
+<<<<<<< HEAD
 
   double z = 185; //Start of dRICH
   double dz = 100; //Length of dRICH
@@ -47,6 +59,15 @@ void RICHSetup(PHG4Reco* g4Reco)
   EICG4dRICHSubsystem *drichSubsys = new EICG4dRICHSubsystem("dRICh");
   drichSubsys->SetGeometryFile(string(getenv("CALIBRATIONROOT")) + "/dRICH/mapping/drich-g4model_v2.txt");
   drichSubsys->set_double_param("place_z", z + dz*0.5);// relative position to mother vol.
+=======
+
+  double z = 185;   //Start of dRICH
+  double dz = 100;  //Length of dRICH
+
+  EICG4dRICHSubsystem *drichSubsys = new EICG4dRICHSubsystem("dRICh");
+  drichSubsys->SetGeometryFile(string(getenv("CALIBRATIONROOT")) + "/dRICH/mapping/drich-g4model_v3.txt");
+  drichSubsys->set_double_param("place_z", z + dz * 0.5);  // relative position to mother vol.
+>>>>>>> upstream/master
   drichSubsys->OverlapCheck(OverlapCheck);
   drichSubsys->Verbosity(verbosity);
   drichSubsys->SetActive();
@@ -56,9 +77,33 @@ void RICHSetup(PHG4Reco* g4Reco)
   if (TRACKING::FastKalmanFilter)
   {
     // project to an reference plane at z=170 cm
-    TRACKING::FastKalmanFilter-> add_zplane_state("RICH", 185);
+    TRACKING::FastKalmanFilter->add_zplane_state("RICH", 185);
     TRACKING::ProjectionNames.insert("RICH");
   }
-
 }
+
+void RICHReco()
+{
+  const int verbosity = std::max(Enable::VERBOSITY, Enable::RICH_VERBOSITY);
+  Fun4AllServer *se = Fun4AllServer::instance();
+
+  ECCEdRICHFastPIDMap *pidmap = new ECCEdRICHFastPIDMap();
+  pidmap->Verbosity(verbosity);
+  pidmap->dualRICH_aerogel();
+
+  ECCEFastPIDReco *reco = new ECCEFastPIDReco(pidmap, EICPIDDefs::dRICH_AeroGel, "ECCEFastPIDReco-dRICH_AeroGel");
+  reco->Verbosity(verbosity);
+
+  se->registerSubsystem(reco);
+
+  pidmap = new ECCEdRICHFastPIDMap();
+  pidmap->Verbosity(verbosity);
+  pidmap->dualRICH_C2F6();
+
+  reco = new ECCEFastPIDReco(pidmap, EICPIDDefs::dRICH_Gas, "ECCEFastPIDReco-dRICH_Gas");
+  reco->Verbosity(verbosity);
+
+  se->registerSubsystem(reco);
+}
+
 #endif
