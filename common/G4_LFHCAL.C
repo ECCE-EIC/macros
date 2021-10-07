@@ -12,12 +12,9 @@
 
 #include <g4main/PHG4Reco.h>
 
-<<<<<<< HEAD
-=======
 #include <eiccaloreco/RawClusterBuilderkMA.h>
 #include <eiccaloreco/RawClusterBuilderHelper.h>
 
->>>>>>> upstream/master
 #include <caloreco/RawClusterBuilderFwd.h>
 #include <caloreco/RawClusterBuilderTemplate.h>
 #include <caloreco/RawTowerCalibration.h>
@@ -60,31 +57,15 @@ namespace G4LFHCAL
   {
     bool FullEtaAcc = false;
     bool HC2x = false;
-<<<<<<< HEAD
-    bool asymmetric = false;
-    bool wDR = false;
-    bool FwdSquare = false;
-    bool longer = false;
-=======
     bool asymmetric = true;
     bool wDR = false;
     bool FwdSquare = false;
     bool FwdConfig = false;
     bool longer = true;
->>>>>>> upstream/master
   }  // namespace SETTING
 }  // namespace G4LFHCAL
 
 TString GetMappingFile(){
-<<<<<<< HEAD
-  TString mappingFileName = getenv("CALIBRATIONROOT");
-  if (G4LFHCAL::SETTING::HC2x )
-  {
-    if (G4LFHCAL::SETTING::longer)
-      mappingFileName += "/LFHcal/mapping/towerMap_LFHCAL_2x-long.txt";
-    else 
-      mappingFileName +=  "/LFHcal/mapping/towerMap_LFHCAL_2x.txt";
-=======
   TString mappinFileName = getenv("CALIBRATIONROOT");
   if (G4LFHCAL::SETTING::HC2x )
   {
@@ -92,17 +73,11 @@ TString GetMappingFile(){
       mappinFileName += "/LFHcal/mapping/towerMap_LFHCAL_2x-long.txt";
     else 
       mappinFileName +=  "/LFHcal/mapping/towerMap_LFHCAL_2x.txt";
->>>>>>> upstream/master
   }
   // HCal Fe-Scint surrounding dual readout calorimeter R>50cm
   else if (G4LFHCAL::SETTING::wDR)
   {
     if (G4LFHCAL::SETTING::longer)
-<<<<<<< HEAD
-      mappingFileName +=  "/LFHcal/mapping/towerMap_LFHCAL_wDR-long.txt";
-    else 
-      mappingFileName +=  "/LFHcal/mapping/towerMap_LFHCAL_wDR.txt";
-=======
       mappinFileName +=  "/LFHcal/mapping/towerMap_LFHCAL_wDR-long.txt";
     else 
       mappinFileName +=  "/LFHcal/mapping/towerMap_LFHCAL_wDR.txt";
@@ -114,32 +89,18 @@ TString GetMappingFile(){
       mappinFileName += "/LFHcal/mapping/towerMap_LFHCAL_FwdConfig-long.txt";
     else 
       mappinFileName += "/LFHcal/mapping/towerMap_LFHCAL_FwdConfig.txt";
->>>>>>> upstream/master
   }
   // HCal Fe-Scint surrounding dual readout calorimeter R>50cm
   else if (G4LFHCAL::SETTING::FwdSquare)
   {
     if (G4LFHCAL::SETTING::longer)
-<<<<<<< HEAD
-      mappingFileName += "/LFHcal/mapping/towerMap_LFHCAL_FwdSquare-long.txt";
-    else 
-      mappingFileName += "/LFHcal/mapping/towerMap_LFHCAL_FwdSquare.txt";
-=======
       mappinFileName += "/LFHcal/mapping/towerMap_LFHCAL_FwdSquare-long.txt";
     else 
       mappinFileName += "/LFHcal/mapping/towerMap_LFHCAL_FwdSquare.txt";
->>>>>>> upstream/master
   }
   // full HCal Fe-Scint with asymmetric centering around beampipe
   else if (G4LFHCAL::SETTING::asymmetric)
   {
-<<<<<<< HEAD
-    if (G4LFHCAL::SETTING::longer)
-      mappingFileName += "/LFHcal/mapping/towerMap_LFHCAL_asymmetric-long.txt";
-    else 
-      mappingFileName += "/LFHcal/mapping/towerMap_LFHCAL_asymmetric.txt";
-      
-=======
     if (Enable::IP6){
       if (G4LFHCAL::SETTING::longer)
         mappinFileName += "/LFHcal/mapping/towerMap_LFHCAL_IP6-asymmetric-long.txt";
@@ -151,27 +112,17 @@ TString GetMappingFile(){
       else 
         mappinFileName += "/LFHcal/mapping/towerMap_LFHCAL_asymmetric.txt";      
     }
->>>>>>> upstream/master
   }
   //  PSD like HCal Fe-Scint with enlarged beam pipe opening for Mar 2020 beam pipe
   else
   {
     if (G4LFHCAL::SETTING::longer)
-<<<<<<< HEAD
-      mappingFileName +=  "/LFHcal/mapping/towerMap_LFHCAL_default-long.txt";
-    else
-      mappingFileName +=  "/LFHcal/mapping/towerMap_LFHCAL_default.txt";
-  }
-
-  return mappingFileName;
-=======
       mappinFileName +=  "/LFHcal/mapping/towerMap_LFHCAL_default-long.txt";
     else
       mappinFileName +=  "/LFHcal/mapping/towerMap_LFHCAL_default.txt";
   }
 
   return mappinFileName;
->>>>>>> upstream/master
   
 }
 
@@ -191,10 +142,7 @@ void LFHCALInit()
  
   BlackHoleGeometry::max_radius = std::max(BlackHoleGeometry::max_radius, G4LFHCAL::outer_radius);
   BlackHoleGeometry::max_z = std::max(BlackHoleGeometry::max_z, G4LFHCAL::Gz0 + G4LFHCAL::Gdz / 2.);
-<<<<<<< HEAD
-=======
   BlackHoleGeometry::min_z = std::min(BlackHoleGeometry::min_z, -10*cm);
->>>>>>> upstream/master
 }
 
 void LFHCALSetup(PHG4Reco *g4Reco)
@@ -264,8 +212,6 @@ void LFHCAL_Towers()
 
 void LFHCAL_Clusters()
 {
-<<<<<<< HEAD
-=======
   Fun4AllServer *se = Fun4AllServer::instance();
 
   RawClusterBuilderHelper *ClusterBuilder = new RawClusterBuilderkMA("LFHCALRawClusterBuilderkMA");
@@ -273,7 +219,6 @@ void LFHCAL_Clusters()
   ClusterBuilder->set_seed_e(0.1);
   ClusterBuilder->set_agg_e(0.001);
   se->registerSubsystem(ClusterBuilder);
->>>>>>> upstream/master
 
   return;
 }

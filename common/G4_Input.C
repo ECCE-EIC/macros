@@ -121,11 +121,7 @@ namespace Input
       exit(1);
     }
 
-<<<<<<< HEAD
-    HepMCGen->PHHepMCGenHelper_Verbosity(10);
-=======
     HepMCGen->PHHepMCGenHelper_Verbosity(VERBOSITY);
->>>>>>> upstream/master
 
     //25mrad x-ing as in EIC CDR
     const double EIC_hadron_crossing_angle = 25e-3;

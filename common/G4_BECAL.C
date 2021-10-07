@@ -12,12 +12,9 @@
 
 #include <g4main/PHG4Reco.h>
 
-<<<<<<< HEAD
-=======
 #include <eiccaloreco/RawClusterBuilderkV3.h>
 #include <eiccaloreco/RawClusterBuilderHelper.h>
 
->>>>>>> upstream/master
 #include <caloreco/RawClusterBuilderFwd.h>
 #include <caloreco/RawClusterBuilderTemplate.h>
 #include <caloreco/RawTowerCalibration.h>
@@ -149,9 +146,6 @@ void BECAL_Towers()
 
 void BECAL_Clusters()
 {
-<<<<<<< HEAD
-  
-=======
   Fun4AllServer *se = Fun4AllServer::instance();
 
   RawClusterBuilderHelper *ClusterBuilder = new RawClusterBuilderkV3("BECALRawClusterBuilderkV3");
@@ -160,7 +154,6 @@ void BECAL_Clusters()
   ClusterBuilder->set_agg_e(0.1);
   se->registerSubsystem(ClusterBuilder);
 
->>>>>>> upstream/master
   return;
 }
 

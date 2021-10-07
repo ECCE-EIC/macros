@@ -266,11 +266,11 @@ int Fun4All_G4_EICDetector(
   // If need to disable EIC beam pipe extension beyond the Be-section:
   G4PIPE::use_forward_pipes = true;
   //EIC hadron far forward magnets and detectors. IP6 and IP8 are incompatible (pick either or);
-  //Enable::HFARFWD_MAGNETS = true;
-  //Enable::HFARFWD_VIRTUAL_DETECTORS = true;
+  Enable::HFARFWD_MAGNETS = true;
+  Enable::HFARFWD_VIRTUAL_DETECTORS = true;
 
-  //Enable::HFARBWD_MAGNETS = true;
-  //Enable::HFARBWD_VIRTUAL_DETECTORS = true;
+  Enable::HFARBWD_MAGNETS = true;
+  Enable::HFARBWD_VIRTUAL_DETECTORS = true;
 
   // gems
   Enable::EGEM = true;
@@ -283,10 +283,6 @@ int Fun4All_G4_EICDetector(
   Enable::BARREL = true;
   // fst
   Enable::FST = true;
-<<<<<<< HEAD
-  G4FST::SETTING::SUPPORTCYL = false; // if want to disable support
-=======
->>>>>>> upstream/master
 
   // TOFs
   Enable::FTTL = true;
@@ -298,11 +294,7 @@ int Fun4All_G4_EICDetector(
   Enable::TRACKING = true;
   Enable::TRACKING_EVAL = Enable::TRACKING && true;
   G4TRACKING::DISPLACED_VERTEX = true;  // this option exclude vertex in the track fitting and use RAVE to reconstruct primary and 2ndary vertexes
-<<<<<<< HEAD
-                                         // projections to calorimeters
-=======
                                         // projections to calorimeters
->>>>>>> upstream/master
   G4TRACKING::PROJECTION_EEMC = true;
   G4TRACKING::PROJECTION_BECAL = true;
   G4TRACKING::PROJECTION_EHCAL = true;
@@ -313,17 +305,10 @@ int Fun4All_G4_EICDetector(
   G4TRACKING::PROJECTION_LFHCAL = true;
 
   Enable::BECAL = true;
-<<<<<<< HEAD
-  Enable::BECAL_CELL    = Enable::BECAL && true;
-  Enable::BECAL_TOWER   = Enable::BECAL_CELL && true;
-  Enable::BECAL_CLUSTER = Enable::BECAL_TOWER && true;
-  Enable::BECAL_EVAL    = Enable::BECAL_CLUSTER && false;
-=======
   Enable::BECAL_CELL = Enable::BECAL && true;
   Enable::BECAL_TOWER = Enable::BECAL_CELL && true;
   Enable::BECAL_CLUSTER = Enable::BECAL_TOWER && true;
   Enable::BECAL_EVAL = Enable::BECAL_CLUSTER && true;
->>>>>>> upstream/master
 
   Enable::HCALIN = true;
   //  Enable::HCALIN_ABSORBER = true;
@@ -356,14 +341,6 @@ int Fun4All_G4_EICDetector(
   Enable::mRICH_RECO = Enable::DIRC && true;
   // Enable::mRICH_VERBOSITY = 2;
 
-
-  //EICDetector geometry - 'hadron' direction
-  Enable::TRD = true;
-
-
-  //EICDetector geometry - 'hadron' direction
-  Enable::TRD = true;
-
   Enable::FEMC = true;
   //  Enable::FEMC_ABSORBER = true;
   Enable::FEMC_TOWER = Enable::FEMC && true;
@@ -378,45 +355,24 @@ int Fun4All_G4_EICDetector(
   G4TTL::SETTING::optionDR = 1;
 
   Enable::LFHCAL = true;
-<<<<<<< HEAD
-  G4LFHCAL::SETTING::longer = true;
-  G4LFHCAL::SETTING::asymmetric = true;
-=======
->>>>>>> upstream/master
   Enable::LFHCAL_ABSORBER = false;
   Enable::LFHCAL_CELL = Enable::LFHCAL && true;
   Enable::LFHCAL_TOWER = Enable::LFHCAL_CELL && true;
   Enable::LFHCAL_CLUSTER = Enable::LFHCAL_TOWER && true;
-<<<<<<< HEAD
-  Enable::LFHCAL_EVAL = Enable::LFHCAL_CLUSTER && false;
-
-  // EICDetector geometry - 'electron' direction
-  Enable::EEMCH = true;
-  G4EEMCH::SETTING::USECEMCGeo  = false;
-  G4EEMCH::SETTING::USEHYBRID = false;
-=======
   Enable::LFHCAL_EVAL = Enable::LFHCAL_CLUSTER && true;
 
   // EICDetector geometry - 'electron' direction
   Enable::EEMCH = true;
->>>>>>> upstream/master
   Enable::EEMCH_TOWER = Enable::EEMCH && true;
   Enable::EEMCH_CLUSTER = Enable::EEMCH_TOWER && true;
   Enable::EEMCH_EVAL = Enable::EEMCH_CLUSTER && true;
   G4TTL::SETTING::optionEEMCH = Enable::EEMCH && true;
-<<<<<<< HEAD
-  G4TTL::SETTING::optionCEMC = false;
-  G4TTL::SETTING::optionGeo = 1;
-=======
->>>>>>> upstream/master
 
   Enable::EHCAL = true;
   Enable::EHCAL_CELL = Enable::EHCAL && true;
   Enable::EHCAL_TOWER = Enable::EHCAL_CELL && true;
   Enable::EHCAL_CLUSTER = Enable::EHCAL_TOWER && true;
   Enable::EHCAL_EVAL = Enable::EHCAL_CLUSTER && true;
-
-  Enable::FFR_EVAL = Enable::HFARFWD_MAGNETS && Enable::HFARFWD_VIRTUAL_DETECTORS && true;
 
   Enable::FFR_EVAL = Enable::HFARFWD_MAGNETS && Enable::HFARFWD_VIRTUAL_DETECTORS && true;
 
@@ -434,10 +390,6 @@ int Fun4All_G4_EICDetector(
   Enable::BLACKHOLE = true;
   //Enable::BLACKHOLE_SAVEHITS = false; // turn off saving of bh hits
   //BlackHoleGeometry::visible = true;
-  
-  // ZDC
-  // Enable::ZDC = true;
-  // Enable::ZDC_DISABLE_BLACKHOLE = true;
 
   // ZDC
   // Enable::ZDC = true;
@@ -611,7 +563,6 @@ int Fun4All_G4_EICDetector(
   if (Enable::FWDJETS_EVAL) Jet_FwdEval();
 
   if (Enable::USER) UserAnalysisInit();
-
 
   //--------------
   // Set up Input Managers

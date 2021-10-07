@@ -10,11 +10,8 @@
 
 #include <GlobalVariables.C>
 
-<<<<<<< HEAD
-=======
 #include <eccefastpidreco/ECCEFastPIDReco.h>
 #include <eccefastpidreco/ECCEdRICHFastPIDMap.h>
->>>>>>> upstream/master
 #include <g4drich/EICG4dRICHSubsystem.h>
 #include <g4trackfastsim/PHG4TrackFastSim.h>
 
@@ -22,11 +19,8 @@
 
 R__LOAD_LIBRARY(libg4detectors.so)
 R__LOAD_LIBRARY(libEICG4dRICH.so)
-<<<<<<< HEAD
-=======
 
 R__LOAD_LIBRARY(libECCEFastPIDReco.so)
->>>>>>> upstream/master
 
 namespace Enable
 {
@@ -51,15 +45,6 @@ void RICHSetup(PHG4Reco *g4Reco)
 {
   bool OverlapCheck = Enable::OVERLAPCHECK || Enable::RICH_OVERLAPCHECK;
   int verbosity = std::max(Enable::VERBOSITY, Enable::RICH_VERBOSITY);
-<<<<<<< HEAD
-
-  double z = 185; //Start of dRICH
-  double dz = 100; //Length of dRICH
-
-  EICG4dRICHSubsystem *drichSubsys = new EICG4dRICHSubsystem("dRICh");
-  drichSubsys->SetGeometryFile(string(getenv("CALIBRATIONROOT")) + "/dRICH/mapping/drich-g4model_v2.txt");
-  drichSubsys->set_double_param("place_z", z + dz*0.5);// relative position to mother vol.
-=======
 
   double z = 185;   //Start of dRICH
   double dz = 100;  //Length of dRICH
@@ -67,7 +52,6 @@ void RICHSetup(PHG4Reco *g4Reco)
   EICG4dRICHSubsystem *drichSubsys = new EICG4dRICHSubsystem("dRICh");
   drichSubsys->SetGeometryFile(string(getenv("CALIBRATIONROOT")) + "/dRICH/mapping/drich-g4model_v3.txt");
   drichSubsys->set_double_param("place_z", z + dz * 0.5);  // relative position to mother vol.
->>>>>>> upstream/master
   drichSubsys->OverlapCheck(OverlapCheck);
   drichSubsys->Verbosity(verbosity);
   drichSubsys->SetActive();
