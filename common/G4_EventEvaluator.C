@@ -11,6 +11,8 @@ namespace Enable
 {
   // use Enable::EVENT_EVAL = true; in your macro
   bool EVENT_EVAL = false;
+  bool EVENT_EVAL_DO_HEPMC = false;
+  bool EVENT_EVAL_DO_EVT_LVL = false;
 }  // namespace Enable
 
 namespace EVENT_EVALUATOR
@@ -49,9 +51,8 @@ void Event_Eval(const std::string &filename)
   if (Enable::BECAL) eval->set_do_BECAL(true);
 
   eval->set_do_MCPARTICLES(true);
-  eval->set_do_HEPMC(Input::PYTHIA6 or Input::PYTHIA8 or Input::SARTRE or Input::HEPMC
-      or Input::READEIC  );
-  eval->set_do_store_event_level_info( Input::PYTHIA6 or Input::PYTHIA8 or Input::READEIC  );
+  eval->set_do_HEPMC(Enable::EVENT_EVAL_DO_HEPMC);
+  eval->set_do_store_event_level_info(Enable::EVENT_EVAL_DO_EVT_LVL);
   se->registerSubsystem(eval);
 
   return;
