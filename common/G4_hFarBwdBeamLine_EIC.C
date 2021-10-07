@@ -108,6 +108,7 @@ void hFarBwdDefineMagnets(PHG4Reco *g4Reco)
   hFarBwdBeamLine::hFarBwdBeamLineEnclosure->set_string_param("material", "G4_Galactic");
   hFarBwdBeamLine::hFarBwdBeamLineEnclosure->set_color(.5, .5, .5, 0.2);
   hFarBwdBeamLine::hFarBwdBeamLineEnclosure->OverlapCheck(overlapCheck);
+  hFarBwdBeamLine::hFarBwdBeamLineEnclosure->SetActive();
   if (verbosity)
     hFarBwdBeamLine::hFarBwdBeamLineEnclosure->Verbosity(verbosity);
   g4Reco->registerSubsystem(hFarBwdBeamLine::hFarBwdBeamLineEnclosure);
