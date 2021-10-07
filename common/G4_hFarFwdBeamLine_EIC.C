@@ -412,7 +412,7 @@ void hFarFwdDefineDetectorsIP6(PHG4Reco *g4Reco)
         const double b0_radius = 20.0; //outer radius of B0-detector
         const double spanning_angle = 240; //spanning angle Packman
         const double b0Ecal_z = 48;
-        double start_angle = spanning_angle - 360; //start angle Packman
+        double start_angle = 60; //start angle Packman
       
         for (int i = 0; i < b0DetNr; i++)
         {
@@ -565,8 +565,7 @@ void hFarFwdDefineDetectorsIP6(PHG4Reco *g4Reco)
 	    const double b0_radius = 20.0; //outer radius of B0-detector
 	    const double spanning_angle = 240; //spanning angle Packman
 	    const double b0Ecal_z = 48;
-//	    double start_angle = spanning_angle - 360; //start angle Packman
-	    double start_angle = spanning_angle - 180; //start angle Packman
+	    double start_angle = 60; //start angle Packman
 
 	    for (int i = 0; i < b0DetNr; i++) {
 	    
@@ -760,22 +759,18 @@ void hFarFwdDefineDetectorsIP8(PHG4Reco *g4Reco)
 
         const int b0DetNr = 4;
 
-//        const double b0Mag_zCent = 590;
-//        const double b0Mag_zLen = 120;
-
         const double b0Mag_zCent = 610;
         const double b0Mag_zLen = 120;
-
         const double b0Cu_zLen = .2; //B0 dead material length
         const double b0Si_zLen = .1; //B0 Si length
         const double b0Ecal_zLen = 20.; //B0 Ecal length
-        const double pipe_hole = 5.0; //detector cut off for beam pipe
-        const double pipe_x = 3.4; //pipe hole position
-        const double d_radius = 7.0; //detector cut off Packman
+        const double pipe_hole = 6.0; //detector cut off for beam pipe
+        const double pipe_x = 1.0; //pipe hole position
+        const double d_radius = 9.0; //detector cut off Packman
         const double b0_radius = 24.5; //outer radius of B0-detector
         const double spanning_angle = 240; //spanning angle Packman
         const double b0Ecal_z = 48;
-        double start_angle = spanning_angle - 360; //start angle Packman
+        double start_angle = -120; //start angle Packman
       
         for (int i = 0; i < b0DetNr; i++)
         {
@@ -922,14 +917,13 @@ void hFarFwdDefineDetectorsIP8(PHG4Reco *g4Reco)
 	    const double b0Cu_zLen = .2; //B0 dead material length
 	    const double b0Si_zLen = .1; //B0 Si length
 	    const double b0Ecal_zLen = 20.; //B0 Ecal length
-	    const double pipe_hole = 5.0; //detector cut off for beam pipe
-//	    const double pipe_x = -3.4; //pipe hole position
+	    const double pipe_hole = 6.0; //detector cut off for beam pipe
 	    const double pipe_x = 1.0; //pipe hole position
-	    const double d_radius = 7.0; //detector cut off Packman
-	    const double b0_radius = 24; //outer radius of B0-detector
+	    const double d_radius = 9.0; //detector cut off Packman
+	    const double b0_radius = 24.5; //outer radius of B0-detector
 	    const double spanning_angle = 240; //spanning angle Packman
 	    const double b0Ecal_z = 48;
-	    double start_angle = spanning_angle - 360; //start angle Packman
+	    double start_angle = -120; //start angle Packman
 	    
 	    for (int i = 0; i < b0DetNr; i++) {
 	    
