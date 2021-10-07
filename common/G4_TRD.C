@@ -29,24 +29,24 @@ namespace TRD
   double z_min = z_mid - half_length;
   double z_max = z_mid + half_length + 10.;  
 }
+
 void TRDInit()
 {
-
   BlackHoleGeometry::max_radius =  std::max(BlackHoleGeometry::max_radius, TRD::R_max);
   BlackHoleGeometry::max_z =  std::max(BlackHoleGeometry::max_z, TRD::z_max);
   BlackHoleGeometry::min_z =  std::min(BlackHoleGeometry::min_z, TRD::z_min);
-
 }
 
 void TRDSetup(PHG4Reco *g4Reco)
 {
-
-  Fun4AllServer* se = Fun4AllServer::instance();
-  se->Verbosity(INT_MAX-10);
-  
-  //bool AbsorberActive = Enable::ABSORBER || Enable::TRD_ABSORBER;
+  int verbosity = std::max(Enable::VERBOSITY, Enable::TRD_VERBOSITY);
   bool GasActive = Enable::ABSORBER || Enable::TRD_GAS;
   bool OverlapCheck = Enable::OVERLAPCHECK || Enable::TRD_OVERLAPCHECK;
+
+  Fun4AllServer* se = Fun4AllServer::instance();
+  se->Verbosity(verbosity);
+  
+  //bool AbsorberActive = Enable::ABSORBER || Enable::TRD_ABSORBER;
   PHG4TRDSubsystem* trd_hcap = new PHG4TRDSubsystem("TRD_hcap", 1);
   //// Mother volume dimensions, 
   double ThicknessZ = 13. ; // Mother  thickness along Z in cm, not to go below this
@@ -56,7 +56,6 @@ void TRDSetup(PHG4Reco *g4Reco)
   //Daughter volume (radiator and absorber) inner and outer radii, rest are in the detector construction class.
   double det_RIn = 5;
   double det_ROut = 120;
-
 
   trd_hcap->set_double_param("ThicknessZ", ThicknessZ);
   trd_hcap->set_double_param("RIn", RIn);
@@ -68,52 +67,42 @@ void TRDSetup(PHG4Reco *g4Reco)
   trd_hcap->SuperDetector("TRD");
   //if(AbsorberActive)
   if(GasActive)
-    {
-      trd_hcap->SetAbsorberActive(1);
-    }
+  {
+    trd_hcap->SetAbsorberActive(1);
+  }
   trd_hcap->OverlapCheck(OverlapCheck);
-  //trd_hcap->OverlapCheck(1);
   g4Reco->registerSubsystem(trd_hcap);
   
-  cout << " Min Z  :" << " " << TRD::z_min  << " Max Z  :" << TRD::z_max << endl; 
-  cout << "=======End setting parameters to geometry : ============" << endl; 
+  if (verbosity > 0) cout << " Min Z  :" << " " << TRD::z_min  << " Max Z  :" << TRD::z_max << endl; 
+  if (verbosity > 0) cout << "=======End setting parameters to geometry : ============" << endl; 
   if (TRACKING::FastKalmanFilter)
-    {
-      TRACKING::FastKalmanFilter-> add_zplane_state("TRD", 208. );
-      TRACKING::ProjectionNames.insert("TRD");
+  {
+    TRACKING::FastKalmanFilter-> add_zplane_state("TRD", 208. );
+    TRACKING::ProjectionNames.insert("TRD");
      
-      //Use hits from  absorber (Active Gas volume)
-      TRACKING::FastKalmanFilter->add_phg4hits(string("G4HIT_") + string(Form("ACTIVEGAS_TRD")),  //      const std::string& phg4hitsNames,
-					       PHG4TrackFastSim::Vertical_Plane,                       //      const DETECTOR_TYPE phg4dettype,
-					       1. / sqrt(12.),                                     //      const float radres,
-					       70e-4,                                              //      const float phires,
-					       100e-4,                                              //      const float lonres,
-					       1,                                                  //      const float eff,
-                                               0);      
+    //Use hits from  absorber (Active Gas volume)
+    TRACKING::FastKalmanFilter->add_phg4hits(string("G4HIT_") + string(Form("TRD")),  //      const std::string& phg4hitsNames,
+    			                     PHG4TrackFastSim::Vertical_Plane,                       //      const DETECTOR_TYPE phg4dettype,
+				       	     1. / sqrt(12.),                                     //      const float radres,
+					     70e-4,                                              //      const float phires,
+					     100e-4,                                              //      const float lonres,
+					     1,                                                  //      const float eff,
+                                             0);      
       
-    }
+  }
  
-  cout << " =====End Fast Kalman Filter ======  " << endl; 
+  if (verbosity > 0) cout << " =====End Fast Kalman Filter ======  " << endl; 
   return;
- 
 }
-
+/*
 void TRD_Reco()
 {
-  
   gSystem->Load("libfun4all.so");
   gSystem->Load("libg4detectors.so");
   
   
   int verbosity = std::max(Enable::VERBOSITY, Enable::TRD_VERBOSITY);
   Fun4AllServer* se = Fun4AllServer::instance();
-  //se->Verbosity(INT_MAX-10);
-  
-  return;
-
 }
+*/
 #endif
-
-
-
-

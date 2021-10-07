@@ -36,7 +36,7 @@ int Fun4All_G4_EICDetector(
   // Fun4All server
   //---------------
   Fun4AllServer *se = Fun4AllServer::instance();
-  se->Verbosity(0);
+  se->Verbosity(INT_MAX - 10);
   //Opt to print all random seed used for debugging reproducibility. Comment out to reduce stdout prints.
   //PHRandomSeed::Verbosity(1);
 
@@ -258,7 +258,7 @@ int Fun4All_G4_EICDetector(
   //======================
   // Global options (enabled for all subsystems - if implemented)
   //  Enable::ABSORBER = true;
-  //  Enable::OVERLAPCHECK = true;
+    Enable::OVERLAPCHECK = true;
   //  Enable::VERBOSITY = 1;
 
   // whether to simulate the Be section of the beam pipe
@@ -328,13 +328,18 @@ int Fun4All_G4_EICDetector(
 
   // EICDetector geometry - barrel
   Enable::DIRC = true;
+  Enable::BMMG = true;
+  if (Enable::BMMG) Enable::DIRC = false;
   Enable::DIRC_RECO = Enable::DIRC && true;
   // Enable::DIRC_VERBOSITY = 2;
 
   // EICDetector geometry - 'hadron' direction
   Enable::RICH = true;
+  Enable::TRD = true;
+  if (Enable::TRD) Enable::BMMG = false;
   Enable::RICH_RECO = Enable::DIRC && true;
   // Enable::RICH_VERBOSITY = 2;
+
 
   // EICDetector geometry - 'electron' direction
   Enable::mRICH = true;
