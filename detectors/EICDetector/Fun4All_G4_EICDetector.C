@@ -330,15 +330,11 @@ int Fun4All_G4_EICDetector(
 
   // EICDetector geometry - barrel
   Enable::DIRC = true;
-  Enable::BMMG = true;
-  if (Enable::BMMG) Enable::DIRC = false;
   Enable::DIRC_RECO = Enable::DIRC && true;
   // Enable::DIRC_VERBOSITY = 2;
 
   // EICDetector geometry - 'hadron' direction
   Enable::RICH = true;
-  Enable::TRD = true;
-  if (Enable::TRD) Enable::RICH = false;
   Enable::RICH_RECO = Enable::RICH && true;
   // Enable::RICH_VERBOSITY = 2;
 
