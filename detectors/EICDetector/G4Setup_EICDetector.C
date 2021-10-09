@@ -35,6 +35,7 @@
 #include <G4_dRICH.C>
 #include <G4_mRICH.C>
 #include <G4_mRwell_EIC.C>
+#include <G4_BToF.C>
 
 // these two has to be ordered this way for now.
 #include <G4_hFarFwdBeamLine_EIC.C>
@@ -108,6 +109,7 @@ void G4Init()
   if (Enable::HCALOUT) HCalOuterInit();
   if (Enable::DIRC) DIRCInit();
   if (Enable::BMMG) BMMGInit();
+  if (Enable::BTOF) BToFInit();
 
   //Forward
   if (Enable::FGEM) FGEM_Init();
@@ -206,6 +208,7 @@ int G4Setup()
   if (Enable::HCALOUT) radius = HCalOuter(g4Reco, radius, 4);
   if (Enable::DIRC) DIRCSetup(g4Reco);
   if (Enable::BMMG) BMMGSetup(g4Reco);
+  if (Enable::BTOF) BToFSetup(g4Reco);
 
   //Forward
   if (Enable::FGEM) FGEMSetup(g4Reco);
