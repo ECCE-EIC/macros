@@ -336,7 +336,8 @@ int Fun4All_G4_EICDetector(
   // EICDetector geometry - 'hadron' direction
   Enable::RICH = true;
   Enable::TRD = true;
-  if (Enable::TRD) Enable::RICH = false;
+  Enable::TRD_GAS = true;
+  if (Enable::TRD||Enable::TRD_GAS) Enable::RICH = false;
   Enable::RICH_RECO = Enable::RICH && true;
   // Enable::RICH_VERBOSITY = 2;
 

@@ -1,5 +1,5 @@
-#ifndef MACRO_G4BMMG_C
-#define MACRO_G4BMMG_C
+#ifndef MACRO_G4BMMGT_C
+#define MACRO_G4BMMGT_C
 
 #include <GlobalVariables.C>
 
@@ -10,6 +10,10 @@
 #include <g4trackfastsim/PHG4TrackFastSim.h>
 
 R__LOAD_LIBRARY(libg4barrelmmg.so)
+/*
+R__LOAD_LIBRARY(libg4detectors.so)
+R__LOAD_LIBRARY(libg4trackfastsim.so)
+*/
 R__LOAD_LIBRARY(libfun4all.so)
 R__LOAD_LIBRARY(libg4testbench.so)
 R__LOAD_LIBRARY(libg4detectors.so)
@@ -20,14 +24,19 @@ namespace Enable
   bool use_2Dreadout = true;
   bool MMG_OVERLAPCHECK = true;
   int BMMG_VERBOSITY = 1;
+  
 }
 
 namespace BMMG
 {
+  
   const int n_layer  = 3; 
   
-  const double rad[BMMG::n_layer] = {60.2, 65.4, 70.4}; // approximate radial location
-  const double len[BMMG::n_layer] = {260, 270, 280.0}; 
+  const double rad[BMMG::n_layer] = {45., 47.4, 67.4}; // approximate radial location
+  const double len[BMMG::n_layer] = {140, 150, 280.0}; 
+  
+  
+  
 }
 
 void BMMGInit(int verbosity = 1)
@@ -39,33 +48,31 @@ void BMMGInit(int verbosity = 1)
 
 void BMMGSetup(PHG4Reco *g4Reco)
 {
+  
+  Fun4AllServer* se = Fun4AllServer::instance();
+  se->Verbosity(INT_MAX-10);
+  
+  bool OverlapCheck = Enable::OVERLAPCHECK||Enable::MMG_OVERLAPCHECK;
+  
   gSystem->Load("libfun4all");
   gSystem->Load("libg4detectors.so");
   gSystem->Load("libg4testbench.so");
   gSystem->Load("libg4trackfastsim.so");
 
-  int verbosity = std::max(Enable::VERBOSITY, Enable::BMMG_VERBOSITY);
-
-  Fun4AllServer* se = Fun4AllServer::instance();
-  se->Verbosity(verbosity);
-  
-  bool OverlapCheck = Enable::OVERLAPCHECK||Enable::MMG_OVERLAPCHECK;
-  
   PHG4CylinderStripSubsystem *barrel_mmg;
   double gap_betweenCZ = 1.5;
   double Gap_betweenlayer = 1.5;
   double thickness = 0.36499;
   int nCZlayer = 2;
-  if (Enable::use_2Dreadout) 
-  {
+  if (Enable::use_2Dreadout) {
     gap_betweenCZ = 0;
     nCZlayer = 1;
   }
   
+  
   const double prapidity = 1;
   
-  for (int ilayer = 0; ilayer< BMMG::n_layer; ilayer++)
-  {
+  for (int ilayer = 0; ilayer< BMMG::n_layer; ilayer++){
     barrel_mmg = new PHG4CylinderStripSubsystem(Form("BMT_%d", ilayer),ilayer);
     barrel_mmg->set_double_param("radius", BMMG::rad[ilayer]);
     barrel_mmg->set_string_param("gas", "myMMGas");
@@ -75,48 +82,65 @@ void BMMGSetup(PHG4Reco *g4Reco)
     barrel_mmg->SetActive();
     barrel_mmg->SuperDetector("BMT");
     barrel_mmg->set_int_param("lengthviarapidity",0);
+    barrel_mmg->set_double_param("gas1thickness", 0.15);
     barrel_mmg->set_double_param("length", BMMG::len[ilayer]);
     barrel_mmg->set_double_param("deadzone", 0.2);
     barrel_mmg->set_int_param("nhit", 1);
-    barrel_mmg->OverlapCheck(OverlapCheck);
+    barrel_mmg->OverlapCheck(true);
     barrel_mmg->set_int_param("use_2Dreadout",Enable::use_2Dreadout);
     g4Reco->registerSubsystem(barrel_mmg);
+    //barrel_mmg->Print();
+    
+    //
+    
+
   }// ilayer loop
   
 
   if(TRACKING::FastKalmanFilter)
-  {
-    if(Enable::use_2Dreadout)
     {
-      TRACKING::FastKalmanFilter->add_phg4hits("G4HIT_BMT",                 //      const std::string& phg4hitsNames,
-      					        PHG4TrackFastSim::Cylinder,  //      const DETECTOR_TYPE phg4dettype,
-      					        2.5/2/sqrt(12),//1./sqrt(12),                      //       radial-resolution , only used for Vertical Plane Detector Type
-      					        75e-4,//150e-4,                       //        azimuthal-resolution [cm]
-      					        75e-4,//150e-4,                           //      z-resolution [cm]
-      					        1,                           //      efficiency,
-      					        0);                          //      noise hits
-     }
-     else 
-     {
-       TRACKING::FastKalmanFilter->add_phg4hits("G4HIT_CZBMT",                 //      const std::string& phg4hitsNames,
-     				     	         PHG4TrackFastSim::Cylinder,  //      const DETECTOR_TYPE phg4dettype,
-      					         2.5/2/sqrt(12),//1/sqrt(12),                      //       radial-resolution [cm], only used for Vertical Plane Detector Type
-      					         75e-4,//150e-4,                       //        azimuthal-resolution [cm]
-      					         75e-4,//150e-4,                           //      z-resolution [cm]
-      					         1,                           //      efficiency,
-      					         0);                           //      noise hits
-     }
-   }
+      if(Enable::use_2Dreadout){
+	TRACKING::FastKalmanFilter->add_phg4hits(
+						 "G4HIT_BMT",                 //      const std::string& phg4hitsNames,
+						 PHG4TrackFastSim::Cylinder,  //      const DETECTOR_TYPE phg4dettype,
+						 2.5/2/sqrt(12),//1./sqrt(12),                      //       radial-resolution , only used for Vertical Plane Detector Type
+						 75e-4,//150e-4,                       //        azimuthal-resolution [cm]
+						 75e-4,//150e-4,                           //      z-resolution [cm]
+						 1,                           //      efficiency,
+						 0);                          //      noise hits
+					       
+      
+      }
+      else 
+	{
+	  TRACKING::FastKalmanFilter->add_phg4hits(
+						   "G4HIT_CZBMT",                 //      const std::string& phg4hitsNames,
+						   PHG4TrackFastSim::Cylinder,  //      const DETECTOR_TYPE phg4dettype,
+						   2.5/2/sqrt(12),//1/sqrt(12),                      //       radial-resolution [cm], only used for Vertical Plane Detector Type
+						   75e-4,//150e-4,                       //        azimuthal-resolution [cm]
+						   75e-4,//150e-4,                           //      z-resolution [cm]
+						   1,                           //      efficiency,
+						   0);                           //      noise hits
+	    
+	}
+	
+    }
+   
+  return;
 }
-/*
+
 void BMMGT_Reco()
 {
+  
   gSystem->Load("libfun4all.so");
   gSystem->Load("libg4detectors.so");
   
+  
   int verbosity = std::max(Enable::VERBOSITY, Enable::BMMG_VERBOSITY);
   Fun4AllServer* se = Fun4AllServer::instance();
+  //se->Verbosity(INT_MAX-10);
+  
+  return;
+  
 }
-*/
 #endif
-
