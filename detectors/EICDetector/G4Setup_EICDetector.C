@@ -35,6 +35,7 @@
 #include <G4_dRICH.C>
 #include <G4_mRICH.C>
 #include <G4_mRwell_EIC.C>
+#include <G4_BToF.C>
 
 // these two has to be ordered this way for now.
 #include <G4_hFarFwdBeamLine_EIC.C>
@@ -107,6 +108,7 @@ void G4Init()
   MagnetFieldInit();  // We want the field - even if the magnet volume is disabled
   if (Enable::HCALOUT) HCalOuterInit();
   if (Enable::DIRC) DIRCInit();
+  if (Enable::BTOF) BToFInit();
   if (Enable::BMMG) BMMGInit();
 
   //Forward
@@ -205,6 +207,7 @@ int G4Setup()
   if (Enable::MAGNET) radius = Magnet(g4Reco, radius);
   if (Enable::HCALOUT) radius = HCalOuter(g4Reco, radius, 4);
   if (Enable::DIRC) DIRCSetup(g4Reco);
+  if (Enable::BTOF) BToFSetup(g4Reco);
   if (Enable::BMMG) BMMGSetup(g4Reco);
 
   //Forward
