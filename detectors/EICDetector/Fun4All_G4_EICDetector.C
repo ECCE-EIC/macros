@@ -291,7 +291,7 @@ int Fun4All_G4_EICDetector(
   G4TTL::SETTING::optionCEMC = false;
   G4TTL::SETTING::optionGeo = 1;
 
-  Enable::BTOF = true; // mRPC ToF
+  Enable::BTOF = false; // mRPC ToF
 
   Enable::TRACKING = true;
   Enable::TRACKING_EVAL = Enable::TRACKING && true;
