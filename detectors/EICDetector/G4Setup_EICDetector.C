@@ -1,6 +1,9 @@
 #ifndef MACRO_G4SETUPEICDETECTOR_C
 #define MACRO_G4SETUPEICDETECTOR_C
 
+#include <G4_BMMG.C>
+#include <G4_TRD.C>
+
 #include <GlobalVariables.C>
 
 #include <G4_BlackHole.C>
@@ -106,6 +109,7 @@ void G4Init()
   if (Enable::HCALOUT) HCalOuterInit();
   if (Enable::DIRC) DIRCInit();
   if (Enable::BTOF) BToFInit();
+  if (Enable::BMMG) BMMGInit();
 
   //Forward
   if (Enable::FGEM) FGEM_Init();
@@ -114,7 +118,8 @@ void G4Init()
   if (Enable::FHCAL) FHCALInit();
   if (Enable::LFHCAL) LFHCALInit();
   if (Enable::RICH) RICHInit();
- 
+  if (Enable::TRD) TRDInit();
+
   //Backward
   if (Enable::EGEM) EGEM_Init();
   if (Enable::EEMC) EEMCInit();
@@ -203,6 +208,7 @@ int G4Setup()
   if (Enable::HCALOUT) radius = HCalOuter(g4Reco, radius, 4);
   if (Enable::DIRC) DIRCSetup(g4Reco);
   if (Enable::BTOF) BToFSetup(g4Reco);
+  if (Enable::BMMG) BMMGSetup(g4Reco);
 
   //Forward
   if (Enable::FGEM) FGEMSetup(g4Reco);
@@ -212,6 +218,7 @@ int G4Setup()
   if (Enable::FHCAL) FHCALSetup(g4Reco);
   if (Enable::LFHCAL) LFHCALSetup(g4Reco);
   if (Enable::RICH) RICHSetup(g4Reco);
+  if (Enable::TRD) TRDSetup(g4Reco);
 
   //Backward
   if (Enable::ETTL) ETTLSetup(g4Reco);
