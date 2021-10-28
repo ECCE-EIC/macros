@@ -291,7 +291,13 @@ int Fun4All_G4_EICDetector(
   G4TTL::SETTING::optionCEMC = false;
   G4TTL::SETTING::optionGeo = 1;
 
-  Enable::BTOF = false; // mRPC ToF
+  Enable::BTOF = false; // mRPC ToF mid rapidity
+  //Electron end cap mRPC ToF
+  Enable::ETOF = true;
+  Enable::ETOF_GAS= true;
+  //Hadron end cap mRPC ToF
+   Enable::HTOF = true;
+  Enable::HTOF_GAS= true;
 
   Enable::TRACKING = true;
   Enable::TRACKING_EVAL = Enable::TRACKING && true;
