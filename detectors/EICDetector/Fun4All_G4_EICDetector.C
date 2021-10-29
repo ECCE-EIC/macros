@@ -258,7 +258,7 @@ int Fun4All_G4_EICDetector(
   //======================
   // Global options (enabled for all subsystems - if implemented)
   //  Enable::ABSORBER = true;
-  //  Enable::OVERLAPCHECK = true;
+    Enable::OVERLAPCHECK = true;
   //  Enable::VERBOSITY = 1;
 
   // whether to simulate the Be section of the beam pipe
@@ -284,19 +284,18 @@ int Fun4All_G4_EICDetector(
   // fst
   Enable::FST = true;
 
-  // TOFs
+  //AC-LGAD  TOFs
   Enable::FTTL = true;
   Enable::ETTL = true;
   Enable::CTTL = true;
   G4TTL::SETTING::optionCEMC = false;
   G4TTL::SETTING::optionGeo = 1;
 
-  Enable::BTOF = false; // mRPC ToF mid rapidity
-  //Electron end cap mRPC ToF
-  Enable::ETOF = true;
+  //mRPC TOFs
+  Enable::BTOF = false;
+  Enable::ETOF = false;
+  Enable::HTOF = false;
   Enable::ETOF_GAS= true;
-  //Hadron end cap mRPC ToF
-   Enable::HTOF = true;
   Enable::HTOF_GAS= true;
 
   Enable::TRACKING = true;
