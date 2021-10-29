@@ -292,11 +292,14 @@ int Fun4All_G4_EICDetector(
   G4TTL::SETTING::optionGeo = 1;
 
   //mRPC TOFs
-  Enable::BTOF = false;
+  Enable::BTOF = true;
   Enable::ETOF = false;
   Enable::HTOF = false;
-  Enable::ETOF_GAS= true;
-  Enable::HTOF_GAS= true;
+  Enable::ETOF_GAS = Enable::ETOF && true;
+  Enable::HTOF_GAS = Enable::HTOF && true;
+  if (Enable::BTOF) Enable::CTTL = false;
+  if (Enable::ETOF) Enable::ETTL = false;
+  if (Enable::HTOF) Enable::FTTL = false;
 
   Enable::TRACKING = true;
   Enable::TRACKING_EVAL = Enable::TRACKING && true;

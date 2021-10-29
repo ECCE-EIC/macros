@@ -24,7 +24,7 @@ namespace BTOF
 {
   const int gas_lyr = 6;       // 1/2 of the total number of layers
   const int mrpc_inn_lyr = 5;  // 1/2 of the total number of layers
-  const double rad = 82.0;     // cm
+  const double rad = 76.5;     // cm
   const double zpos = -60.0;   // cm
   const double length = 400.;  //cm
   int subsysID = 0;

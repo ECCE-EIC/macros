@@ -30,7 +30,7 @@ namespace RWELL
   //  const double nom_length[RWELL::n_layer] = {300.0, 300.0};
 
   const int n_layer = 3;  //tracker layers
-  const double nom_radius[RWELL::n_layer] = {44.2, 47.4, 67.4};
+  const double nom_radius[RWELL::n_layer] = {44.2, 47.4, 63.0175};
   const double nom_driftgap[RWELL::n_layer] = {0.4, 0.4, 0.4};
   const double nom_length[RWELL::n_layer] = {140, 150, 280.0};
   int subsysID = 0;
@@ -45,7 +45,7 @@ void RWellInit(int verbosity = 0)
 
 double Build_G4_RWell_Bare(PHG4Reco* g4Reco,
                            double rwellrad = 80.0,
-                           double driftgap = 1.5,
+                           double driftgap = 1.83,
                            double length = 200.0,
                            int index = 0)
 {
