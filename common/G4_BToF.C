@@ -178,7 +178,6 @@ double Build_G4_BTof(PHG4Reco* g4Reco,
   for (int layer = 0; layer < BTOF::gas_lyr; layer++)
   {
     rsum_gasin = rsum_gasin_begin + layer * gas_gap + layer * mrpc_in_thick;
-    // else rsum = rsum_gasin;
     tof_cyl = new PHG4CylinderSubsystem(Form("ToF_gas_%d", layer), BTOF::subsysID);
     tof_cyl->Verbosity(verbosity);
     tof_cyl->set_double_param("radius", rsum_gasin);
@@ -194,11 +193,9 @@ double Build_G4_BTof(PHG4Reco* g4Reco,
     g4Reco->registerSubsystem(tof_cyl);
     if (verbosity > 1) cout << " gas inner" << layer << " :  " << rsum_gasin << endl;
 
-    //for(int layer = 0 ; layer < BTOF::mrpc_inn_lyr ;  layer++ ) {
     if (layer < BTOF::mrpc_inn_lyr)
     {
       rsum_innglass = rsum_gasin_begin + layer * mrpc_in_thick + (layer + 1) * gas_gap;
-      //else rsum_innglass = rsum_innglass;
       tof_cyl = new PHG4CylinderSubsystem(Form("ToF_inner_glass_%d", layer), BTOF::subsysID);
       tof_cyl->Verbosity(verbosity);
       tof_cyl->set_double_param("radius", rsum_innglass);
@@ -214,7 +211,6 @@ double Build_G4_BTof(PHG4Reco* g4Reco,
       g4Reco->registerSubsystem(tof_cyl);
       if (verbosity > 1) cout << " inner mrpc" << layer << " :  " << rsum_innglass << endl;
     }
-    //if (verbosity > 1) cout << " inner mrpc" << layer << " :  " << rsum_innglass << endl;
   }
   rsum = rsum_gasin;
 
@@ -300,7 +296,7 @@ double Build_G4_BTof(PHG4Reco* g4Reco,
   if (verbosity > 1) cout << " mid PCB " << rsum << endl;
 
   //Middle PCB top Cu
-  rsum += pcb_thickness /*cu_thickness*/;
+  rsum += pcb_thickness;
   tof_cyl = new PHG4CylinderSubsystem("ToF_midpcb_tcu", BTOF::subsysID);
   tof_cyl->Verbosity(verbosity);
   tof_cyl->set_double_param("radius", rsum);
@@ -414,7 +410,7 @@ double Build_G4_BTof(PHG4Reco* g4Reco,
   rsum = rsum_gasin_uphalf;
 
   //top outer glass
-  rsum += gas_gap /*mrpc_out_thick*/;
+  rsum += gas_gap;
   tof_cyl = new PHG4CylinderSubsystem("ToF_glass_top", BTOF::subsysID);
   tof_cyl->Verbosity(verbosity);
   tof_cyl->set_double_param("radius", rsum);
@@ -431,7 +427,7 @@ double Build_G4_BTof(PHG4Reco* g4Reco,
   if (verbosity > 1) cout << " top glass  :" << rsum << endl;
 
   // Carbon layer
-  rsum += mrpc_out_thick /*carbon_thickness*/;
+  rsum += mrpc_out_thick;
   tof_cyl = new PHG4CylinderSubsystem("ToF_Carbon_top", BTOF::subsysID);
   tof_cyl->Verbosity(verbosity);
   tof_cyl->set_double_param("radius", rsum);
@@ -448,7 +444,7 @@ double Build_G4_BTof(PHG4Reco* g4Reco,
   if (verbosity > 1) cout << " Carbon :" << rsum << endl;
 
   //Mylar
-  rsum += carbon_thickness /*mylar_thickness*/;
+  rsum += carbon_thickness;
   tof_cyl = new PHG4CylinderSubsystem("ToF_mylar_top", BTOF::subsysID);
   tof_cyl->Verbosity(verbosity);
   tof_cyl->set_double_param("radius", rsum);
@@ -465,7 +461,7 @@ double Build_G4_BTof(PHG4Reco* g4Reco,
   if (verbosity > 1) cout << "Mylar :" << rsum << endl;
 
   //PCB Cu
-  rsum += mylar_thickness /*cu_thickness*/;
+  rsum += mylar_thickness;
   tof_cyl = new PHG4CylinderSubsystem("ToF_toppcb_cu", BTOF::subsysID);
   tof_cyl->Verbosity(verbosity);
   tof_cyl->set_double_param("radius", rsum);
@@ -482,7 +478,7 @@ double Build_G4_BTof(PHG4Reco* g4Reco,
   if (verbosity > 1) cout << " PCB cu :" << rsum << endl;
 
   //Top PCB
-  rsum += cu_thickness /* pcb_thickness*/;
+  rsum += cu_thickness;
   tof_cyl = new PHG4CylinderSubsystem("ToF_pcb_top", BTOF::subsysID);
   tof_cyl->Verbosity(verbosity);
   tof_cyl->set_double_param("radius", rsum);
@@ -499,7 +495,7 @@ double Build_G4_BTof(PHG4Reco* g4Reco,
   if (verbosity > 1) cout << " top PCB " << rsum << endl;
 
   //Honeycomb
-  rsum += pcb_thickness /*honeycomb_thickness*/;
+  rsum += pcb_thickness;
   tof_cyl = new PHG4CylinderSubsystem("ToF_honeycomb_top", BTOF::subsysID);
   tof_cyl->Verbosity(verbosity);
   tof_cyl->set_double_param("radius", tof_rad);
