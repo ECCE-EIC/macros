@@ -16,7 +16,7 @@ R__LOAD_LIBRARY(libg4detectors.so)
 namespace Enable
 {
   bool BTOF = false;
-  bool BTOF_OVERLAPCHECK = true;
+  bool BTOF_OVERLAPCHECK = false;
   int BTOF_VERBOSITY = 0;
 }  // namespace Enable
 
@@ -25,8 +25,9 @@ namespace BTOF
   const int gas_lyr = 6;       // 1/2 of the total number of layers
   const int mrpc_inn_lyr = 5;  // 1/2 of the total number of layers
   const double rad = 82.0;     // cm
-  const double zpos = -60.0;     // cm
+  const double zpos = -60.0;   // cm
   const double length = 400.;  //cm
+  int subsysID = 0;
 }  // namespace BTOF
 
 void BToFInit()
@@ -46,7 +47,6 @@ double Build_G4_BTof(PHG4Reco* g4Reco,
 
   gSystem->Load("libfun4all");
   gSystem->Load("libg4detectors.so");
-  gSystem->Load("libg4testbench.so");
   gSystem->Load("libg4trackfastsim.so");
 
   double rsum = 0.0;
@@ -68,96 +68,105 @@ double Build_G4_BTof(PHG4Reco* g4Reco,
   // and the new radiation length will be 1.1X0 (~ 11%).Assuming G4_Si for mRPC is reasonable for the time being
   //-----------------------------------
 
-  PHG4CylinderSubsystem* tof_cyl(nullptr);
+  PHG4CylinderSubsystem* tof_cyl;
 
   //Honeycomb
-  tof_cyl = new PHG4CylinderSubsystem("ToF_honeycomb_bottom", 0);
+  tof_cyl = new PHG4CylinderSubsystem("ToF_honeycomb_bottom", BTOF::subsysID);
+  tof_cyl->Verbosity(verbosity);
   tof_cyl->set_double_param("radius", tof_rad);
   tof_cyl->set_string_param("material", "NOMEX");
   tof_cyl->set_double_param("thickness", honeycomb_thickness);
-  tof_cyl->SetActive(0);
   tof_cyl->set_int_param("lengthviarapidity", 0);
   tof_cyl->set_double_param("place_z", zpos);
   tof_cyl->set_double_param("length", tof_length);
-  tof_cyl->SuperDetector("ToF_honeycomb_bottom");
+  tof_cyl->SuperDetector("bTOF");
   tof_cyl->SetActive(0);
-  g4Reco->registerSubsystem(tof_cyl);
   tof_cyl->OverlapCheck(OverlapCheck);
+  g4Reco->registerSubsystem(tof_cyl);
+  ++BTOF::subsysID;
   if (verbosity > 1) cout << " bottom HC :" << tof_rad << endl;
 
   //PCB
   rsum = tof_rad + honeycomb_thickness;
-  tof_cyl = new PHG4CylinderSubsystem("ToF_pcb_bottom", 0);
+  tof_cyl = new PHG4CylinderSubsystem("ToF_pcb_bottom", BTOF::subsysID);
+  tof_cyl->Verbosity(verbosity);
   tof_cyl->set_double_param("radius", rsum);
   tof_cyl->set_string_param("material", "FR4");
   tof_cyl->set_double_param("thickness", pcb_thickness);
   tof_cyl->set_int_param("lengthviarapidity", 0);
   tof_cyl->set_double_param("place_z", zpos);
   tof_cyl->set_double_param("length", tof_length);
-  tof_cyl->SuperDetector("ToF_pcb_bottom");
+  tof_cyl->SuperDetector("bTOF");
   tof_cyl->SetActive(0);
-  g4Reco->registerSubsystem(tof_cyl);
   tof_cyl->OverlapCheck(OverlapCheck);
+  g4Reco->registerSubsystem(tof_cyl);
+  ++BTOF::subsysID;
   if (verbosity > 1) cout << " bototm PCB " << rsum << endl;
 
   //PCB Cu
   rsum += pcb_thickness;
-  tof_cyl = new PHG4CylinderSubsystem("ToF_bottompcb_cu", 0);
+  tof_cyl = new PHG4CylinderSubsystem("ToF_bottompcb_cu", BTOF::subsysID);
+  tof_cyl->Verbosity(verbosity);
   tof_cyl->set_double_param("radius", rsum);
   tof_cyl->set_string_param("material", "G4_Cu");
   tof_cyl->set_double_param("thickness", cu_thickness);
   tof_cyl->set_int_param("lengthviarapidity", 0);
   tof_cyl->set_double_param("place_z", zpos);
   tof_cyl->set_double_param("length", tof_length);  // Length restricted to active area
-  tof_cyl->SuperDetector("ToF_bottompcb_cu");
+  tof_cyl->SuperDetector("bTOF");
   tof_cyl->SetActive(0);
-  g4Reco->registerSubsystem(tof_cyl);
   tof_cyl->OverlapCheck(OverlapCheck);
+  g4Reco->registerSubsystem(tof_cyl);
+  ++BTOF::subsysID;
   if (verbosity > 1) cout << " PCB Cu :" << rsum << endl;
 
   //Mylar
   rsum += cu_thickness;
-  tof_cyl = new PHG4CylinderSubsystem("ToF_mylar_bottom", 0);
+  tof_cyl = new PHG4CylinderSubsystem("ToF_mylar_bottom", BTOF::subsysID);
+  tof_cyl->Verbosity(verbosity);
   tof_cyl->set_double_param("radius", rsum);
   tof_cyl->set_string_param("material", "G4_MYLAR");
   tof_cyl->set_double_param("thickness", mylar_thickness);
   tof_cyl->set_int_param("lengthviarapidity", 0);
   tof_cyl->set_double_param("place_z", zpos);
   tof_cyl->set_double_param("length", tof_length);
-  tof_cyl->SuperDetector("ToF_mylar_bottom");
+  tof_cyl->SuperDetector("bTOF");
   tof_cyl->SetActive(0);
-  g4Reco->registerSubsystem(tof_cyl);
   tof_cyl->OverlapCheck(OverlapCheck);
+  g4Reco->registerSubsystem(tof_cyl);
+  ++BTOF::subsysID;
   if (verbosity > 1) cout << " Mylar : " << rsum << endl;
 
   //Carbon layer
   rsum += mylar_thickness;
-  tof_cyl = new PHG4CylinderSubsystem("ToF_Carbon_bottom", 0);
+  tof_cyl = new PHG4CylinderSubsystem("ToF_Carbon_bottom", BTOF::subsysID);
   tof_cyl->set_double_param("radius", rsum);
   tof_cyl->set_string_param("material", "G4_C");
   tof_cyl->set_double_param("thickness", carbon_thickness);
   tof_cyl->set_int_param("lengthviarapidity", 0);
   tof_cyl->set_double_param("place_z", zpos);
   tof_cyl->set_double_param("length", tof_length);
-  tof_cyl->SuperDetector("ToF_Carbon_bottom");
   tof_cyl->SetActive(0);
-  g4Reco->registerSubsystem(tof_cyl);
   tof_cyl->OverlapCheck(OverlapCheck);
+  g4Reco->registerSubsystem(tof_cyl);
+  ++BTOF::subsysID;
   if (verbosity > 1) cout << " Carbon :" << rsum << endl;
 
   //Outside Glass layer
   rsum += carbon_thickness;
-  tof_cyl = new PHG4CylinderSubsystem("ToF_glass_bottom", 0);
+  tof_cyl = new PHG4CylinderSubsystem("ToF_glass_bottom", BTOF::subsysID);
+  tof_cyl->Verbosity(verbosity);
   tof_cyl->set_double_param("radius", rsum);
   tof_cyl->set_string_param("material", "G4_Si");
   tof_cyl->set_double_param("thickness", mrpc_out_thick);
   tof_cyl->set_int_param("lengthviarapidity", 0);
   tof_cyl->set_double_param("place_z", zpos);
   tof_cyl->set_double_param("length", tof_length);
-  tof_cyl->SuperDetector("ToF_glass_bottom");
+  tof_cyl->SuperDetector("bTOF");
   tof_cyl->SetActive(0);
-  g4Reco->registerSubsystem(tof_cyl);
   tof_cyl->OverlapCheck(OverlapCheck);
+  ++BTOF::subsysID;
+  g4Reco->registerSubsystem(tof_cyl);
 
   if (verbosity > 1) cout << " Glass outside :" << rsum << endl;
 
@@ -169,177 +178,190 @@ double Build_G4_BTof(PHG4Reco* g4Reco,
   for (int layer = 0; layer < BTOF::gas_lyr; layer++)
   {
     rsum_gasin = rsum_gasin_begin + layer * gas_gap + layer * mrpc_in_thick;
-    // else rsum = rsum_gasin;
-    tof_cyl = new PHG4CylinderSubsystem(Form("ToF_gas_%d", layer), 0);
+    tof_cyl = new PHG4CylinderSubsystem(Form("ToF_gas_%d", layer), BTOF::subsysID);
+    tof_cyl->Verbosity(verbosity);
     tof_cyl->set_double_param("radius", rsum_gasin);
     tof_cyl->set_string_param("material", "G4_Ar");
     tof_cyl->set_double_param("thickness", gas_gap);
     tof_cyl->set_int_param("lengthviarapidity", 0);
     tof_cyl->set_double_param("place_z", zpos);
     tof_cyl->set_double_param("length", tof_length);
-    tof_cyl->SuperDetector(Form("ToF_gas_%d", layer));
+    tof_cyl->SuperDetector("bTOF");
     tof_cyl->SetActive(1);
-    g4Reco->registerSubsystem(tof_cyl);
     tof_cyl->OverlapCheck(OverlapCheck);
+    ++BTOF::subsysID;
+    g4Reco->registerSubsystem(tof_cyl);
     if (verbosity > 1) cout << " gas inner" << layer << " :  " << rsum_gasin << endl;
 
-    //for(int layer = 0 ; layer < BTOF::mrpc_inn_lyr ;  layer++ ) {
     if (layer < BTOF::mrpc_inn_lyr)
     {
       rsum_innglass = rsum_gasin_begin + layer * mrpc_in_thick + (layer + 1) * gas_gap;
-      //else rsum_innglass = rsum_innglass;
-      tof_cyl = new PHG4CylinderSubsystem(Form("ToF_inner_glass_%d", layer), 0);
+      tof_cyl = new PHG4CylinderSubsystem(Form("ToF_inner_glass_%d", layer), BTOF::subsysID);
+      tof_cyl->Verbosity(verbosity);
       tof_cyl->set_double_param("radius", rsum_innglass);
       tof_cyl->set_string_param("material", "G4_Si");
       tof_cyl->set_double_param("thickness", mrpc_in_thick);
       tof_cyl->set_int_param("lengthviarapidity", 0);
       tof_cyl->set_double_param("place_z", zpos);
       tof_cyl->set_double_param("length", tof_length);
-      tof_cyl->SuperDetector(Form("ToF_inner_glass_%d", layer));
+      tof_cyl->SuperDetector("bTOF");
       tof_cyl->SetActive(0);
-      g4Reco->registerSubsystem(tof_cyl);
       tof_cyl->OverlapCheck(OverlapCheck);
+      ++BTOF::subsysID;
+      g4Reco->registerSubsystem(tof_cyl);
       if (verbosity > 1) cout << " inner mrpc" << layer << " :  " << rsum_innglass << endl;
     }
-    //if (verbosity > 1) cout << " inner mrpc" << layer << " :  " << rsum_innglass << endl;
   }
   rsum = rsum_gasin;
 
   //Middle thick  Glass layer
   rsum += gas_gap;
-  tof_cyl = new PHG4CylinderSubsystem("ToF_glass_bot_mid", 0);
+  tof_cyl = new PHG4CylinderSubsystem("ToF_glass_bot_mid", BTOF::subsysID);
+  tof_cyl->Verbosity(verbosity);
   tof_cyl->set_double_param("radius", rsum);
   tof_cyl->set_string_param("material", "G4_Si");
   tof_cyl->set_double_param("thickness", mrpc_out_thick);
   tof_cyl->set_int_param("lengthviarapidity", 0);
   tof_cyl->set_double_param("place_z", zpos);
   tof_cyl->set_double_param("length", tof_length);
-  tof_cyl->SuperDetector("ToF_glass_bot_mid");
+  tof_cyl->SuperDetector("bTOF");
   tof_cyl->SetActive(0);
-  g4Reco->registerSubsystem(tof_cyl);
   tof_cyl->OverlapCheck(OverlapCheck);
+  ++BTOF::subsysID;
+  g4Reco->registerSubsystem(tof_cyl);
   if (verbosity > 1) cout << " mid bottom glass  :" << rsum << endl;
 
   //Middle Carbon layer
   rsum += mrpc_out_thick;
-  tof_cyl = new PHG4CylinderSubsystem("ToF_Carbon_bot_mid", 0);
+  tof_cyl = new PHG4CylinderSubsystem("ToF_Carbon_bot_mid", BTOF::subsysID);
+  tof_cyl->Verbosity(verbosity);
   tof_cyl->set_double_param("radius", rsum);
   tof_cyl->set_string_param("material", "G4_C");
   tof_cyl->set_double_param("thickness", carbon_thickness);
   tof_cyl->set_int_param("lengthviarapidity", 0);
   tof_cyl->set_double_param("place_z", zpos);
   tof_cyl->set_double_param("length", tof_length);
-  tof_cyl->SuperDetector("ToF_Carbon_bot_mid");
+  tof_cyl->SuperDetector("bTOF");
   tof_cyl->SetActive(0);
-  g4Reco->registerSubsystem(tof_cyl);
   tof_cyl->OverlapCheck(OverlapCheck);
+  ++BTOF::subsysID;
+  g4Reco->registerSubsystem(tof_cyl);
   if (verbosity > 1) cout << " mid bottom Carbon :" << rsum << endl;
 
   //Middle mylar layer
 
   rsum += carbon_thickness;
-  tof_cyl = new PHG4CylinderSubsystem("ToF_mylar_bot_mid", 0);
+  tof_cyl = new PHG4CylinderSubsystem("ToF_mylar_bot_mid", BTOF::subsysID);
+  tof_cyl->Verbosity(verbosity);
   tof_cyl->set_double_param("radius", rsum);
   tof_cyl->set_string_param("material", "G4_MYLAR");
   tof_cyl->set_double_param("thickness", mylar_thickness);
   tof_cyl->set_int_param("lengthviarapidity", 0);
   tof_cyl->set_double_param("place_z", zpos);
   tof_cyl->set_double_param("length", tof_length);
-  tof_cyl->SuperDetector("ToF_mylar_bot_mid");
+  tof_cyl->SuperDetector("bTOF");
   tof_cyl->SetActive(0);
-  g4Reco->registerSubsystem(tof_cyl);
   tof_cyl->OverlapCheck(OverlapCheck);
+  ++BTOF::subsysID;
+  g4Reco->registerSubsystem(tof_cyl);
   if (verbosity > 1) cout << " Mid bottom Mylar : " << rsum << endl;
 
   //Middle PCB bottom Cu
   rsum += mylar_thickness /*cu_thickness*/;
-  tof_cyl = new PHG4CylinderSubsystem("ToF_midpcb_cub", 0);
+  tof_cyl = new PHG4CylinderSubsystem("ToF_midpcb_cub", BTOF::subsysID);
   tof_cyl->set_double_param("radius", rsum);
   tof_cyl->set_string_param("material", "G4_Cu");
   tof_cyl->set_double_param("thickness", cu_thickness);
   tof_cyl->set_int_param("lengthviarapidity", 0);
   tof_cyl->set_double_param("place_z", zpos);
   tof_cyl->set_double_param("length", tof_length);  // Length restricted to active area
-  tof_cyl->SuperDetector("ToF_midpcb_cub");
   tof_cyl->SetActive(0);
-  g4Reco->registerSubsystem(tof_cyl);
   tof_cyl->OverlapCheck(OverlapCheck);
+  g4Reco->registerSubsystem(tof_cyl);
   if (verbosity > 1) cout << " mid PCB bottom cu :" << rsum << endl;
 
   //Mid PCB
   rsum += cu_thickness /*pcb_thickness*/;
-  tof_cyl = new PHG4CylinderSubsystem("ToF_pcb_mid", 0);
+  tof_cyl = new PHG4CylinderSubsystem("ToF_pcb_mid", BTOF::subsysID);
   tof_cyl->set_double_param("radius", rsum);
   tof_cyl->set_string_param("material", "FR4");
   tof_cyl->set_double_param("thickness", pcb_thickness);
   tof_cyl->set_int_param("lengthviarapidity", 0);
   tof_cyl->set_double_param("place_z", zpos);
   tof_cyl->set_double_param("length", tof_length);
-  tof_cyl->SuperDetector("ToF_pcb_mid");
   tof_cyl->SetActive(0);
-  g4Reco->registerSubsystem(tof_cyl);
   tof_cyl->OverlapCheck(OverlapCheck);
+  ++BTOF::subsysID;
+  g4Reco->registerSubsystem(tof_cyl);
   if (verbosity > 1) cout << " mid PCB " << rsum << endl;
 
   //Middle PCB top Cu
-  rsum += pcb_thickness /*cu_thickness*/;
-  tof_cyl = new PHG4CylinderSubsystem("ToF_midpcb_tcu", 0);
+  rsum += pcb_thickness;
+  tof_cyl = new PHG4CylinderSubsystem("ToF_midpcb_tcu", BTOF::subsysID);
+  tof_cyl->Verbosity(verbosity);
   tof_cyl->set_double_param("radius", rsum);
   tof_cyl->set_string_param("material", "G4_Cu");
   tof_cyl->set_double_param("thickness", cu_thickness);
   tof_cyl->set_int_param("lengthviarapidity", 0);
   tof_cyl->set_double_param("place_z", zpos);
   tof_cyl->set_double_param("length", tof_length);  // Length restricted to active area
-  tof_cyl->SuperDetector("ToF_midpcb_tcu");
+  tof_cyl->SuperDetector("bTOF");
   tof_cyl->SetActive(0);
-  g4Reco->registerSubsystem(tof_cyl);
   tof_cyl->OverlapCheck(OverlapCheck);
+  ++BTOF::subsysID;
+  g4Reco->registerSubsystem(tof_cyl);
   if (verbosity > 1) cout << " mid PCB top cu :" << rsum << endl;
 
   //Middle top mylar layer
 
   rsum += cu_thickness;
-  tof_cyl = new PHG4CylinderSubsystem("ToF_mylar_topmid", 0);
+  tof_cyl = new PHG4CylinderSubsystem("ToF_mylar_topmid", BTOF::subsysID);
+  tof_cyl->Verbosity(verbosity);
   tof_cyl->set_double_param("radius", rsum);
   tof_cyl->set_string_param("material", "G4_MYLAR");
   tof_cyl->set_double_param("thickness", mylar_thickness);
   tof_cyl->set_int_param("lengthviarapidity", 0);
   tof_cyl->set_double_param("place_z", zpos);
   tof_cyl->set_double_param("length", tof_length);
-  tof_cyl->SuperDetector("ToF_mylar_topmid");
+  tof_cyl->SuperDetector("bTOF");
   tof_cyl->SetActive(0);
-  g4Reco->registerSubsystem(tof_cyl);
   tof_cyl->OverlapCheck(OverlapCheck);
+  ++BTOF::subsysID;
+  g4Reco->registerSubsystem(tof_cyl);
   if (verbosity > 1) cout << " Mid top  Mylar : " << rsum << endl;
 
   //Middle top carbon layer
   rsum += mylar_thickness;
-  tof_cyl = new PHG4CylinderSubsystem("ToF_Carbon_top_mid", 0);
+  tof_cyl = new PHG4CylinderSubsystem("ToF_Carbon_top_mid", BTOF::subsysID);
+  tof_cyl->Verbosity(verbosity);
   tof_cyl->set_double_param("radius", rsum);
   tof_cyl->set_string_param("material", "G4_C");
   tof_cyl->set_double_param("thickness", carbon_thickness);
   tof_cyl->set_int_param("lengthviarapidity", 0);
   tof_cyl->set_double_param("place_z", zpos);
   tof_cyl->set_double_param("length", tof_length);
-  tof_cyl->SuperDetector("ToF_Carbon_top_mid");
+  tof_cyl->SuperDetector("bTOF");
   tof_cyl->SetActive(0);
-  g4Reco->registerSubsystem(tof_cyl);
   tof_cyl->OverlapCheck(OverlapCheck);
+  ++BTOF::subsysID;
+  g4Reco->registerSubsystem(tof_cyl);
   if (verbosity > 1) cout << " mid top Carbon :" << rsum << endl;
 
   //Middle top thick glass
   rsum += carbon_thickness;
-  tof_cyl = new PHG4CylinderSubsystem("ToF_glass_top_mid", 0);
+  tof_cyl = new PHG4CylinderSubsystem("ToF_glass_top_mid", BTOF::subsysID);
+  tof_cyl->Verbosity(verbosity);
   tof_cyl->set_double_param("radius", rsum);
   tof_cyl->set_string_param("material", "G4_Si");
   tof_cyl->set_double_param("thickness", mrpc_out_thick);
   tof_cyl->set_int_param("lengthviarapidity", 0);
   tof_cyl->set_double_param("place_z", zpos);
   tof_cyl->set_double_param("length", tof_length);
-  tof_cyl->SuperDetector("ToF_glass_top_mid");
+  tof_cyl->SuperDetector("bTOF");
   tof_cyl->SetActive(0);
-  g4Reco->registerSubsystem(tof_cyl);
   tof_cyl->OverlapCheck(OverlapCheck);
+  ++BTOF::subsysID;
+  g4Reco->registerSubsystem(tof_cyl);
   if (verbosity > 1) cout << " mid top glass  :" << rsum << endl;
 
   //Upper half gas gaps and mRPCs
@@ -351,116 +373,131 @@ double Build_G4_BTof(PHG4Reco* g4Reco,
   for (int layer = 0; layer < BTOF::gas_lyr; layer++)
   {
     rsum_gasin_uphalf = rsum_gasin_begin_uphalf + layer * gas_gap + layer * mrpc_in_thick;
-    tof_cyl = new PHG4CylinderSubsystem(Form("ToF_gas_%d", layer + 6), 0);  //stupid way to implement indexing of active gas layer for the upper half of ToF
+    tof_cyl = new PHG4CylinderSubsystem(Form("ToF_gas_%d", layer + 6), BTOF::subsysID);  //stupid way to implement indexing of active gas layer for the upper half of ToF
+    tof_cyl->Verbosity(verbosity);
     tof_cyl->set_double_param("radius", rsum_gasin_uphalf);
     tof_cyl->set_string_param("material", "G4_Ar");
     tof_cyl->set_double_param("thickness", gas_gap);
     tof_cyl->set_int_param("lengthviarapidity", 0);
     tof_cyl->set_double_param("place_z", zpos);
     tof_cyl->set_double_param("length", tof_length);
-    tof_cyl->SuperDetector(Form("ToF_gas_%d", layer + 6));
+    tof_cyl->SuperDetector("bTOF");
     tof_cyl->SetActive(1);
-    g4Reco->registerSubsystem(tof_cyl);
     tof_cyl->OverlapCheck(OverlapCheck);
+    ++BTOF::subsysID;
+    g4Reco->registerSubsystem(tof_cyl);
     if (verbosity > 1) cout << " gas inner" << layer << " :  " << rsum_gasin_uphalf << endl;
 
     if (layer < BTOF::mrpc_inn_lyr)
     {
       rsum_innglass_uphalf = rsum_gasin_begin_uphalf + layer * mrpc_in_thick + (layer + 1) * gas_gap;
-      tof_cyl = new PHG4CylinderSubsystem(Form("ToF_inner_up_half_glass_%d", layer), 0);
+      tof_cyl = new PHG4CylinderSubsystem(Form("ToF_inner_up_half_glass_%d", layer), BTOF::subsysID);
+      tof_cyl->Verbosity(verbosity);
       tof_cyl->set_double_param("radius", rsum_innglass_uphalf);
       tof_cyl->set_string_param("material", "G4_Si");
       tof_cyl->set_double_param("thickness", mrpc_in_thick);
       tof_cyl->set_int_param("lengthviarapidity", 0);
       tof_cyl->set_double_param("place_z", zpos);
       tof_cyl->set_double_param("length", tof_length);
-      tof_cyl->SuperDetector(Form("ToF_inner_up_half_glass_%d", layer));
+      tof_cyl->SuperDetector("bTOF");
       tof_cyl->SetActive(0);
-      g4Reco->registerSubsystem(tof_cyl);
       tof_cyl->OverlapCheck(OverlapCheck);
+      ++BTOF::subsysID;
+      g4Reco->registerSubsystem(tof_cyl);
       if (verbosity > 1) cout << " inner mrpc" << layer << " :  " << rsum_innglass_uphalf << endl;
     }
   }
   rsum = rsum_gasin_uphalf;
 
   //top outer glass
-  rsum += gas_gap /*mrpc_out_thick*/;
-  tof_cyl = new PHG4CylinderSubsystem("ToF_glass_top", 0);
+  rsum += gas_gap;
+  tof_cyl = new PHG4CylinderSubsystem("ToF_glass_top", BTOF::subsysID);
+  tof_cyl->Verbosity(verbosity);
   tof_cyl->set_double_param("radius", rsum);
   tof_cyl->set_string_param("material", "G4_Si");
   tof_cyl->set_double_param("thickness", mrpc_out_thick);
   tof_cyl->set_int_param("lengthviarapidity", 0);
   tof_cyl->set_double_param("place_z", zpos);
   tof_cyl->set_double_param("length", tof_length);
-  tof_cyl->SuperDetector("ToF_glass_top");
+  tof_cyl->SuperDetector("bTOF");
   tof_cyl->SetActive(0);
-  g4Reco->registerSubsystem(tof_cyl);
   tof_cyl->OverlapCheck(OverlapCheck);
+  ++BTOF::subsysID;
+  g4Reco->registerSubsystem(tof_cyl);
   if (verbosity > 1) cout << " top glass  :" << rsum << endl;
 
   // Carbon layer
-  rsum += mrpc_out_thick /*carbon_thickness*/;
-  tof_cyl = new PHG4CylinderSubsystem("ToF_Carbon_top", 0);
+  rsum += mrpc_out_thick;
+  tof_cyl = new PHG4CylinderSubsystem("ToF_Carbon_top", BTOF::subsysID);
+  tof_cyl->Verbosity(verbosity);
   tof_cyl->set_double_param("radius", rsum);
   tof_cyl->set_string_param("material", "G4_C");
   tof_cyl->set_double_param("thickness", carbon_thickness);
   tof_cyl->set_int_param("lengthviarapidity", 0);
   tof_cyl->set_double_param("place_z", zpos);
   tof_cyl->set_double_param("length", tof_length);
-  tof_cyl->SuperDetector("ToF_Carbon_top");
+  tof_cyl->SuperDetector("bTOF");
   tof_cyl->SetActive(0);
-  g4Reco->registerSubsystem(tof_cyl);
   tof_cyl->OverlapCheck(OverlapCheck);
+  ++BTOF::subsysID;
+  g4Reco->registerSubsystem(tof_cyl);
   if (verbosity > 1) cout << " Carbon :" << rsum << endl;
 
   //Mylar
-  rsum += carbon_thickness /*mylar_thickness*/;
-  tof_cyl = new PHG4CylinderSubsystem("ToF_mylar_top", 0);
+  rsum += carbon_thickness;
+  tof_cyl = new PHG4CylinderSubsystem("ToF_mylar_top", BTOF::subsysID);
+  tof_cyl->Verbosity(verbosity);
   tof_cyl->set_double_param("radius", rsum);
   tof_cyl->set_string_param("material", "G4_MYLAR");
   tof_cyl->set_double_param("thickness", mylar_thickness);
   tof_cyl->set_int_param("lengthviarapidity", 0);
   tof_cyl->set_double_param("place_z", zpos);
   tof_cyl->set_double_param("length", tof_length);
-  tof_cyl->SuperDetector("ToF_mylar_top");
+  tof_cyl->SuperDetector("bTOF");
   tof_cyl->SetActive(0);
-  g4Reco->registerSubsystem(tof_cyl);
   tof_cyl->OverlapCheck(OverlapCheck);
+  ++BTOF::subsysID;
+  g4Reco->registerSubsystem(tof_cyl);
   if (verbosity > 1) cout << "Mylar :" << rsum << endl;
 
   //PCB Cu
-  rsum += mylar_thickness /*cu_thickness*/;
-  tof_cyl = new PHG4CylinderSubsystem("ToF_toppcb_cu", 0);
+  rsum += mylar_thickness;
+  tof_cyl = new PHG4CylinderSubsystem("ToF_toppcb_cu", BTOF::subsysID);
+  tof_cyl->Verbosity(verbosity);
   tof_cyl->set_double_param("radius", rsum);
   tof_cyl->set_string_param("material", "G4_Cu");
   tof_cyl->set_double_param("thickness", cu_thickness);
   tof_cyl->set_int_param("lengthviarapidity", 0);
   tof_cyl->set_double_param("place_z", zpos);
   tof_cyl->set_double_param("length", tof_length);  // Length restricted to active area
-  tof_cyl->SuperDetector("ToF_toppcb_cu");
+  tof_cyl->SuperDetector("bTOF");
   tof_cyl->SetActive(0);
-  g4Reco->registerSubsystem(tof_cyl);
   tof_cyl->OverlapCheck(OverlapCheck);
+  ++BTOF::subsysID;
+  g4Reco->registerSubsystem(tof_cyl);
   if (verbosity > 1) cout << " PCB cu :" << rsum << endl;
 
   //Top PCB
-  rsum += cu_thickness /* pcb_thickness*/;
-  tof_cyl = new PHG4CylinderSubsystem("ToF_pcb_top", 0);
+  rsum += cu_thickness;
+  tof_cyl = new PHG4CylinderSubsystem("ToF_pcb_top", BTOF::subsysID);
+  tof_cyl->Verbosity(verbosity);
   tof_cyl->set_double_param("radius", rsum);
   tof_cyl->set_string_param("material", "FR4");
   tof_cyl->set_double_param("thickness", pcb_thickness);
   tof_cyl->set_int_param("lengthviarapidity", 0);
   tof_cyl->set_double_param("place_z", zpos);
   tof_cyl->set_double_param("length", tof_length);
-  tof_cyl->SuperDetector("ToF_pcb_top");
+  tof_cyl->SuperDetector("bTOF");
   tof_cyl->SetActive(0);
-  g4Reco->registerSubsystem(tof_cyl);
   tof_cyl->OverlapCheck(OverlapCheck);
+  ++BTOF::subsysID;
+  g4Reco->registerSubsystem(tof_cyl);
   if (verbosity > 1) cout << " top PCB " << rsum << endl;
 
   //Honeycomb
-  rsum += pcb_thickness /*honeycomb_thickness*/;
-  tof_cyl = new PHG4CylinderSubsystem("ToF_honeycomb_top", 0);
+  rsum += pcb_thickness;
+  tof_cyl = new PHG4CylinderSubsystem("ToF_honeycomb_top", BTOF::subsysID);
+  tof_cyl->Verbosity(verbosity);
   tof_cyl->set_double_param("radius", tof_rad);
   tof_cyl->set_string_param("material", "NOMEX");
   tof_cyl->set_double_param("thickness", honeycomb_thickness);
@@ -468,10 +505,11 @@ double Build_G4_BTof(PHG4Reco* g4Reco,
   tof_cyl->set_int_param("lengthviarapidity", 0);
   tof_cyl->set_double_param("place_z", zpos);
   tof_cyl->set_double_param("length", tof_length);
-  tof_cyl->SuperDetector("ToF_honeycomb_top");
+  tof_cyl->SuperDetector("bTOF");
   tof_cyl->SetActive(0);
-  g4Reco->registerSubsystem(tof_cyl);
   tof_cyl->OverlapCheck(OverlapCheck);
+  ++BTOF::subsysID;
+  g4Reco->registerSubsystem(tof_cyl);
   if (verbosity > 1) cout << " Top honeycomb :" << rsum << endl;
 
   if (verbosity > 1) cout << " tof thickness :" << tof_rad << endl;
@@ -503,8 +541,8 @@ double BToFSetup(PHG4Reco* g4Reco)
     */
 
     //Reference plane projection at initial R of ToF
-    TRACKING::FastKalmanFilter->add_cylinder_state(string("G4HIT_") + string(Form("ToF_gas_%d", igap)), 82.0);
-    TRACKING::ProjectionNames.insert(string("G4HIT_") + string(Form("ToF_gas_%d", igap)));
+    TRACKING::FastKalmanFilter->add_cylinder_state(string("G4HIT_") + string(Form("ACTIVEGAS_BTOF_%d", igap)), 82.0);
+    TRACKING::ProjectionNames.insert(string("G4HIT_") + string(Form("ACTIVEGAS_BTOF_%d", igap)));
   }
   return radius;  // cm
 }

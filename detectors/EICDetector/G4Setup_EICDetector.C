@@ -36,6 +36,8 @@
 #include <G4_mRICH.C>
 #include <G4_mRwell_EIC.C>
 #include <G4_BToF.C>
+#include <G4_HToF.C>
+#include <G4_EToF.C>
 
 // these two has to be ordered this way for now.
 #include <G4_hFarFwdBeamLine_EIC.C>
@@ -119,6 +121,7 @@ void G4Init()
   if (Enable::LFHCAL) LFHCALInit();
   if (Enable::RICH) RICHInit();
   if (Enable::TRD) TRDInit();
+  if(Enable::HTOF) HTOFInit();
 
   //Backward
   if (Enable::EGEM) EGEM_Init();
@@ -126,6 +129,8 @@ void G4Init()
   if (Enable::EEMCH) EEMCHInit();
   if (Enable::EHCAL) EHCALInit();
   if (Enable::mRICH) mRICHInit();
+  if(Enable::ETOF) ETOFInit();
+ 
 
   //Combined
   if (Enable::FST) FST_Init();
@@ -219,6 +224,7 @@ int G4Setup()
   if (Enable::LFHCAL) LFHCALSetup(g4Reco);
   if (Enable::RICH) RICHSetup(g4Reco);
   if (Enable::TRD) TRDSetup(g4Reco);
+  if (Enable::HTOF) HTOFSetup(g4Reco);
 
   //Backward
   if (Enable::ETTL) ETTLSetup(g4Reco);
@@ -227,6 +233,7 @@ int G4Setup()
   if (Enable::EEMCH) EEMCHSetup(g4Reco);
   if (Enable::EHCAL) EHCALSetup(g4Reco);
   if (Enable::mRICH) mRICHSetup(g4Reco);
+  if (Enable::ETOF) ETOFSetup(g4Reco);
 
   //----------------------------------------
   // sPHENIX forward flux return door
