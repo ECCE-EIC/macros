@@ -274,7 +274,7 @@ int Fun4All_G4_EICDetector(
 
   // gems
   Enable::EGEM = true;
-  Enable::FGEM = true;
+  // Enable::FGEM = true; // deactivated as it's replaced by a FTTL layer
   // Enable::BGEM = true; // not yet defined in this model
   Enable::RWELL = true;
   // barrel tracker
@@ -289,7 +289,7 @@ int Fun4All_G4_EICDetector(
   Enable::ETTL = true;
   Enable::CTTL = true;
   G4TTL::SETTING::optionCEMC = false;
-  G4TTL::SETTING::optionGeo = 1;
+  G4TTL::SETTING::optionGeo = 7;
 
   //mRPC TOFs
   Enable::BTOF = true;

@@ -32,7 +32,7 @@ void Event_Eval(const std::string &filename)
   if (Enable::TRACKING)
   {
     eval->set_do_TRACKS(true);
-    //eval->set_do_HITS(true);
+    eval->set_do_HITS(true);
     eval->set_do_PROJECTIONS(true);
     if (G4TRACKING::DISPLACED_VERTEX)
       eval->set_do_VERTEX(true);
