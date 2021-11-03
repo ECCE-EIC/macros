@@ -415,6 +415,14 @@ int Fun4All_G4_EICDetector(
   // Enable::B0_DISABLE_HITPLANE = true;
   // Enable::B0_FULLHITPLANE = true;
 
+  // RP
+  // Enable::RP_DISABLE_HITPLANE = true;
+  // Enable::RP_FULLHITPLANE = true;
+
+  // RP after 2nd focus for IP8 only
+  // Enable::RP2nd_DISABLE_HITPLANE = true;
+  // Enable::RP2nd_FULLHITPLANE = true;
+
   // Enabling the event evaluator?
   Enable::EVENT_EVAL = true;
   // EVENT_EVALUATOR::Verbosity = 1;
