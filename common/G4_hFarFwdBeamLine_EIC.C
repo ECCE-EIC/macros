@@ -796,6 +796,17 @@ void hFarFwdDefineDetectorsIP8(PHG4Reco *g4Reco)
 
   if (Enable::RP_DISABLE_HITPLANE)
   {
+    // Circular disk design (16cm in)
+    auto *detRP = new PHG4CylinderSubsystem(Form("rpTruth_%d", i), i);
+    detRP->SuperDetector("rpTruth");
+    detRP->set_double_param("place_x", PosFlip(rp_xCent[i]));
+    detRP->set_double_param("place_y", 0);
+    detRP->set_double_param("place_z", rp_zCent[i] - hFarFwdBeamLine::enclosure_center);
+    detRP->set_double_param("rot_y", AngleFlip(-0.035 * TMath::RadToDeg()));
+    detRP->set_double_param("radius", 5);
+    detRP->set_double_param("thickness", 10);  // 16 cm circulr to cover 25cm x20cm square (IR design)
+    detRP->set_double_param("length", 0.03);
+    detRP->set_string_param("material", "G4_Si");
 
     const double rpCu_zLen = .2; //B0 dead material length
     const double rpSi_zLen = .03; //B0 Si length
@@ -1069,6 +1080,10 @@ void hFarFwdDefineDetectorsIP8(PHG4Reco *g4Reco)
   {
     std::cout << "B0Magnet can be mother = " << hFarFwdBeamLine::B0Magnet->CanBeMotherSubsystem() << std::endl;
   }
+
+  //---------------------------------
+  // B0 implementation
+  // Three choices: 1. Realistic detector; 2. Circulat plane; 3. hit plane with realistic detector goemetry
 
   if (Enable::B0_DISABLE_HITPLANE)
   {
