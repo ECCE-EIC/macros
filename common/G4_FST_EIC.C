@@ -29,7 +29,7 @@ int make_supportCyl(string name, PHG4Reco *g4Reco,
 namespace Enable
 {
   static bool FST = false;
-  bool FST_OVERLAPCHECK = true;
+  bool FST_OVERLAPCHECK = false;
 }  // namespace Enable
 
 namespace G4FST
@@ -153,8 +153,6 @@ int make_LANL_FST_station(string name, PHG4Reco *g4Reco,
   fst->get_geometry().set_N_Sector(1);
   fst->get_geometry().set_material("G4_AIR");
   fst->OverlapCheck(OverlapCheck);  //true);//overlapcheck);
-
-  bool overlaps = fst->CheckOverlap();
 
   const double cm = PHG4Sector::Sector_Geometry::Unit_cm();
   const double mm = .1 * cm;

@@ -106,7 +106,7 @@ namespace Enable
 {
   bool TrackingService = false;
   bool TrackingService_ABSORBER = false;
-  bool TrackingService_OVERLAPCHECK = true;
+  bool TrackingService_OVERLAPCHECK = false;
   int TrackingService_VERBOSITY = 0;
 
 }  // namespace Enable

@@ -158,11 +158,11 @@ int make_GEM_station(string name, PHG4Reco *g4Reco, double zpos, double etamin,
   gem->get_geometry().set_min_polar_edge(PHG4Sector::Sector_Geometry::FlatEdge());
   gem->get_geometry().set_N_Sector(N_Sector);
   gem->get_geometry().set_material("G4_METHANE");
-  gem->OverlapCheck(false);
+  gem->OverlapCheck(Enable::OVERLAPCHECK);
 
   AddLayers_GEMDrift(gem);
   gem->get_geometry().AddLayers_HBD_GEM();
-  gem->OverlapCheck(false);
+  gem->OverlapCheck(Enable::OVERLAPCHECK);
   g4Reco->registerSubsystem(gem);
 
   if (TRACKING::FastKalmanFilter)
