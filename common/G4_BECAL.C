@@ -80,8 +80,12 @@ double BECALSetup(PHG4Reco *g4Reco)
   bool AbsorberActive = Enable::ABSORBER || Enable::BECAL_ABSORBER;
   bool OverlapCheck = Enable::OVERLAPCHECK || Enable::BECAL_OVERLAPCHECK;
 
+  // Update IR of BCAL to R~80cm
+  // From Nathaly Santiesteban:
+  // https://raw.githubusercontent.com/eic/fun4all_eiccalibrations/main/BarrelEcal/mapping/towerMap_BEMC_v002.txt
+  // It uses IR of 80.3.
   ostringstream mapping_becal;
-  mapping_becal << getenv("CALIBRATIONROOT") << "/BarrelEcal/mapping/towerMap_BEMC_v001.txt";
+  mapping_becal << getenv("CALIBRATIONROOT") << "/BarrelEcal/mapping/towerMap_BEMC_v002.txt";
 
   PHG4BarrelEcalSubsystem *becal = new PHG4BarrelEcalSubsystem("BECAL");
   becal->set_string_param("mapping_file", mapping_becal.str());
