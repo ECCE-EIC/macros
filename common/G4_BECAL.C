@@ -48,7 +48,7 @@ namespace G4BECAL
   double minz = -453;
   double maxz = 371;
   double topradius =  138;
-  double radius =  85;
+  double radius =  80;
 
   // this is default set to -1.5<eta<1.24 for 2018 Letter of Intent
   // if the user changes these, the z position of the
