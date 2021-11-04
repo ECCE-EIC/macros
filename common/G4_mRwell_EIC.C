@@ -30,9 +30,13 @@ namespace RWELL
   //  const double nom_length[RWELL::n_layer] = {300.0, 300.0};
 
   const int n_layer = 3;  //tracker layers
-  const double nom_radius[RWELL::n_layer] = {44.2, 47.4, 77.0175};
+  //const double nom_radius[RWELL::n_layer] = {44.2, 47.4, 77.0175};
+  const double nom_radius[RWELL::n_layer] = {33.14, 51., 77.0175};
+  double e_length_uRwell[RWELL::n_layer] =  {70., 115., 290/2.};
+  double h_length_uRwell[RWELL::n_layer] = {70., 115., 290/2.};
   const double nom_driftgap[RWELL::n_layer] = {0.4, 0.4, 0.4};
-  const double nom_length[RWELL::n_layer] = {140, 150, 280.0};
+  //const double nom_length[RWELL::n_layer] = {140, 150, 280.0};
+  const double nom_length[RWELL::n_layer] = {140., 230., 280.0};
   int subsysID = 0;
 }  //namespace RWELL
 
@@ -85,6 +89,7 @@ double Build_G4_RWell_Bare(PHG4Reco* g4Reco,
 
   PHG4CylinderSubsystem* rwell_cyl;
 
+  double Shift = (RWELL::h_length_uRwell[index] - RWELL::e_length_uRwell[index])/2.0;
   // here is our uRwell:
   //Gass layer
   rwell_cyl = new PHG4CylinderSubsystem(Form("RWELL_%d", index), RWELL::subsysID);
@@ -92,6 +97,7 @@ double Build_G4_RWell_Bare(PHG4Reco* g4Reco,
   rwell_cyl->set_string_param("material", "G4_Ar");
   rwell_cyl->set_double_param("thickness", driftgap);
   rwell_cyl->set_int_param("lengthviarapidity", 0);
+  rwell_cyl->set_double_param("place_z", Shift);
   rwell_cyl->set_double_param("length", length);
   rwell_cyl->SuperDetector("RWELL");
   rwell_cyl->SetActive(1);
@@ -104,6 +110,7 @@ double Build_G4_RWell_Bare(PHG4Reco* g4Reco,
   rwell_cyl->set_string_param("material", "G4_KAPTON");
   rwell_cyl->set_double_param("thickness", kapton_thickness);
   rwell_cyl->set_int_param("lengthviarapidity", 0);
+  rwell_cyl->set_double_param("place_z", Shift);
   rwell_cyl->set_double_param("length", length);
   rwell_cyl->SuperDetector("RWELL");
   rwell_cyl->SetActive(0);
@@ -116,6 +123,7 @@ double Build_G4_RWell_Bare(PHG4Reco* g4Reco,
   rwell_cyl->set_string_param("material", "G4_Cu");
   rwell_cyl->set_double_param("thickness", cu_thickness);
   rwell_cyl->set_int_param("lengthviarapidity", 0);
+  rwell_cyl->set_double_param("place_z", Shift);
   rwell_cyl->set_double_param("length", length);
   rwell_cyl->SuperDetector("RWELL");
   rwell_cyl->SetActive(0);
@@ -129,6 +137,7 @@ double Build_G4_RWell_Bare(PHG4Reco* g4Reco,
   rwell_cyl->set_string_param("material", "NOMEX");
   rwell_cyl->set_double_param("thickness", prepreg_thickness);
   rwell_cyl->set_int_param("lengthviarapidity", 0);
+  rwell_cyl->set_double_param("place_z", Shift);
   rwell_cyl->set_double_param("length", length);
   rwell_cyl->SuperDetector("RWELL");
   rwell_cyl->SetActive(0);
@@ -142,6 +151,7 @@ double Build_G4_RWell_Bare(PHG4Reco* g4Reco,
   rwell_cyl->set_string_param("material", "FR4");
   rwell_cyl->set_double_param("thickness", pcb_thickness);
   rwell_cyl->set_int_param("lengthviarapidity", 0);
+  rwell_cyl->set_double_param("place_z", Shift);
   rwell_cyl->set_double_param("length", length);
   rwell_cyl->SuperDetector("RWELL");
   rwell_cyl->SetActive(0);
@@ -191,6 +201,7 @@ double Build_G4_RWell_Sup01(PHG4Reco* g4Reco,
 
   PHG4CylinderSubsystem* rwell_cyl;
 
+  double Shift = (RWELL::h_length_uRwell[index] - RWELL::e_length_uRwell[index])/2.0;
   // here is our uRwell:
   //Gass layer
   rwell_cyl = new PHG4CylinderSubsystem("RWELL", index);
@@ -198,6 +209,7 @@ double Build_G4_RWell_Sup01(PHG4Reco* g4Reco,
   rwell_cyl->set_string_param("material", "G4_METHANE");
   rwell_cyl->set_double_param("thickness", driftgap);
   rwell_cyl->set_int_param("lengthviarapidity", 0);
+  rwell_cyl->set_double_param("place_z", Shift);
   rwell_cyl->set_double_param("length", length);
   //  rwell_cyl->SuperDetector("RWELL"); // breakout RWELL into individual layers
   rwell_cyl->SetActive(1);
@@ -211,6 +223,7 @@ double Build_G4_RWell_Sup01(PHG4Reco* g4Reco,
   rwell_cyl->set_string_param("material", "G4_KAPTON");
   rwell_cyl->set_double_param("thickness", kapton_thickness);
   rwell_cyl->set_int_param("lengthviarapidity", 0);
+  rwell_cyl->set_double_param("place_z", Shift);
   rwell_cyl->set_double_param("length", length);
   rwell_cyl->SuperDetector("RWELL");
   rwell_cyl->SetActive(0);
@@ -224,6 +237,7 @@ double Build_G4_RWell_Sup01(PHG4Reco* g4Reco,
   rwell_cyl->set_string_param("material", "G4_Cu");
   rwell_cyl->set_double_param("thickness", cu_thickness);
   rwell_cyl->set_int_param("lengthviarapidity", 0);
+  rwell_cyl->set_double_param("place_z", Shift);
   rwell_cyl->set_double_param("length", length);
   rwell_cyl->SuperDetector("RWELL");
   rwell_cyl->SetActive(0);
@@ -252,6 +266,7 @@ double Build_G4_RWell_Sup01(PHG4Reco* g4Reco,
   rwell_cyl->set_string_param("material", "FR4");
   rwell_cyl->set_double_param("thickness", pcb_thickness);
   rwell_cyl->set_int_param("lengthviarapidity", 0);
+  rwell_cyl->set_double_param("place_z", Shift);
   rwell_cyl->set_double_param("length", length);
   rwell_cyl->SuperDetector("RWELL");
   rwell_cyl->SetActive(0);
@@ -272,7 +287,7 @@ double Build_G4_RWell_Sup01(PHG4Reco* g4Reco,
   rwell_cyl->set_string_param("material", supMat);
   rwell_cyl->set_double_param("thickness", support_01_thickness);
   rwell_cyl->set_int_param("lengthviarapidity", 0);
-  rwell_cyl->set_double_param("place_z", -length / 2);
+  rwell_cyl->set_double_param("place_z", -length / 2 + Shift + 0.5);
   rwell_cyl->set_double_param("length", support_01_length);
   rwell_cyl->SuperDetector("RWELL");
   rwell_cyl->SetActive(0);
@@ -285,7 +300,7 @@ double Build_G4_RWell_Sup01(PHG4Reco* g4Reco,
   rwell_cyl->set_string_param("material", supMat);
   rwell_cyl->set_double_param("thickness", support_01_thickness);
   rwell_cyl->set_int_param("lengthviarapidity", 0);
-  rwell_cyl->set_double_param("place_z", length / 2);
+  rwell_cyl->set_double_param("place_z", length / 2 + Shift);
   rwell_cyl->set_double_param("length", support_01_length);
   rwell_cyl->SuperDetector("RWELL");
   rwell_cyl->SetActive(0);
@@ -299,7 +314,7 @@ double Build_G4_RWell_Sup01(PHG4Reco* g4Reco,
   rwell_cyl->set_string_param("material", supMat);
   rwell_cyl->set_double_param("thickness", support_02_thickness);
   rwell_cyl->set_int_param("lengthviarapidity", 0);
-  rwell_cyl->set_double_param("place_z", -length / 2 + support_01_length / 2);
+  rwell_cyl->set_double_param("place_z", -length / 2 + support_01_length / 2 + Shift);
   rwell_cyl->set_double_param("length", support_02_length);
   rwell_cyl->SuperDetector("RWELL");
   rwell_cyl->SetActive(0);
@@ -312,7 +327,7 @@ double Build_G4_RWell_Sup01(PHG4Reco* g4Reco,
   rwell_cyl->set_string_param("material", supMat);
   rwell_cyl->set_double_param("thickness", support_02_thickness);
   rwell_cyl->set_int_param("lengthviarapidity", 0);
-  rwell_cyl->set_double_param("place_z", length / 2 - support_01_length / 2);
+  rwell_cyl->set_double_param("place_z", length / 2 + Shift - support_01_length / 2);
   rwell_cyl->set_double_param("length", support_02_length);
   rwell_cyl->SuperDetector("RWELL");
   rwell_cyl->SetActive(0);
@@ -327,7 +342,7 @@ double Build_G4_RWell_Sup01(PHG4Reco* g4Reco,
   rwell_cyl->set_double_param("thickness", support_03_thickness);
   rwell_cyl->set_int_param("lengthviarapidity", 0);
   rwell_cyl->set_double_param("length", support_03_length);
-  rwell_cyl->set_double_param("place_z", -length / 2 + support_01_length / 2);
+  rwell_cyl->set_double_param("place_z", -length / 2 + Shift + support_01_length / 2);
   rwell_cyl->SuperDetector("RWELL");
   rwell_cyl->SetActive(0);
   rwell_cyl->OverlapCheck(OverlapCheck);
@@ -340,7 +355,7 @@ double Build_G4_RWell_Sup01(PHG4Reco* g4Reco,
   rwell_cyl->set_double_param("thickness", support_03_thickness);
   rwell_cyl->set_int_param("lengthviarapidity", 0);
   rwell_cyl->set_double_param("length", support_03_length);
-  rwell_cyl->set_double_param("place_z", length / 2 - support_01_length / 2);
+  rwell_cyl->set_double_param("place_z", length / 2 + Shift - support_01_length / 2);
   rwell_cyl->SuperDetector("RWELL");
   rwell_cyl->SetActive(0);
   rwell_cyl->OverlapCheck(OverlapCheck);

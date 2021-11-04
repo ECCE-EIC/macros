@@ -48,13 +48,13 @@ void BGEM_Init()
 
 void EGEMSetup(PHG4Reco *g4Reco)
 {
-  make_GEM_station("EGEM_0", g4Reco, -120.0, -1.68, -3.5);
+  make_GEM_station("EGEM_0", g4Reco, -121.0, -1.68, -3.7);
   //  make_GEM_station("EGEM_1", g4Reco, -190.0, -1.85, -3.6); // replaced by LGAD-TTL
 }
 
 void FGEMSetup(PHG4Reco *g4Reco, const int N_Sector = 8)
 {
-  make_GEM_station("FGEM_0", g4Reco, 160.0, 1.65, 3.5, N_Sector);
+  make_GEM_station("FGEM_0", g4Reco, 287.0, 1.3, 3.6, N_Sector);
   //  make_GEM_station("FGEM_1", g4Reco, 285.0, 1.2, 3.5, N_Sector);// replaced by LGAD-TTL
 }
 
@@ -158,11 +158,11 @@ int make_GEM_station(string name, PHG4Reco *g4Reco, double zpos, double etamin,
   gem->get_geometry().set_min_polar_edge(PHG4Sector::Sector_Geometry::FlatEdge());
   gem->get_geometry().set_N_Sector(N_Sector);
   gem->get_geometry().set_material("G4_METHANE");
-  gem->OverlapCheck(Enable::OVERLAPCHECK);
+  gem->OverlapCheck(false);
 
   AddLayers_GEMDrift(gem);
   gem->get_geometry().AddLayers_HBD_GEM();
-  gem->OverlapCheck(Enable::OVERLAPCHECK);
+  gem->OverlapCheck(false);
   g4Reco->registerSubsystem(gem);
 
   if (TRACKING::FastKalmanFilter)
@@ -186,3 +186,4 @@ int make_GEM_station(string name, PHG4Reco *g4Reco, double zpos, double etamin,
   return 0;
 }
 #endif
+
