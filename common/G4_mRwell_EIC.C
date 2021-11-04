@@ -30,7 +30,7 @@ namespace RWELL
   //  const double nom_length[RWELL::n_layer] = {300.0, 300.0};
 
   const int n_layer = 3;  //tracker layers
-  const double nom_radius[RWELL::n_layer] = {44.2, 47.4, 63.0175};
+  const double nom_radius[RWELL::n_layer] = {44.2, 47.4, 78};
   const double nom_driftgap[RWELL::n_layer] = {0.4, 0.4, 0.4};
   const double nom_length[RWELL::n_layer] = {140, 150, 280.0};
   int subsysID = 0;
@@ -193,13 +193,13 @@ double Build_G4_RWell_Sup01(PHG4Reco* g4Reco,
 
   // here is our uRwell:
   //Gass layer
-  rwell_cyl = new PHG4CylinderSubsystem(Form("RWELL_%d", index), RWELL::subsysID);
+  rwell_cyl = new PHG4CylinderSubsystem("RWELL", index);
   rwell_cyl->set_double_param("radius", rwellrad);
   rwell_cyl->set_string_param("material", "G4_METHANE");
   rwell_cyl->set_double_param("thickness", driftgap);
   rwell_cyl->set_int_param("lengthviarapidity", 0);
   rwell_cyl->set_double_param("length", length);
-  rwell_cyl->SuperDetector("RWELL");
+  //  rwell_cyl->SuperDetector("RWELL"); // breakout RWELL into individual layers
   rwell_cyl->SetActive(1);
   rwell_cyl->OverlapCheck(OverlapCheck);
   g4Reco->registerSubsystem(rwell_cyl);
@@ -377,9 +377,9 @@ double RWellSetup(PHG4Reco* g4Reco,
                                     ilyr);                      //index
     }
 
-    // sourav: For spatial resolution the mRwell I will use about 55 microns
-    // (usually it is in between 40-60 microns depending on the angle of incidence of
-    // primary tracks when mRwell are used in microTPC mode i.e drift gap of 3-4 mm) .
+//    // sourav: For spatial resolution the mRwell I will use about 55 microns
+//    // (usually it is in between 40-60 microns depending on the angle of incidence of
+//    // primary tracks when mRwell are used in microTPC mode i.e drift gap of 3-4 mm) .
     if (TRACKING::FastKalmanFilter)
       TRACKING::FastKalmanFilter->add_phg4hits(string("G4HIT_") + string(Form("RWELL_%d", ilyr)),  //      const std::string& phg4hitsNames,
                                                PHG4TrackFastSim::Cylinder,                         //      const DETECTOR_TYPE phg4dettype,
