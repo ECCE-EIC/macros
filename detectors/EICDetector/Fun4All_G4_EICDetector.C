@@ -292,7 +292,7 @@ int Fun4All_G4_EICDetector(
   G4TTL::SETTING::optionGeo = 7;
 
   //mRPC TOFs
-  Enable::BTOF = true;
+  Enable::BTOF = false;
   Enable::ETOF = false;
   Enable::HTOF = false;
   Enable::ETOF_GAS = Enable::ETOF && true;
