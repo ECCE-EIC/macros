@@ -217,8 +217,9 @@ int make_forward_station(string name, PHG4Reco *g4Reco,
   
   // always facing the interaction point
   double polar_angle = 0;
-  if (zpos < 0){
-    zpos = -zpos;
+  double place_z(zpos);
+  if (place_z < 0){
+    place_z = -place_z;
     polar_angle = M_PI;
   }
   PHG4TTLSubsystem *ttl;
@@ -227,7 +228,7 @@ int make_forward_station(string name, PHG4Reco *g4Reco,
   ttl->SuperDetector(name);
   ttl->set_double_param("polar_angle", polar_angle);                    //
   ttl->set_int_param("isForward", 1);                    //
-  ttl->set_double_param("place_z", zpos * cm);                    //
+  ttl->set_double_param("place_z", place_z * cm);                    //
   ttl->set_double_param("rMin", rMin * cm);                    //
   ttl->set_double_param("rMax", rMax * cm);                    //
   ttl->set_double_param("offset_x", xoffset * cm);                    //
@@ -249,6 +250,16 @@ int make_forward_station(string name, PHG4Reco *g4Reco,
                                              0);                                //      const float noise
     TRACKING::FastKalmanFilter->add_zplane_state(name, zpos);
     TRACKING::ProjectionNames.insert(name);
+  }
+  if (TRACKING::FastKalmanFilterInnerTrack and zpos>0)
+  {
+    TRACKING::FastKalmanFilterInnerTrack->add_phg4hits(string("G4HIT_") + name,           //      const std::string& phg4hitsNames,
+                                             PHG4TrackFastSim::Vertical_Plane,  //      const DETECTOR_TYPE phg4dettype,
+                                             G4TTL::PositionResolution,           //      const float radres,
+                                             G4TTL::PositionResolution,           //      const float phires,
+                                             tSilicon / sqrt(12.),              //      const float lonres, *ignored in plane detector*
+                                             1,                                 //      const float eff,
+                                             0);                                //      const float noise
   }
 
   return 0;
@@ -324,6 +335,17 @@ int make_forward_station_basic(string name, PHG4Reco *g4Reco,
     TRACKING::FastKalmanFilter->add_zplane_state(name, zpos);
     TRACKING::ProjectionNames.insert(name);
   }
+  if (TRACKING::FastKalmanFilterInnerTrack and zpos>0)
+  {
+    TRACKING::FastKalmanFilterInnerTrack->add_phg4hits(string("G4HIT_") + name,           //      const std::string& phg4hitsNames,
+                                             PHG4TrackFastSim::Vertical_Plane,  //      const DETECTOR_TYPE phg4dettype,
+                                             G4TTL::PositionResolution,           //      const float radres,
+                                             G4TTL::PositionResolution,           //      const float phires,
+                                             tSilicon / sqrt(12.),              //      const float lonres, *ignored in plane detector*
+                                             1,                                 //      const float eff,
+                                             0);                                //      const float noise
+  }
+
   return 0;
 }
 
@@ -361,6 +383,17 @@ int make_barrel_layer(string name, PHG4Reco *g4Reco,
     TRACKING::FastKalmanFilter->add_cylinder_state(name, radius);
 
     TRACKING::ProjectionNames.insert(name);
+  }
+  if (TRACKING::FastKalmanFilterInnerTrack)
+  {
+    TRACKING::FastKalmanFilterInnerTrack->add_phg4hits(string("G4HIT_") + name,     //      const std::string& phg4hitsNames,
+                                             PHG4TrackFastSim::Cylinder,  //      const DETECTOR_TYPE phg4dettype,
+                                             tSilicon / sqrt(12.),        //      const float radres,
+                                             G4TTL::PositionResolution,     //      const float phires,
+                                             G4TTL::PositionResolution,     //      const float lonres,
+                                             1,                           //      const float eff,
+                                             0);                          //      const float noise
+
   }
 
   return 0;
@@ -423,6 +456,17 @@ int make_barrel_layer_basic(string name, PHG4Reco *g4Reco,
     TRACKING::FastKalmanFilter->add_cylinder_state(name, radius);
 
     TRACKING::ProjectionNames.insert(name);
+  }
+  if (TRACKING::FastKalmanFilterInnerTrack)
+  {
+    TRACKING::FastKalmanFilterInnerTrack->add_phg4hits(string("G4HIT_") + name,     //      const std::string& phg4hitsNames,
+                                             PHG4TrackFastSim::Cylinder,  //      const DETECTOR_TYPE phg4dettype,
+                                             tSilicon / sqrt(12.),        //      const float radres,
+                                             G4TTL::PositionResolution,     //      const float phires,
+                                             G4TTL::PositionResolution,     //      const float lonres,
+                                             1,                           //      const float eff,
+                                             0);                          //      const float noise
+
   }
 
   return 0;
