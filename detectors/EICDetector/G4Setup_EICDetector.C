@@ -89,6 +89,36 @@ void G4Init()
     cout << "Can not enable CEMC and BECAL at the same time!" << endl;
     gSystem->Exit(1);
   }
+  if (Enable::BTOF and Enable::CTTL)
+  {
+    cout << "Can not enable BTOF and CTTL at the same time!" << endl;
+    gSystem->Exit(1);
+  }
+  if (Enable::ETOF and Enable::ETTL)
+  {
+    cout << "Can not enable ETOF and ETTL at the same time!" << endl;
+    gSystem->Exit(1);
+  }
+  if (Enable::HTOF and Enable::FTTL)
+  {
+    cout << "Can not enable HTOF and FTTL at the same time!" << endl;
+    gSystem->Exit(1);
+  }
+  if (Enable::BMMG and Enable::DIRC)
+  {
+    cout << "Can not enable BMMG and DIRC at the same time!" << endl;
+    gSystem->Exit(1);
+  }
+  if ((Enable::TRD||Enable::TRD_GAS) and Enable::RICH)
+  {
+    cout << "Can not enable TRD* and RICH at the same time!" << endl;
+    gSystem->Exit(1);
+  }
+  if ((Enable::LFHCAL||Enable::EHCAL) and Enable::PLUGDOOR)
+  {
+    cout << "Can not enable *HCal and PLUGDOOR at the same time!" << endl;
+    gSystem->Exit(1);
+  }
 
   // load detector/material macros and execute Init() function
   if (Enable::PIPE) PipeInit();

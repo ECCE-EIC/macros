@@ -258,7 +258,7 @@ int Fun4All_G4_EICDetector(
   //======================
   // Global options (enabled for all subsystems - if implemented)
   //  Enable::ABSORBER = true;
-    Enable::OVERLAPCHECK = true;
+  //  Enable::OVERLAPCHECK = true;
   //  Enable::VERBOSITY = 1;
 
   // whether to simulate the Be section of the beam pipe
@@ -292,14 +292,11 @@ int Fun4All_G4_EICDetector(
   G4TTL::SETTING::optionGeo = 7;
 
   //mRPC TOFs
-  Enable::BTOF = true;
+  Enable::BTOF = false;
   Enable::ETOF = false;
   Enable::HTOF = false;
   Enable::ETOF_GAS = Enable::ETOF && true;
   Enable::HTOF_GAS = Enable::HTOF && true;
-  if (Enable::BTOF) Enable::CTTL = false;
-  if (Enable::ETOF) Enable::ETTL = false;
-  if (Enable::HTOF) Enable::FTTL = false;
 
   Enable::TRACKING = true;
   Enable::TRACKING_EVAL = Enable::TRACKING && true;
@@ -338,17 +335,17 @@ int Fun4All_G4_EICDetector(
 
   // EICDetector geometry - barrel
   Enable::DIRC = true;
-  Enable::BMMG = true;
-  if (Enable::BMMG) Enable::DIRC = false;
   Enable::DIRC_RECO = Enable::DIRC && true;
+
+  Enable::BMMG = false;
   // Enable::DIRC_VERBOSITY = 2;
 
   // EICDetector geometry - 'hadron' direction
   Enable::RICH = true;
-  Enable::TRD = true;
-  Enable::TRD_GAS = true;
-  if (Enable::TRD||Enable::TRD_GAS) Enable::RICH = false;
   Enable::RICH_RECO = Enable::RICH && true;
+
+  Enable::TRD = false;
+  Enable::TRD_GAS = false;
   // Enable::RICH_VERBOSITY = 2;
 
 
@@ -400,7 +397,7 @@ int Fun4All_G4_EICDetector(
 
   // jet reconstruction
   Enable::FWDJETS = true;
-  Enable::FWDJETS_EVAL = Enable::FWDJETS && true;
+  Enable::FWDJETS_EVAL = Enable::FWDJETS && false;
 
   // new settings using Enable namespace in GlobalVariables.C
   Enable::BLACKHOLE = true;
