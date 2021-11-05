@@ -286,13 +286,14 @@ double TrackingService(PHG4Reco *g4Reco, double radius)
   cones.push_back(new ServiceProperties("HTrackingCone_uRwellToDisk5", CuThickness, AlThickness, WaterThickness, PlasticThickness, CarbonThickness, 0, inner_uRwell_h_length + plateau_length, h_cone_ends, inner_uRwell_radius, disk_cone_radii));
 
   // Cylinder service from Disk 5 to 137 in h direction. This 137 cms is from 2nd campaign and keeping the outer tracker intact.
-  cylinders.push_back(new ServiceProperties("HSidemRWellSupportCyl", CuThickness, AlThickness, WaterThickness, PlasticThickness, CarbonThickness, 0, h_cone_ends, 137., disk_cone_radii, 0));
+  cylinders.push_back(new ServiceProperties("HSidemRWellSupportCyl", CuThickness, AlThickness, WaterThickness, PlasticThickness, CarbonThickness, 0, h_cone_ends, 124., disk_cone_radii, 0));
 
   // Cone service from 137. to FGEM
-  cones.push_back(new ServiceProperties("HTrackingConeForFGEM", CuThickness, AlThickness, WaterThickness, PlasticThickness, CarbonThickness, 0, 137., 157.9, disk_cone_radii, 69.2));
+  //cones.push_back(new ServiceProperties("HTrackingConeForFGEM", CuThickness, AlThickness, WaterThickness, PlasticThickness, CarbonThickness, 0, 137., 157.9, disk_cone_radii, 69.2));
+  cones.push_back(new ServiceProperties("HTrackingConeForFGEM", CuThickness, AlThickness, WaterThickness, PlasticThickness, CarbonThickness, 0, 124., 173, disk_cone_radii, 69.2));
 
   // Supports beyond FGEM
-  cylinders.push_back(new ServiceProperties("HTrackingCylinderService_1", 15, 0, 0.84, 0.56, shellX0, 0, 157.9, 173, 69.2, 0));
+  //cylinders.push_back(new ServiceProperties("HTrackingCylinderService_1", 15, 0, 0.84, 0.56, shellX0, 0, 157.9, 173, 69.2, 0));
   cones.push_back(new ServiceProperties("HTrackingConeService_7", 13, 0, 0.70, 0.48, shellX0, 0, 173, 180, 69.2, 85));
   cones.push_back(new ServiceProperties("HTrackingConeService_8", 13, 0, 0.70, 0.48, shellX0, 0, 180, 195, 85, 100));
 

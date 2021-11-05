@@ -274,7 +274,7 @@ int Fun4All_G4_EICDetector(
 
   // gems
   Enable::EGEM = true;
-  // Enable::FGEM = true; // deactivated as it's replaced by a FTTL layer
+  Enable::FGEM = true; // deactivated as it's replaced by a FTTL layer
   // Enable::BGEM = true; // not yet defined in this model
   Enable::RWELL = true;
   // barrel tracker
@@ -347,7 +347,6 @@ int Fun4All_G4_EICDetector(
   Enable::TRD = false;
   Enable::TRD_GAS = false;
   // Enable::RICH_VERBOSITY = 2;
-
 
   // EICDetector geometry - 'electron' direction
   Enable::mRICH = true;
