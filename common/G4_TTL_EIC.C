@@ -217,8 +217,9 @@ int make_forward_station(string name, PHG4Reco *g4Reco,
   
   // always facing the interaction point
   double polar_angle = 0;
-  if (zpos < 0){
-    zpos = -zpos;
+  double place_z(zpos);
+  if (place_z < 0){
+    place_z = -place_z;
     polar_angle = M_PI;
   }
   PHG4TTLSubsystem *ttl;
@@ -227,7 +228,7 @@ int make_forward_station(string name, PHG4Reco *g4Reco,
   ttl->SuperDetector(name);
   ttl->set_double_param("polar_angle", polar_angle);                    //
   ttl->set_int_param("isForward", 1);                    //
-  ttl->set_double_param("place_z", zpos * cm);                    //
+  ttl->set_double_param("place_z", place_z * cm);                    //
   ttl->set_double_param("rMin", rMin * cm);                    //
   ttl->set_double_param("rMax", rMax * cm);                    //
   ttl->set_double_param("offset_x", xoffset * cm);                    //
