@@ -16,7 +16,7 @@ using namespace std;
 namespace Enable
 {
   bool BARREL = false;
-  bool BARREL_OVERLAP = false;
+  bool BARREL_OVERLAPCHECK = false;
 }  // namespace Enable
 //-----------------------------------------------------------------------------------//
 void BarrelInit()
@@ -73,14 +73,14 @@ void Barrel(PHG4Reco *g4Reco, int det_ver = 3)
   const int nVtxLayers = sizeof(si_vtx_r_pos) / sizeof(*si_vtx_r_pos);
   for (int ilayer = 0; ilayer < nVtxLayers; ilayer++)
   {
-    cyl = new PHG4CylinderSubsystem(Form("SVTX_%d",ilayer), ilayer);
+    cyl = new PHG4CylinderSubsystem("SVTX", ilayer);
     cyl->set_string_param("material", "G4_Si");
     cyl->set_double_param("radius", si_vtx_r_pos[ilayer]);
     cyl->set_double_param("thickness", 0.05 / 100. * 9.37);
     cyl->set_double_param("place_z", 0.);
     cyl->set_double_param("length", 30.);
     cyl->SetActive();
-    cyl->SuperDetector("SVTX");
+//    cyl->SuperDetector("SVTX");  breakout SVTX into individual layers
     cyl->OverlapCheck(OverlapCheck);
     g4Reco->registerSubsystem(cyl);
 
@@ -102,7 +102,7 @@ void Barrel(PHG4Reco *g4Reco, int det_ver = 3)
   {
     //cout << "Radius " << ilayer + 1 << ": " << si_r_pos[ilayer] << "cms \t e-length : " << z_e_length[ilayer] << "cms \t h-length : " << z_h_length[ilayer] << "cms"<< endl;
     //cout << "eslope : " << e_slope1 << " \n hslope : " << h_slope1 << " \n zleft : " << z_e_length[ilayer] << "\n zright : " << z_h_length[ilayer] << " \n radius : " << si_r_pos[ilayer] << endl ;
-    cyl = new PHG4CylinderSubsystem(Form("BARR_%d",ilayer), ilayer);
+    cyl = new PHG4CylinderSubsystem("BARR", ilayer);
     cyl->set_string_param("material", "G4_Si");
     cyl->set_double_param("radius", si_r_pos[ilayer]);
     cyl->set_double_param("thickness", 0.05 / 100. * 9.37);
@@ -110,7 +110,7 @@ void Barrel(PHG4Reco *g4Reco, int det_ver = 3)
     cyl->set_double_param("length", si_z_length[ilayer]);
     cyl->SetActive();
     cyl->OverlapCheck(OverlapCheck);
-    cyl->SuperDetector("BARR");
+//    cyl->SuperDetector("BARR");   breakout BARR into individual layers
     g4Reco->registerSubsystem(cyl);
 
     BarrelFastKalmanFilterConfigBARR(TRACKING::FastKalmanFilter, ilayer, si_r_pos[ilayer],true);
