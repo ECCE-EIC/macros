@@ -166,6 +166,7 @@ int make_GEM_station(string name, PHG4Reco *g4Reco, double zpos, double etamin,
   g4Reco->registerSubsystem(gem);
 
   if (TRACKING::FastKalmanFilter)
+  {
     TRACKING::FastKalmanFilter->add_phg4hits(string("G4HIT_") + name,           //      const std::string& phg4hitsNames,
                                              PHG4TrackFastSim::Vertical_Plane,  //      const DETECTOR_TYPE phg4dettype,
                                              1. / sqrt(12.),                    //      const float radres,
@@ -173,6 +174,10 @@ int make_GEM_station(string name, PHG4Reco *g4Reco, double zpos, double etamin,
                                              100e-4,                            //      const float lonres,
                                              1,                                 //      const float eff,
                                              0);                                //      const float noise
+
+    TRACKING::FastKalmanFilter->add_zplane_state(name, zpos);
+    TRACKING::ProjectionNames.insert(name);
+  }
 
   if (TRACKING::FastKalmanFilterInnerTrack)
     TRACKING::FastKalmanFilterInnerTrack->add_phg4hits(string("G4HIT_") + name,           //      const std::string& phg4hitsNames,

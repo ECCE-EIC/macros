@@ -134,8 +134,8 @@ void TTL_Init()
     // G4TTL::xoffsetFTTLIP6[0] = -2.7;
     // G4TTL::xoffsetFTTLIP8[0] = 3.0;
 
-    // barrel layer at 63cm
-    G4TTL::positionToVtx[1][0] = 63.;
+    // barrel layer at 64cm
+    G4TTL::positionToVtx[1][0] = 64.;
     G4TTL::minExtension[1][0] = 140;
     G4TTL::maxExtension[1][0] = 0;
   }
