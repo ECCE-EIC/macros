@@ -92,9 +92,9 @@ void FSTSetup(PHG4Reco *g4Reco)
   }
 
 
-  const double fwd_z[] = {25, 49,73, 106, 125};
+  const double fwd_z[] = {25, 52, 73, 106, 125};
   double fwd_rmin[] = {3.5, 3.5, 4.5, 5.5, 7.5};
-  double fwd_rmax[] = {18.5, 36.5, 40.5, 41.5, 43.5};
+  double fwd_rmax[] = {18.5, 36.5, 40.5, 41.5, 43.4};
   const int n_fwd_disk = sizeof(fwd_z) / sizeof(*fwd_z);
   for (unsigned int i = 0; i < n_fwd_disk; i++)
   {
