@@ -1,6 +1,9 @@
 #ifndef MACRO_G4SETUPEICDETECTOR_C
 #define MACRO_G4SETUPEICDETECTOR_C
 
+#include <G4_BMMG.C>
+#include <G4_TRD.C>
+
 #include <GlobalVariables.C>
 
 #include <G4_BlackHole.C>
@@ -32,6 +35,9 @@
 #include <G4_dRICH.C>
 #include <G4_mRICH.C>
 #include <G4_mRwell_EIC.C>
+#include <G4_BToF.C>
+#include <G4_HToF.C>
+#include <G4_EToF.C>
 
 // these two has to be ordered this way for now.
 #include <G4_hFarFwdBeamLine_EIC.C>
@@ -83,6 +89,36 @@ void G4Init()
     cout << "Can not enable CEMC and BECAL at the same time!" << endl;
     gSystem->Exit(1);
   }
+  if (Enable::BTOF and Enable::CTTL)
+  {
+    cout << "Can not enable BTOF and CTTL at the same time!" << endl;
+    gSystem->Exit(1);
+  }
+  if (Enable::ETOF and Enable::ETTL)
+  {
+    cout << "Can not enable ETOF and ETTL at the same time!" << endl;
+    gSystem->Exit(1);
+  }
+  if (Enable::HTOF and Enable::FTTL)
+  {
+    cout << "Can not enable HTOF and FTTL at the same time!" << endl;
+    gSystem->Exit(1);
+  }
+  if (Enable::BMMG and Enable::DIRC)
+  {
+    cout << "Can not enable BMMG and DIRC at the same time!" << endl;
+    gSystem->Exit(1);
+  }
+  if ((Enable::TRD||Enable::TRD_GAS) and Enable::RICH)
+  {
+    cout << "Can not enable TRD* and RICH at the same time!" << endl;
+    gSystem->Exit(1);
+  }
+  if ((Enable::LFHCAL||Enable::EHCAL) and Enable::PLUGDOOR)
+  {
+    cout << "Can not enable *HCal and PLUGDOOR at the same time!" << endl;
+    gSystem->Exit(1);
+  }
 
   // load detector/material macros and execute Init() function
   if (Enable::PIPE) PipeInit();
@@ -104,6 +140,8 @@ void G4Init()
   MagnetFieldInit();  // We want the field - even if the magnet volume is disabled
   if (Enable::HCALOUT) HCalOuterInit();
   if (Enable::DIRC) DIRCInit();
+  if (Enable::BTOF) BToFInit();
+  if (Enable::BMMG) BMMGInit();
 
   //Forward
   if (Enable::FGEM) FGEM_Init();
@@ -112,6 +150,8 @@ void G4Init()
   if (Enable::FHCAL) FHCALInit();
   if (Enable::LFHCAL) LFHCALInit();
   if (Enable::RICH) RICHInit();
+  if (Enable::TRD) TRDInit();
+  if(Enable::HTOF) HTOFInit();
 
   //Backward
   if (Enable::EGEM) EGEM_Init();
@@ -119,6 +159,8 @@ void G4Init()
   if (Enable::EEMCH) EEMCHInit();
   if (Enable::EHCAL) EHCALInit();
   if (Enable::mRICH) mRICHInit();
+  if(Enable::ETOF) ETOFInit();
+ 
 
   //Combined
   if (Enable::FST) FST_Init();
@@ -200,6 +242,8 @@ int G4Setup()
   if (Enable::MAGNET) radius = Magnet(g4Reco, radius);
   if (Enable::HCALOUT) radius = HCalOuter(g4Reco, radius, 4);
   if (Enable::DIRC) DIRCSetup(g4Reco);
+  if (Enable::BTOF) BToFSetup(g4Reco);
+  if (Enable::BMMG) BMMGSetup(g4Reco);
 
   //Forward
   if (Enable::FGEM) FGEMSetup(g4Reco);
@@ -209,6 +253,8 @@ int G4Setup()
   if (Enable::FHCAL) FHCALSetup(g4Reco);
   if (Enable::LFHCAL) LFHCALSetup(g4Reco);
   if (Enable::RICH) RICHSetup(g4Reco);
+  if (Enable::TRD) TRDSetup(g4Reco);
+  if (Enable::HTOF) HTOFSetup(g4Reco);
 
   //Backward
   if (Enable::ETTL) ETTLSetup(g4Reco);
@@ -217,6 +263,7 @@ int G4Setup()
   if (Enable::EEMCH) EEMCHSetup(g4Reco);
   if (Enable::EHCAL) EHCALSetup(g4Reco);
   if (Enable::mRICH) mRICHSetup(g4Reco);
+  if (Enable::ETOF) ETOFSetup(g4Reco);
 
   //----------------------------------------
   // sPHENIX forward flux return door
