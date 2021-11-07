@@ -69,7 +69,7 @@ void Barrel(PHG4Reco *g4Reco, int det_ver = 3)
 
   //---------------------------
   // Vertexing
-  double si_vtx_r_pos[] = {3.3, 5.7, 8.4};
+  double si_vtx_r_pos[] = {3.3, 5.7, 8.5};
   const int nVtxLayers = sizeof(si_vtx_r_pos) / sizeof(*si_vtx_r_pos);
   for (int ilayer = 0; ilayer < nVtxLayers; ilayer++)
   {
