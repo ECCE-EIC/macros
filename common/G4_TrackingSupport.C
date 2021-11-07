@@ -295,8 +295,8 @@ double TrackingService(PHG4Reco *g4Reco, double radius)
 
   // Supports beyond FGEM
   //cylinders.push_back(new ServiceProperties("HTrackingCylinderService_1", 15, 0, 0.84, 0.56, shellX0, 0, 157.9, 173, 69.2, 0));
-  cones.push_back(new ServiceProperties("HTrackingConeService_7", 13, 0, 0.70, 0.48, shellX0, 0, 173, 180, 69.2, 85));
-  cones.push_back(new ServiceProperties("HTrackingConeService_8", 13, 0, 0.70, 0.48, shellX0, 0, 180, 195, 85, 100));
+  cones.push_back(new ServiceProperties("HTrackingConeService_7", 13, 0, 0.70, 0.48, shellX0, 0, 173, 173.1, 69.2, 85));
+  cones.push_back(new ServiceProperties("HTrackingConeService_8", 13, 0, 0.70, 0.48, shellX0, 0, 173.1, 195, 85, 100));
 
   cylinders.push_back(new ServiceProperties("EEMCalSupport", 0, 0, 0, 0, 0, 171, -200, -197, 62, 0));
 
