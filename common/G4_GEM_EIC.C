@@ -116,6 +116,7 @@ int make_GEM_station(string name, PHG4Reco *g4Reco, double zpos, double etamin,
   //      << "make_GEM_station - GEM construction with PHG4SectorSubsystem - make_GEM_station_EdgeReadout  of "
   //      << name << endl;
 
+  double zpos_lab(zpos);
   double polar_angle = 0;
 
   if (doTilt)
@@ -165,25 +166,26 @@ int make_GEM_station(string name, PHG4Reco *g4Reco, double zpos, double etamin,
   gem->OverlapCheck(Enable::OVERLAPCHECK);
   g4Reco->registerSubsystem(gem);
 
+  // Following Nov-5 tracking meeting, update to muRwell performance of 55um resolution 2D readout
   if (TRACKING::FastKalmanFilter)
   {
     TRACKING::FastKalmanFilter->add_phg4hits(string("G4HIT_") + name,           //      const std::string& phg4hitsNames,
                                              PHG4TrackFastSim::Vertical_Plane,  //      const DETECTOR_TYPE phg4dettype,
-                                             1. / sqrt(12.),                    //      const float radres,
-                                             50e-4,                             //      const float phires,
+                                             55e-4,                    //      const float radres,
+                                             55e-4,                             //      const float phires,
                                              100e-4,                            //      const float lonres,
                                              1,                                 //      const float eff,
                                              0);                                //      const float noise
 
-    TRACKING::FastKalmanFilter->add_zplane_state(name, zpos);
+    TRACKING::FastKalmanFilter->add_zplane_state(name, zpos_lab);
     TRACKING::ProjectionNames.insert(name);
   }
 
-  if (TRACKING::FastKalmanFilterInnerTrack)
+  if (TRACKING::FastKalmanFilterInnerTrack and zpos_lab<0)
     TRACKING::FastKalmanFilterInnerTrack->add_phg4hits(string("G4HIT_") + name,           //      const std::string& phg4hitsNames,
                                                        PHG4TrackFastSim::Vertical_Plane,  //      const DETECTOR_TYPE phg4dettype,
-                                                       1. / sqrt(12.),                    //      const float radres,
-                                                       50e-4,                             //      const float phires,
+                                                       55e-4,                    //      const float radres,
+                                                       55e-4,                             //      const float phires,
                                                        100e-4,                            //      const float lonres,
                                                        1,                                 //      const float eff,
                                                        0);                                //      const float noise

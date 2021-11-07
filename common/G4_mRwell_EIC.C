@@ -407,7 +407,9 @@ double RWellSetup(PHG4Reco* g4Reco,
       TRACKING::FastKalmanFilter->add_cylinder_state(Form("RWELL_%d", ilyr), RWELL::nom_radius[ilyr]);
       TRACKING::ProjectionNames.insert(Form("RWELL_%d", ilyr));
     }
-    if (TRACKING::FastKalmanFilterInnerTrack)
+
+    // FastKalmanFilterInnerTrack has everything within DIRC
+    if (TRACKING::FastKalmanFilterInnerTrack and RWELL::nom_radius[ilyr] < 70)
       TRACKING::FastKalmanFilterInnerTrack->add_phg4hits(string("G4HIT_") + string(Form("RWELL_%d", ilyr)),  //      const std::string& phg4hitsNames,
                                                PHG4TrackFastSim::Cylinder,                         //      const DETECTOR_TYPE phg4dettype,
                                                1. / sqrt(12.),                                     //      const float radres,
