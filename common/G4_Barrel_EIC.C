@@ -69,7 +69,7 @@ void Barrel(PHG4Reco *g4Reco, int det_ver = 3)
 
   //---------------------------
   // Vertexing
-  double si_vtx_r_pos[] = {3.3, 5.7, 8.1};
+  double si_vtx_r_pos[] = {3.3, 5.7, 8.5};
   const int nVtxLayers = sizeof(si_vtx_r_pos) / sizeof(*si_vtx_r_pos);
   for (int ilayer = 0; ilayer < nVtxLayers; ilayer++)
   {
@@ -91,10 +91,8 @@ void Barrel(PHG4Reco *g4Reco, int det_ver = 3)
   //---------------------------
   // Barrel
 
-  double si_len = 54;
-  double z_e_length[] = {-27, 27.};
-  double z_h_length[] = {-27., 27.};
-  double si_z_length[] = {si_len, si_len};
+  double z_e_length[] = {-27, -27.};
+  double z_h_length[] = {27., 27.};
   double si_r_pos[] = {21, 22.68}; // Modified on 29th Oct to account for new struture design
   const int nTrckLayers = sizeof(si_r_pos) / sizeof(*si_r_pos);
   
@@ -106,8 +104,8 @@ void Barrel(PHG4Reco *g4Reco, int det_ver = 3)
     cyl->set_string_param("material", "G4_Si");
     cyl->set_double_param("radius", si_r_pos[ilayer]);
     cyl->set_double_param("thickness", 0.05 / 100. * 9.37);
-    cyl->set_double_param("place_z", (z_h_length[ilayer] - z_e_length[ilayer])/2);
-    cyl->set_double_param("length", si_z_length[ilayer]);
+    cyl->set_double_param("place_z", (z_h_length[ilayer] + z_e_length[ilayer])/2);
+    cyl->set_double_param("length", (z_h_length[ilayer] - z_e_length[ilayer]));
     cyl->SetActive();
     cyl->OverlapCheck(OverlapCheck);
 //    cyl->SuperDetector("BARR");   breakout BARR into individual layers

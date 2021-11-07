@@ -13,7 +13,7 @@
 
 R__LOAD_LIBRARY(libg4detectors.so)
 
-int make_GEM_station(string name, PHG4Reco *g4Reco, double zpos, double etamin, double etamax, const int N_Sector = 8, double tilt = 0, bool doTilt = false);
+int make_GEM_station(string name, PHG4Reco *g4Reco, double zpos, double etamin, double etamax, const int N_Sector = 16, double tilt = 0, bool doTilt = false);
 void AddLayers_MiniTPCDrift(PHG4SectorSubsystem *gem);
 void AddLayers_GEMDrift(PHG4SectorSubsystem *gem);
 
@@ -48,11 +48,12 @@ void BGEM_Init()
 
 void EGEMSetup(PHG4Reco *g4Reco)
 {
-  make_GEM_station("EGEM_0", g4Reco, -121.0, -1.68, -3.7);
+  make_GEM_station("EGEM_0", g4Reco, -121.0, -1.668, -3.7);
+  //make_GEM_station("EGEM_0", g4Reco, -121.0, -1.68, -3.7);
   //  make_GEM_station("EGEM_1", g4Reco, -190.0, -1.85, -3.6); // replaced by LGAD-TTL
 }
 
-void FGEMSetup(PHG4Reco *g4Reco, const int N_Sector = 8)
+void FGEMSetup(PHG4Reco *g4Reco, const int N_Sector = 16)
 {
   make_GEM_station("FGEM_0", g4Reco, 287.0, 1.3, 3.6, N_Sector);
   //  make_GEM_station("FGEM_1", g4Reco, 285.0, 1.2, 3.5, N_Sector);// replaced by LGAD-TTL
@@ -110,7 +111,7 @@ void AddLayers_GEMDrift(PHG4SectorSubsystem *gem)
 }
 
 int make_GEM_station(string name, PHG4Reco *g4Reco, double zpos, double etamin,
-                     double etamax, const int N_Sector = 8, double tilt = 0, bool doTilt = false)
+                     double etamax, const int N_Sector = 16, double tilt = 0, bool doTilt = false)
 {
   //  cout
   //      << "make_GEM_station - GEM construction with PHG4SectorSubsystem - make_GEM_station_EdgeReadout  of "
