@@ -288,8 +288,6 @@ int Fun4All_G4_EICDetector(
   Enable::FTTL = true;
   Enable::ETTL = true;
   Enable::CTTL = true;
-  G4TTL::SETTING::optionCEMC = false;
-  G4TTL::SETTING::optionGeo = 7;
 
   //mRPC TOFs
   Enable::BTOF = false;
@@ -364,7 +362,6 @@ int Fun4All_G4_EICDetector(
   Enable::DRCALO_TOWER = Enable::DRCALO_CELL && true;
   Enable::DRCALO_CLUSTER = Enable::DRCALO_TOWER && true;
   Enable::DRCALO_EVAL = Enable::DRCALO_CLUSTER && false;
-  G4TTL::SETTING::optionDR = 1;
 
   Enable::LFHCAL = true;
   Enable::LFHCAL_ABSORBER = false;
@@ -378,7 +375,6 @@ int Fun4All_G4_EICDetector(
   Enable::EEMCH_TOWER = Enable::EEMCH && true;
   Enable::EEMCH_CLUSTER = Enable::EEMCH_TOWER && true;
   Enable::EEMCH_EVAL = Enable::EEMCH_CLUSTER && true;
-  G4TTL::SETTING::optionEEMCH = Enable::EEMCH && true;
 
   Enable::EHCAL = true;
   Enable::EHCAL_CELL = Enable::EHCAL && true;
