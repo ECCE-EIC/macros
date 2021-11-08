@@ -69,12 +69,9 @@ void FSTSetup(PHG4Reco *g4Reco)
 
 
 
-//  const double bkwd_z[] = {33.2, 58.29, 80.05, 107.4};
-//  double bkwd_rmin[] = {3.3, 3.3, 5.25, 6.4};
-//  double bkwd_rmax[] = {15.3, 27.3, 35.25, 48.4};
-  const double bkwd_z[] = {25, 52, 79, 106};
-  double bkwd_rmin[] = {3.5, 3.5, 4.5, 5.5};
-  double bkwd_rmax[] = {18.5, 36.5, 40.5, 41.5};
+  const double bkwd_z[] = {33.2, 58.29, 80.05, 107.4};
+  double bkwd_rmin[] = {3.3, 3.3, 5.25, 6.4};
+  double bkwd_rmax[] = {15.3, 27.3, 35.25, 48.4};
   const int n_bkwd_disk = sizeof(bkwd_z) / sizeof(*bkwd_z);
   for (unsigned int i = 0; i < n_bkwd_disk; i++)
   {
@@ -92,9 +89,9 @@ void FSTSetup(PHG4Reco *g4Reco)
   }
 
 
-  const double fwd_z[] = {25, 52, 73, 106, 125};
-  double fwd_rmin[] = {3.5, 3.5, 4.5, 5.5, 7.5};
-  double fwd_rmax[] = {18.5, 36.5, 40.5, 41.5, 43.4};
+  const double fwd_z[] = {33.2, 58.29, 79.85, 115, 125};
+  double fwd_rmin[] = {3.3, 3.3, 5.2, 6.5, 7.5};
+  double fwd_rmax[] = {15.3, 27.3, 35.2, 49.5, 49.5};
   const int n_fwd_disk = sizeof(fwd_z) / sizeof(*fwd_z);
   for (unsigned int i = 0; i < n_fwd_disk; i++)
   {
