@@ -39,11 +39,11 @@ namespace G4TTL
   double xoffsetFTTLIP8[3]      = { 8.4, 8.4, 8.4};
   namespace SETTING
   {
-    bool optionCEMC  = true;
+    bool optionCEMC  = false;
     bool optionEEMCH = true;
     bool optionBasicGeo    = false;
     int optionDR    = 0;
-    int optionGeo   = 1;
+    int optionGeo   = 7;
     int optionGran  = 1;
   }  // namespace SETTING
 
