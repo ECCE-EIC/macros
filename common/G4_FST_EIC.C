@@ -52,24 +52,66 @@ void FST_Init()
   }
 }
 //-----------------------------------------------------------------------------------//
-void FSTSetup(PHG4Reco *g4Reco, const double min_eta = 1.245)
+
+/* 
+
+The idea is to calculate all the rmax rmin based on z and theta1 and theta2 in a python script (obj_fun.py)
+Once calculated just pass the disk dimensions into this script
+
+*/
+
+void FSTSetup(PHG4Reco *g4Reco)
 {
   const double cm = PHG4Sector::Sector_Geometry::Unit_cm();
   const double mm = .1 * cm;
   const double um = 1e-3 * mm;
+  //const double max_radius = 50.;
 
-  //Design from Xuan Li @LANL
-  make_LANL_FST_station("FST_0", g4Reco, 35, 4, 22, 35 * um, 10e-4);  //cm
-  make_LANL_FST_station("FST_1", g4Reco, 57.5, 4.5, 42, 35 * um, 10e-4);
-  make_LANL_FST_station("FST_2", g4Reco, 80, 6, 43.5, 35 * um, 10e-4);
-  make_LANL_FST_station("FST_3", g4Reco, 115, 9.3, 46.8, 35 * um, 10e-4);
-  make_LANL_FST_station("FST_4", g4Reco, 125, 9.6, 47.1, 35 * um, 10e-4);
 
-  //mirror for e-going FST, after update with new e-spectrometer 
-  make_LANL_FST_station("EFST_0", g4Reco, -35, 4, 22, 35 * um, 10e-4);  //cm
-  make_LANL_FST_station("EFST_1", g4Reco, -57.5, 4.5, 42, 35 * um, 10e-4);
-  make_LANL_FST_station("EFST_2", g4Reco, -80, 6, 43.5, 35 * um, 10e-4);
-  make_LANL_FST_station("EFST_3", g4Reco, -107.1, 9.3, 46.8, 35 * um, 10e-4);
+
+//  const double bkwd_z[] = {33.2, 58.29, 80.05, 107.4};
+//  double bkwd_rmin[] = {3.3, 3.3, 5.25, 6.4};
+//  double bkwd_rmax[] = {15.3, 27.3, 35.25, 48.4};
+  const double bkwd_z[] = {25, 52, 79, 106};
+  double bkwd_rmin[] = {3.5, 3.5, 4.5, 5.5};
+  double bkwd_rmax[] = {18.5, 36.5, 40.5, 41.5};
+  const int n_bkwd_disk = sizeof(bkwd_z) / sizeof(*bkwd_z);
+  for (unsigned int i = 0; i < n_bkwd_disk; i++)
+  {
+/*
+    // Below was made to auto calculate the min and max Radius
+    if(bkwd_z[i] < uRwell1_e_length) bkwd_rmax[i] = std::min(max_radius, e_slope1*bkwd_z[i] + e_intercept1) - 0.5;
+    else if (bkwd_z[i] >= uRwell1_e_length && bkwd_z[i] <= (uRwell1_e_length + uRwell_plateau_length)){bkwd_rmax[i] = uRwell1_radius - 1.5;}
+    else if(bkwd_z[i] > (uRwell1_e_length + uRwell_plateau_length)){bkwd_rmax[i] = std::min(max_radius, e_slope2*bkwd_z[i] + e_intercept2) - 0.5;}
+    else {cout << "Cannot calculate the RMax exiting" << endl; gSystem->Exit(0); }
+
+    if(bkwd_z[i]>79.8 && bkwd_z[i]>0) bkwd_rmin[i] = (0.0521*bkwd_z[i] + 1.0);
+    else bkwd_rmin[i] = 3.3;
+*/  
+    make_LANL_FST_station(Form("EST_%i", i), g4Reco, -1*bkwd_z[i], bkwd_rmin[i], bkwd_rmax[i], 35 * um, 10e-4);  //cm
+  }
+
+
+  const double fwd_z[] = {25, 52, 73, 106, 125};
+  double fwd_rmin[] = {3.5, 3.5, 4.5, 5.5, 7.5};
+  double fwd_rmax[] = {18.5, 36.5, 40.5, 41.5, 43.4};
+  const int n_fwd_disk = sizeof(fwd_z) / sizeof(*fwd_z);
+  for (unsigned int i = 0; i < n_fwd_disk; i++)
+  {
+
+/*
+    if(fwd_z[i] < uRwell1_h_length) fwd_rmax[i] = std::min(max_radius, h_slope1*fwd_z[i] + h_intercept1) - 0.5;
+    else if (fwd_z[i] >= uRwell1_h_length && fwd_z[i] <= (uRwell1_h_length + uRwell_plateau_length)){fwd_rmax[i] = uRwell1_radius - 1.5;}
+    //else if(fwd_z[i] > (uRwell1_h_length + uRwell_plateau_length)){fwd_rmax[i] = std::min(max_radius, h_slope2*fwd_z[i] + h_intercept2) - 0.5;}
+    else if(fwd_z[i] > (uRwell1_h_length + uRwell_plateau_length) && fwd_z[i] <= 130.){ fwd_rmax[i] = std::min(max_radius, h_slope2*fwd_z[i] + h_intercept2) - 0.5;}
+    //else if(fwd_z[i] > 113.){fwd_rmax[i] = h_slope2*(fwd_z[i] + 5.) + h_intercept2 - 0.25;}
+    else {cout << "Cannot calculate the RMax exiting" << endl; gSystem->Exit(0); }
+
+    if(fwd_z[i]>66.8 && fwd_z[i]>0) fwd_rmin[i] = (0.0521*fwd_z[i] + 1.0);
+    else fwd_rmin[i] = 3.3;
+*/
+    make_LANL_FST_station(Form("FST_%i", i), g4Reco, fwd_z[i], fwd_rmin[i], fwd_rmax[i], 35 * um, 10e-4);  //cm
+  }
 
   if (G4FST::SETTING::SUPPORTCYL)
   {
@@ -137,21 +179,21 @@ int make_LANL_FST_station(string name, PHG4Reco *g4Reco,
                                              pitch / sqrt(12.),                 //      const float radres,
                                              pitch / sqrt(12.),                 //      const float phires,
                                              50e-4 / sqrt(12.),                 //      const float lonres, *ignored in plane detector*
-                                             1,                                 //      const float eff,
+                                             0.9,                                 //      const float eff,
                                              0);                                //      const float noise
     TRACKING::FastKalmanFilterInnerTrack->add_phg4hits(string("G4HIT_") + name,           //      const std::string& phg4hitsNames,
                                              PHG4TrackFastSim::Vertical_Plane,  //      const DETECTOR_TYPE phg4dettype,
                                              pitch / sqrt(12.),                 //      const float radres,
                                              pitch / sqrt(12.),                 //      const float phires,
                                              50e-4 / sqrt(12.),                 //      const float lonres, *ignored in plane detector*
-                                             1,                                 //      const float eff,
+                                             0.9,                                 //      const float eff,
                                              0);                                //      const float noise
     TRACKING::FastKalmanFilterSiliconTrack->add_phg4hits(string("G4HIT_") + name,           //      const std::string& phg4hitsNames,
                                              PHG4TrackFastSim::Vertical_Plane,  //      const DETECTOR_TYPE phg4dettype,
                                              pitch / sqrt(12.),                 //      const float radres,
                                              pitch / sqrt(12.),                 //      const float phires,
                                              50e-4 / sqrt(12.),                 //      const float lonres, *ignored in plane detector*
-                                             1,                                 //      const float eff,
+                                             0.9,                                 //      const float eff,
                                              0);                                //      const float noise
   }
   return 0;
@@ -178,3 +220,4 @@ int make_supportCyl(string name, PHG4Reco *g4Reco, double r, double t, double le
   return 0;
 }
 #endif
+
