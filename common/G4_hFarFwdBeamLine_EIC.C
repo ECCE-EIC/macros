@@ -432,7 +432,7 @@ void hFarFwdDefineDetectorsIP6(PHG4Reco *g4Reco)
   }
   else
   {
-  if (Enable::B0_FULLHITPLANE)
+  if (Enable::RP_FULLHITPLANE)
     {
       for (int i = 0; i < rpDetNr; i++)
       {
@@ -920,7 +920,7 @@ void hFarFwdDefineDetectorsIP8(PHG4Reco *g4Reco)
     detRP->SuperDetector("rpTruth");
     detRP->set_double_param("place_x", PosFlip(rp_xCent[0]));
     detRP->set_double_param("place_y", 0);
-    detRP->set_double_param("place_z", rp_zCent[i] - hFarFwdBeamLine::enclosure_center);
+    detRP->set_double_param("place_z", rp_zCent[0] - hFarFwdBeamLine::enclosure_center);
     detRP->set_double_param("rot_y", AngleFlip(-0.035 * TMath::RadToDeg()));
     detRP->set_double_param("radius", 5);
     detRP->set_double_param("thickness", 10);  // 16 cm circulr to cover 25cm x20cm square (IR design)
@@ -984,7 +984,7 @@ void hFarFwdDefineDetectorsIP8(PHG4Reco *g4Reco)
   }
   else
   {
-    if (Enable::B0_FULLHITPLANE)
+    if (Enable::RP_FULLHITPLANE)
     {
       for (int i = 0; i < rpDetNr; i++)
       {
@@ -1124,7 +1124,7 @@ void hFarFwdDefineDetectorsIP8(PHG4Reco *g4Reco)
   }
   else
   {
-    if (Enable::B0_FULLHITPLANE)
+    if (Enable::RP_FULLHITPLANE)
     {
       for (int i = 0; i < rp2ndDetNr; i++)
       {
