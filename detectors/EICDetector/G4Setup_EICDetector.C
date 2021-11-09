@@ -20,6 +20,7 @@
 #include <G4_EHCAL.C>
 #include <G4_FEMC_EIC.C>
 #include <G4_FHCAL.C>
+#include <G4_B0ECAL.C> //for B0 ECAL
 #include <G4_FST_EIC.C>
 #include <G4_GEM_EIC.C>
 #include <G4_HcalIn_ref.C>
@@ -32,6 +33,7 @@
 #include <G4_TTL_EIC.C>
 #include <G4_TrackingSupport.C>
 #include <G4_Tracking_EIC.C>
+//#include <G4_B0Tracking_EIC.C> for B0 Tracking
 #include <G4_dRICH.C>
 #include <G4_mRICH.C>
 #include <G4_mRwell_EIC.C>
@@ -48,6 +50,8 @@
 #include <G4_World.C>
 
 #include <g4detectors/PHG4CylinderSubsystem.h>
+#include <eicg4b0/EICG4B0Subsystem.h>
+#include <eicg4b0ecal/EICG4B0ECALSubsystem.h>
 
 #include <g4eval/PHG4DstCompressReco.h>
 
@@ -89,7 +93,7 @@ void G4Init()
     cout << "Can not enable CEMC and BECAL at the same time!" << endl;
     gSystem->Exit(1);
   }
-  if (Enable::BTOF and Enable::CTTL)
+ if (Enable::BTOF and Enable::CTTL)
   {
     cout << "Can not enable BTOF and CTTL at the same time!" << endl;
     gSystem->Exit(1);
@@ -119,11 +123,11 @@ void G4Init()
     cout << "Can not enable *HCal and PLUGDOOR at the same time!" << endl;
     gSystem->Exit(1);
   }
-
   // load detector/material macros and execute Init() function
   if (Enable::PIPE) PipeInit();
   if (Enable::PLUGDOOR) PlugDoorInit();
   if (Enable::TRACKING) TrackingInit();
+//  if (Enable::B0TRACKING) B0TrackingInit();
 
   //Farforward/backward
   if (Enable::HFARFWD_MAGNETS) hFarBwdBeamLineInit();  //Shouldnt this be far backward enables
@@ -142,7 +146,7 @@ void G4Init()
   if (Enable::DIRC) DIRCInit();
   if (Enable::BTOF) BToFInit();
   if (Enable::BMMG) BMMGInit();
-
+  
   //Forward
   if (Enable::FGEM) FGEM_Init();
   if (Enable::FEMC) FEMCInit();
@@ -151,7 +155,8 @@ void G4Init()
   if (Enable::LFHCAL) LFHCALInit();
   if (Enable::RICH) RICHInit();
   if (Enable::TRD) TRDInit();
-  if(Enable::HTOF) HTOFInit();
+  if (Enable::HTOF) HTOFInit();
+  if (Enable::B0ECAL) B0ECALInit();
 
   //Backward
   if (Enable::EGEM) EGEM_Init();
@@ -160,7 +165,6 @@ void G4Init()
   if (Enable::EHCAL) EHCALInit();
   if (Enable::mRICH) mRICHInit();
   if(Enable::ETOF) ETOFInit();
- 
 
   //Combined
   if (Enable::FST) FST_Init();
@@ -199,7 +203,10 @@ int G4Setup()
   {  // conversion to double fails -> we have a string
 
     if (G4MAGNET::magfield.find("sPHENIX.root") != string::npos)
+//    if (G4MAGNET::magfield.find("B0MagField_all_v2.root") != string::npos) // for B0 Tracking
+//    if (G4MAGNET::magfield.find("/cvmfs/eic.opensciencegrid.org/ecce/gcc-8.3/opt/fun4all/core/calibrations/Field/Map/sphenix3dbigmapxyz.root") != string::npos)
     {
+//	std::cout <<"G4 Setup: Using B0MagField_all_v1.root as 3D fieldMap"<<std::endl;
       g4Reco->set_field_map(G4MAGNET::magfield, PHFieldConfig::Field3DCartesian);
     }
     else
@@ -255,7 +262,7 @@ int G4Setup()
   if (Enable::RICH) RICHSetup(g4Reco);
   if (Enable::TRD) TRDSetup(g4Reco);
   if (Enable::HTOF) HTOFSetup(g4Reco);
-
+  
   //Backward
   if (Enable::ETTL) ETTLSetup(g4Reco);
   if (Enable::EGEM) EGEMSetup(g4Reco);
@@ -297,7 +304,7 @@ void ShowerCompress()
   //
   //  compress->AddHitContainer("G4HIT_ZDC");
   //  compress->AddHitContainer("G4HIT_RomanPots");
-  //  compress->AddHitContainer("G4HIT_B0detector");
+  compress->AddHitContainer("G4HIT_b0Truth");
   compress->AddHitContainer("G4HIT_FIELDCAGE");
 
   compress->AddHitContainer("G4HIT_CEMC_ELECTRONICS");
@@ -379,6 +386,13 @@ void ShowerCompress()
   compress->AddTowerContainer("TOWER_RAW_EHCAL");
   compress->AddTowerContainer("TOWER_CALIB_EHCAL");
 
+  compress->AddHitContainer("G4HIT_B0ECAL");
+  compress->AddHitContainer("G4HIT_ABSORBER_B0ECAL");
+  compress->AddCellContainer("G4CELL_B0ECAL");
+  compress->AddTowerContainer("TOWER_SIM_B0ECAL");
+  compress->AddTowerContainer("TOWER_RAW_B0ECAL");
+  compress->AddTowerContainer("TOWER_CALIB_B0ECAL");
+
   se->registerSubsystem(compress);
 
   return;
@@ -396,7 +410,7 @@ void DstCompress(Fun4AllDstOutputManager *out)
     //
     //    out->StripNode("G4HIT_ZDC");
     //    out->StripNode("G4HIT_RomanPots");
-    //    out->StripNode("G4HIT_B0detectors");
+    out->StripNode("G4HIT_b0Truth");
     out->StripNode("G4HIT_SVTXSUPPORT");
     out->StripNode("G4HIT_CEMC_ELECTRONICS");
     out->StripNode("G4HIT_CEMC");
@@ -437,6 +451,7 @@ void DstCompress(Fun4AllDstOutputManager *out)
     out->StripNode("G4HIT_EHCAL");
     out->StripNode("G4HIT_ABSORBER_EHCAL");
     out->StripNode("G4CELL_EHCAL");
+    out->StripNode("G4CELL_B0ECAL");
   }
 }
 #endif
