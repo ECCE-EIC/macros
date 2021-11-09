@@ -407,6 +407,13 @@ int Fun4All_G4_EICDetector(
   // Enable::B0_DISABLE_HITPLANE = true;
   // Enable::B0_FULLHITPLANE = true;
 
+  // Enable::B0ECALTOWERS = true;  //To Construct Towers of B0ECal instead of one single volume
+  // Enable::B0ECAL = Enable::B0_DISABLE_HITPLANE && true;
+  // Enable::B0ECAL_CELL = Enable::B0ECAL && true;
+  // Enable::B0ECAL_TOWER = Enable::B0ECAL_CELL && true;
+  // Enable::B0ECAL_CLUSTER = Enable::B0ECAL_TOWER && true;
+  // Enable::B0ECAL_EVAL = Enable::B0ECAL_CLUSTER && true;
+    
   // RP
   // Enable::RP_DISABLE_HITPLANE = true;
   // Enable::RP_FULLHITPLANE = true;
@@ -512,6 +519,9 @@ int Fun4All_G4_EICDetector(
 
   if (Enable::BECAL_TOWER) BECAL_Towers();
   if (Enable::BECAL_CLUSTER) BECAL_Clusters();
+    
+  if (Enable::B0ECAL_TOWER) B0ECAL_Towers(); // For B0Ecal
+  if (Enable::B0ECAL_CLUSTER) B0ECAL_Clusters(); //For B0Ecal
 
   if (Enable::DSTOUT_COMPRESS) ShowerCompress();
 
@@ -578,6 +588,8 @@ int Fun4All_G4_EICDetector(
 
   if (Enable::FFR_EVAL) FFR_Eval(outputroot + "_g4ffr_eval.root");
 
+  if (Enable::B0ECAL_EVAL) B0ECAL_Eval(outputroot + "_g4b0ecal_eval_test.root"); // For B0Ecal
+    
   if (Enable::FWDJETS_EVAL) Jet_FwdEval();
 
   if (Enable::USER) UserAnalysisInit();
