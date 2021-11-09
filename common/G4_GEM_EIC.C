@@ -13,7 +13,7 @@
 
 R__LOAD_LIBRARY(libg4detectors.so)
 
-int make_GEM_station(string name, PHG4Reco *g4Reco, double zpos, double etamin, double etamax, const int N_Sector = 8, double tilt = 0, bool doTilt = false);
+int make_GEM_station(string name, PHG4Reco *g4Reco, double zpos, double etamin, double etamax, const int N_Sector = 16, double tilt = 0, bool doTilt = false);
 void AddLayers_MiniTPCDrift(PHG4SectorSubsystem *gem);
 void AddLayers_GEMDrift(PHG4SectorSubsystem *gem);
 
@@ -48,14 +48,12 @@ void BGEM_Init()
 
 void EGEMSetup(PHG4Reco *g4Reco)
 {
-  make_GEM_station("EGEM_0", g4Reco, -121.0, -1.68, -3.7);
-  //  make_GEM_station("EGEM_1", g4Reco, -190.0, -1.85, -3.6); // replaced by LGAD-TTL
+  make_GEM_station("EGEM_0", g4Reco, -121.0, -1.668, -3.7);
 }
 
-void FGEMSetup(PHG4Reco *g4Reco, const int N_Sector = 8)
+void FGEMSetup(PHG4Reco *g4Reco, const int N_Sector = 16)
 {
   make_GEM_station("FGEM_0", g4Reco, 287.0, 1.3, 3.6, N_Sector);
-  //  make_GEM_station("FGEM_1", g4Reco, 285.0, 1.2, 3.5, N_Sector);// replaced by LGAD-TTL
 }
 
 //! Add drift layers to mini TPC
@@ -110,12 +108,13 @@ void AddLayers_GEMDrift(PHG4SectorSubsystem *gem)
 }
 
 int make_GEM_station(string name, PHG4Reco *g4Reco, double zpos, double etamin,
-                     double etamax, const int N_Sector = 8, double tilt = 0, bool doTilt = false)
+                     double etamax, const int N_Sector = 16, double tilt = 0, bool doTilt = false)
 {
   //  cout
   //      << "make_GEM_station - GEM construction with PHG4SectorSubsystem - make_GEM_station_EdgeReadout  of "
   //      << name << endl;
 
+  double zpos_lab(zpos);
   double polar_angle = 0;
 
   if (doTilt)
@@ -165,20 +164,26 @@ int make_GEM_station(string name, PHG4Reco *g4Reco, double zpos, double etamin,
   gem->OverlapCheck(Enable::OVERLAPCHECK);
   g4Reco->registerSubsystem(gem);
 
+  // Following Nov-5 tracking meeting, update to muRwell performance of 55um resolution 2D readout
   if (TRACKING::FastKalmanFilter)
+  {
     TRACKING::FastKalmanFilter->add_phg4hits(string("G4HIT_") + name,           //      const std::string& phg4hitsNames,
                                              PHG4TrackFastSim::Vertical_Plane,  //      const DETECTOR_TYPE phg4dettype,
-                                             1. / sqrt(12.),                    //      const float radres,
-                                             50e-4,                             //      const float phires,
+                                             55e-4,                    //      const float radres,
+                                             55e-4,                             //      const float phires,
                                              100e-4,                            //      const float lonres,
                                              1,                                 //      const float eff,
                                              0);                                //      const float noise
 
-  if (TRACKING::FastKalmanFilterInnerTrack)
+    TRACKING::FastKalmanFilter->add_zplane_state(name, zpos_lab);
+    TRACKING::ProjectionNames.insert(name);
+  }
+
+  if (TRACKING::FastKalmanFilterInnerTrack and zpos_lab<0)
     TRACKING::FastKalmanFilterInnerTrack->add_phg4hits(string("G4HIT_") + name,           //      const std::string& phg4hitsNames,
                                                        PHG4TrackFastSim::Vertical_Plane,  //      const DETECTOR_TYPE phg4dettype,
-                                                       1. / sqrt(12.),                    //      const float radres,
-                                                       50e-4,                             //      const float phires,
+                                                       55e-4,                    //      const float radres,
+                                                       55e-4,                             //      const float phires,
                                                        100e-4,                            //      const float lonres,
                                                        1,                                 //      const float eff,
                                                        0);                                //      const float noise

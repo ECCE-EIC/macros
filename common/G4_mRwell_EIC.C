@@ -32,11 +32,11 @@ namespace RWELL
   const int n_layer = 3;  //tracker layers
   //const double nom_radius[RWELL::n_layer] = {44.2, 47.4, 77.0175};
   const double nom_radius[RWELL::n_layer] = {33.14, 51., 77.0175};
-  double e_length_uRwell[RWELL::n_layer] =  {70., 115., 290/2.};
-  double h_length_uRwell[RWELL::n_layer] = {70., 115., 290/2.};
+  double e_length_uRwell[RWELL::n_layer] =  {40.08, 106., 197};
+  double h_length_uRwell[RWELL::n_layer] = {e_length_uRwell[0], e_length_uRwell[1], 145};
   const double nom_driftgap[RWELL::n_layer] = {0.4, 0.4, 0.4};
   //const double nom_length[RWELL::n_layer] = {140, 150, 280.0};
-  const double nom_length[RWELL::n_layer] = {140., 230., 280.0};
+  const double nom_length[RWELL::n_layer] = {2*e_length_uRwell[0], 2*e_length_uRwell[1], 342.0};
   int subsysID = 0;
 }  //namespace RWELL
 
@@ -396,6 +396,7 @@ double RWellSetup(PHG4Reco* g4Reco,
 //    // (usually it is in between 40-60 microns depending on the angle of incidence of
 //    // primary tracks when mRwell are used in microTPC mode i.e drift gap of 3-4 mm) .
     if (TRACKING::FastKalmanFilter)
+    {
       TRACKING::FastKalmanFilter->add_phg4hits(string("G4HIT_") + string(Form("RWELL_%d", ilyr)),  //      const std::string& phg4hitsNames,
                                                PHG4TrackFastSim::Cylinder,                         //      const DETECTOR_TYPE phg4dettype,
                                                1. / sqrt(12.),                                     //      const float radres,
@@ -403,7 +404,12 @@ double RWellSetup(PHG4Reco* g4Reco,
                                                55e-4,                                              //      const float lonres,
                                                1,                                                  //      const float eff,
                                                0);                                                 //      const float noise
-    if (TRACKING::FastKalmanFilterInnerTrack)
+      TRACKING::FastKalmanFilter->add_cylinder_state(Form("RWELL_%d", ilyr), RWELL::nom_radius[ilyr]);
+      TRACKING::ProjectionNames.insert(Form("RWELL_%d", ilyr));
+    }
+
+    // FastKalmanFilterInnerTrack has everything within DIRC
+    if (TRACKING::FastKalmanFilterInnerTrack and RWELL::nom_radius[ilyr] < 70)
       TRACKING::FastKalmanFilterInnerTrack->add_phg4hits(string("G4HIT_") + string(Form("RWELL_%d", ilyr)),  //      const std::string& phg4hitsNames,
                                                PHG4TrackFastSim::Cylinder,                         //      const DETECTOR_TYPE phg4dettype,
                                                1. / sqrt(12.),                                     //      const float radres,
