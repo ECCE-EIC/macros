@@ -69,7 +69,7 @@ void Barrel(PHG4Reco *g4Reco, int det_ver = 3)
 
   //---------------------------
   // Vertexing
-  double si_vtx_r_pos[] = {3.3, 5.7, 8.5};
+  double si_vtx_r_pos[] = {3.3, 4.35, 5.4};
   const int nVtxLayers = sizeof(si_vtx_r_pos) / sizeof(*si_vtx_r_pos);
   for (int ilayer = 0; ilayer < nVtxLayers; ilayer++)
   {
@@ -91,8 +91,8 @@ void Barrel(PHG4Reco *g4Reco, int det_ver = 3)
   //---------------------------
   // Barrel
 
-  double z_e_length[] = {-27, -27.};
-  double z_h_length[] = {27., 27.};
+  double z_e_length[] = {-27, -29.0};
+  double z_h_length[] = {27., 29.0};
   double si_r_pos[] = {21, 22.68}; // Modified on 29th Oct to account for new struture design
   const int nTrckLayers = sizeof(si_r_pos) / sizeof(*si_r_pos);
   

@@ -261,16 +261,16 @@ double TrackingService(PHG4Reco *g4Reco, double radius)
   cylinders.push_back(new ServiceProperties("ETrackingCyl_uRWellPlateau", CuThickness, AlThickness, WaterThickness, PlasticThickness, CarbonThickness, 0, -90, -56.08, 41.5, 0));
 
   // Cone service from electron side uRwell1 to vertex support.
-  cones.push_back(new ServiceProperties("ETrackingCone_uRwellToVertex", CuThickness, AlThickness, WaterThickness, PlasticThickness, CarbonThickness, 0, -56.08, -12.16, 41.5, 9.0));
+  cones.push_back(new ServiceProperties("ETrackingCone_uRwellToVertex", CuThickness, AlThickness, WaterThickness, PlasticThickness, CarbonThickness, 0, -56.08, -8.51, 41.5, 6.3));
 
   // Sagitta Cylindrical Support Structure
   cylinders.push_back(new ServiceProperties("BTrackingCyl_Sagitta", 0, 0, 0, 0, 0.1, 0, -30.3, 30.3, 23.50, 0));
 
   // Vertex Cylindrical Support Structure
-  cylinders.push_back(new ServiceProperties("BTrackingCyl_Vertex", 0, 0, 0, 0, shellX0, 0, -12.16, 12.16, 9.0, 0));
+  cylinders.push_back(new ServiceProperties("BTrackingCyl_Vertex", 0, 0, 0, 0, shellX0, 0, -8.51, 8.51, 6.3, 0));
 
   // Cone service in H-region from vertex to inner uRwell
-  cones.push_back(new ServiceProperties("HTrackingCone_VertexTouRwell", CuThickness, AlThickness, WaterThickness, PlasticThickness, CarbonThickness, 0, 12.16, 56.08, 9.0, 41.5));
+  cones.push_back(new ServiceProperties("HTrackingCone_VertexTouRwell", CuThickness, AlThickness, WaterThickness, PlasticThickness, CarbonThickness, 0, 8.51, 56.08, 6.3, 41.5));
 
   // Cylinder service to rest the uRwell in H region Plateau
   cylinders.push_back(new ServiceProperties("HTrackingRWellPlateau", CuThickness, AlThickness, WaterThickness, PlasticThickness, CarbonThickness, 0, 56.08, 103.75, 41.5, 0));
