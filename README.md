@@ -4,6 +4,7 @@
 This is the standard macros respository for [ECCE](https://www.ecce-eic.org/). Following is the 10-min tutorial on using the default macros.
 
 [![Build Status](https://web.sdcc.bnl.gov/jenkins-sphenix/buildStatus/icon?job=sPHENIX/sPHENIX_CoreSoftware_MasterBranch)](https://web.sdcc.bnl.gov/jenkins-sphenix/job/sPHENIX/job/sPHENIX_CoreSoftware_MasterBranch/)
+[![Tutorials](https://img.shields.io/badge/Tutorials-Doc-green.svg)](https://ecce-eic.github.io/)
 [![Doxygen](https://img.shields.io/badge/code%20reference-Doxygen-green.svg)](https://ecce-eic.github.io/doxygen/)
 [![Singularity](https://img.shields.io/badge/container-Singularity%20via%20CVMFS-green.svg)](https://github.com/ECCE-EIC/Singularity)
 
