@@ -69,9 +69,6 @@ void FSTSetup(PHG4Reco *g4Reco)
 
 
 
-//  const double bkwd_z[] = {33.2, 58.29, 80.05, 107.4};
-//  double bkwd_rmin[] = {3.3, 3.3, 5.25, 6.4};
-//  double bkwd_rmax[] = {15.3, 27.3, 35.25, 48.4};
   const double bkwd_z[] = {25, 52, 79, 106};
   double bkwd_rmin[] = {3.5, 3.5, 4.5, 5.5};
   double bkwd_rmax[] = {18.5, 36.5, 40.5, 41.5};

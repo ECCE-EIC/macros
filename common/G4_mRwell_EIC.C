@@ -392,9 +392,9 @@ double RWellSetup(PHG4Reco* g4Reco,
                                     ilyr);                      //index
     }
 
-    // sourav: For spatial resolution the mRwell I will use about 55 microns
-    // (usually it is in between 40-60 microns depending on the angle of incidence of
-    // primary tracks when mRwell are used in microTPC mode i.e drift gap of 3-4 mm) .
+//    // sourav: For spatial resolution the mRwell I will use about 55 microns
+//    // (usually it is in between 40-60 microns depending on the angle of incidence of
+//    // primary tracks when mRwell are used in microTPC mode i.e drift gap of 3-4 mm) .
     if (TRACKING::FastKalmanFilter)
     {
       TRACKING::FastKalmanFilter->add_phg4hits(string("G4HIT_") + string(Form("RWELL_%d", ilyr)),  //      const std::string& phg4hitsNames,

@@ -64,7 +64,6 @@ class ServiceProperties
   const double m_r_south = 0.0;
   const double m_r_north = 0.0;
 };
-//8, 0, 0.42, 0.27, shellX0, 0
 ServiceProperties::ServiceProperties(const string &name,
                                      const double &rad_len_copper,
                                      const double &rad_len_aluminum,
@@ -247,9 +246,6 @@ double TrackingService(PHG4Reco *g4Reco, double radius)
   cylinders.push_back(new ServiceProperties("ETrackingCylinderService_2", 17, 0, 0.56, 0.64, shellX0, 0, -300, -200, 68, 0));
   cylinders.push_back(new ServiceProperties("ETrackingCylinderService_3", 15, 0, 0.56, 0.56, shellX0, 0, -200, -147.47, 68, 0));
 
-  //cones.push_back(new ServiceProperties("ETrackingConeService_2", 13, 0, 0.56, 0.48, shellX0, 0, -152, -132.1, 68, 63.2));
-  //cones.push_back(new ServiceProperties("ETrackingConeService_3", 13, 0, 0.56, 0.48, shellX0, 0, -132.1, -120., 63.2, disk_cone_radii));
-
   /* Support structure thickness*/
 
   double CuThickness = 13.;          // 0.18668 cms
@@ -258,27 +254,23 @@ double TrackingService(PHG4Reco *g4Reco, double radius)
   double PlasticThickness = 0.48;    // 0.241488 cms
   double CarbonThickness = shellX0;  // 0.3 cms
 
-  // Cylinder from end Disk to EGEM
-  //cylinders.push_back(new ServiceProperties("ETrackingCyl_EGEMToDisk4", CuThickness, AlThickness, WaterThickness, PlasticThickness, CarbonThickness, 0, -120.0, -1 * e_cone_ends, disk_cone_radii, 0));
-
   // Cone service from the end Disk to the uRwell1 radius
   cones.push_back(new ServiceProperties("ETrackingCone_Disk4TouRwell", CuThickness, AlThickness, WaterThickness, PlasticThickness, CarbonThickness, 0, -147.47, -90, 68, 41.5));
-  //cones.push_back(new ServiceProperties("ETrackingCone_Disk4TouRwell", CuThickness, AlThickness, WaterThickness, PlasticThickness, CarbonThickness, 0, -1 * e_cone_ends, -1 * inner_uRwell_e_length - plateau_length, disk_cone_radii, inner_uRwell_radius));
 
   // The cylindrical plateau structure for Electron uRwell side.
   cylinders.push_back(new ServiceProperties("ETrackingCyl_uRWellPlateau", CuThickness, AlThickness, WaterThickness, PlasticThickness, CarbonThickness, 0, -90, -56.08, 41.5, 0));
 
   // Cone service from electron side uRwell1 to vertex support.
-  cones.push_back(new ServiceProperties("ETrackingCone_uRwellToVertex", CuThickness, AlThickness, WaterThickness, PlasticThickness, CarbonThickness, 0, -56.08, -12.16, 41.5, 9.0));
+  cones.push_back(new ServiceProperties("ETrackingCone_uRwellToVertex", CuThickness, AlThickness, WaterThickness, PlasticThickness, CarbonThickness, 0, -56.08, -8.51, 41.5, 6.3));
 
   // Sagitta Cylindrical Support Structure
   cylinders.push_back(new ServiceProperties("BTrackingCyl_Sagitta", 0, 0, 0, 0, 0.1, 0, -30.3, 30.3, 23.50, 0));
 
   // Vertex Cylindrical Support Structure
-  cylinders.push_back(new ServiceProperties("BTrackingCyl_Vertex", 0, 0, 0, 0, shellX0, 0, -12.16, 12.16, 9.0, 0));
+  cylinders.push_back(new ServiceProperties("BTrackingCyl_Vertex", 0, 0, 0, 0, shellX0, 0, -8.51, 8.51, 6.3, 0));
 
   // Cone service in H-region from vertex to inner uRwell
-  cones.push_back(new ServiceProperties("HTrackingCone_VertexTouRwell", CuThickness, AlThickness, WaterThickness, PlasticThickness, CarbonThickness, 0, 12.16, 56.08, 9.0, 41.5));
+  cones.push_back(new ServiceProperties("HTrackingCone_VertexTouRwell", CuThickness, AlThickness, WaterThickness, PlasticThickness, CarbonThickness, 0, 8.51, 56.08, 6.3, 41.5));
 
   // Cylinder service to rest the uRwell in H region Plateau
   cylinders.push_back(new ServiceProperties("HTrackingRWellPlateau", CuThickness, AlThickness, WaterThickness, PlasticThickness, CarbonThickness, 0, 56.08, 103.75, 41.5, 0));
@@ -286,15 +278,7 @@ double TrackingService(PHG4Reco *g4Reco, double radius)
   // Cone service from uRwell to Disk 5 in h-region
   cones.push_back(new ServiceProperties("HTrackingCone_uRwellToDisk5", CuThickness, AlThickness, WaterThickness, PlasticThickness, CarbonThickness, 0, 103.75, 173, 41.5, 69.2));
 
-  // Cylinder service from Disk 5 to 137 in h direction. This 137 cms is from 2nd campaign and keeping the outer tracker intact.
-  //cylinders.push_back(new ServiceProperties("HSidemRWellSupportCyl", CuThickness, AlThickness, WaterThickness, PlasticThickness, CarbonThickness, 0, h_cone_ends, 124., disk_cone_radii, 0));
-
-  // Cone service from 137. to FGEM
-  //cones.push_back(new ServiceProperties("HTrackingConeForFGEM", CuThickness, AlThickness, WaterThickness, PlasticThickness, CarbonThickness, 0, 137., 157.9, disk_cone_radii, 69.2));
-  //cones.push_back(new ServiceProperties("HTrackingConeForFGEM", CuThickness, AlThickness, WaterThickness, PlasticThickness, CarbonThickness, 0, 124., 173, disk_cone_radii, 69.2));
-
   // Supports beyond FGEM
-  //cylinders.push_back(new ServiceProperties("HTrackingCylinderService_1", 15, 0, 0.84, 0.56, shellX0, 0, 157.9, 173, 69.2, 0));
   cones.push_back(new ServiceProperties("HTrackingConeService_7", 13, 0, 0.70, 0.48, shellX0, 0, 173, 173.1, 69.2, 85));
   cones.push_back(new ServiceProperties("HTrackingConeService_8", 13, 0, 0.70, 0.48, shellX0, 0, 173.1, 195, 85, 100));
 
