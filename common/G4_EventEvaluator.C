@@ -34,10 +34,8 @@ void Event_Eval(const std::string &filename)
     eval->set_do_TRACKS(true);
     eval->set_do_HITS(true);
     eval->set_do_PROJECTIONS(true);
-    if (G4TRACKING::DISPLACED_VERTEX)
-      eval->set_do_VERTEX(true);
-    if (Enable::DIRC_RECO or Enable::mRICH_RECO or Enable::RICH_RECO)
-      eval->set_do_PID_LogLikelihood(true);
+    if (G4TRACKING::DISPLACED_VERTEX) eval->set_do_VERTEX(true);
+    if (Enable::DIRC_RECO or Enable::mRICH_RECO or Enable::RICH_RECO) eval->set_do_PID_LogLikelihood(true);
   }
   if (Enable::CEMC_CLUSTER) eval->set_do_CEMC(true);
   if (Enable::EEMC_CLUSTER || Enable::EEMCH_CLUSTER) eval->set_do_EEMC(true);
@@ -46,8 +44,8 @@ void Event_Eval(const std::string &filename)
   if (Enable::HCALOUT_CLUSTER) eval->set_do_HCALOUT(true);
   if (Enable::FHCAL_CLUSTER) eval->set_do_FHCAL(true);
   if (Enable::FHCAL_CLUSTER || Enable::FEMC_CLUSTER || Enable::EEMC_CLUSTER) eval->set_do_CLUSTERS(true);
-  if (Enable::DRCALO_CLUSTER) eval->set_do_DRCALO(true);
-  if (Enable::LFHCAL_CLUSTER) eval->set_do_LFHCAL(true);
+  if (Enable::DRCALO) eval->set_do_DRCALO(true);
+  if (Enable::LFHCAL) eval->set_do_LFHCAL(true);
   if (Enable::BECAL) eval->set_do_BECAL(true);
   if (Enable::EHCAL) eval->set_do_EHCAL(true);
 
