@@ -30,6 +30,7 @@ namespace G4TRACKING
   bool PROJECTION_EHCAL = false;
   bool PROJECTION_CEMC = false;
   bool PROJECTION_BECAL = false;
+  bool PROJECTION_HCALIN = false;
   bool PROJECTION_HCALOUT = false;
   bool PROJECTION_FEMC = false;
   bool PROJECTION_FHCAL = false;
@@ -129,6 +130,14 @@ void Tracking_Reco()
   {
     TRACKING::FastKalmanFilter->add_state_name("BECAL");
     TRACKING::ProjectionNames.insert("BECAL");
+  }
+  //-------------------------
+  // HCALIN
+  //-------------------------
+  if (Enable::HCALOUT && G4TRACKING::PROJECTION_HCALIN)
+  {
+    TRACKING::FastKalmanFilter->add_state_name("HCALIN");
+    TRACKING::ProjectionNames.insert("HCALIN");
   }
   //-------------------------
   // HCALOUT
