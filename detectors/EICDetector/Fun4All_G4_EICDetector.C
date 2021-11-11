@@ -304,6 +304,7 @@ int Fun4All_G4_EICDetector(
   G4TRACKING::PROJECTION_BECAL = true;
   G4TRACKING::PROJECTION_EHCAL = true;
   G4TRACKING::PROJECTION_CEMC = true;
+  G4TRACKING::PROJECTION_HCALIN = true;
   G4TRACKING::PROJECTION_HCALOUT = true;
   G4TRACKING::PROJECTION_FEMC = true;
   G4TRACKING::PROJECTION_FHCAL = true;
@@ -594,7 +595,7 @@ int Fun4All_G4_EICDetector(
 
   if (Enable::B0ECAL_EVAL) B0ECAL_Eval(outputroot + "_g4b0ecal_eval_test.root"); // For B0Ecal
     
-  if (Enable::FWDJETS_EVAL) Jet_FwdEval();
+  //if (Enable::FWDJETS_EVAL) Jet_FwdEval();
 
   if (Enable::USER) UserAnalysisInit();
 
