@@ -134,7 +134,7 @@ void Tracking_Reco()
   //-------------------------
   // HCALIN
   //-------------------------
-  if (Enable::HCALOUT && G4TRACKING::PROJECTION_HCALIN)
+  if (Enable::HCALINT && G4TRACKING::PROJECTION_HCALIN)
   {
     TRACKING::FastKalmanFilter->add_state_name("HCALIN");
     TRACKING::ProjectionNames.insert("HCALIN");
