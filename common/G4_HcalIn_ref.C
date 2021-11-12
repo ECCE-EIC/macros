@@ -134,7 +134,7 @@ double HCalInner(PHG4Reco *g4Reco,
 
   hcal->set_double_param("outer_radius", 138.5);
   hcal->set_double_param("scinti_outer_radius", 138.0);
-  hcal->set_double_param("inner_radius", 135.0);
+  hcal->set_double_param("inner_radius", 134.0);
   hcal->set_double_param("tilt_angle", 36.15);
   hcal->set_double_param("size_z", length);
   hcal->set_int_param("n_scinti_tiles", 0);

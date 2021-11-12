@@ -274,7 +274,7 @@ int Fun4All_G4_EICDetector(
 
   // gems
   Enable::EGEM = true;
-  Enable::FGEM = true;
+  Enable::FGEM = true; // deactivated as it's replaced by a FTTL layer
   // Enable::BGEM = true; // not yet defined in this model
   Enable::RWELL = true;
   // barrel tracker
@@ -284,12 +284,17 @@ int Fun4All_G4_EICDetector(
   // fst
   Enable::FST = true;
 
-  // TOFs
+  //AC-LGAD  TOFs
   Enable::FTTL = true;
   Enable::ETTL = true;
   Enable::CTTL = true;
-  G4TTL::SETTING::optionCEMC = false;
-  G4TTL::SETTING::optionGeo = 1;
+
+  //mRPC TOFs
+  Enable::BTOF = false;
+  Enable::ETOF = false;
+  Enable::HTOF = false;
+  Enable::ETOF_GAS = Enable::ETOF && true;
+  Enable::HTOF_GAS = Enable::HTOF && true;
 
   Enable::TRACKING = true;
   Enable::TRACKING_EVAL = Enable::TRACKING && true;
@@ -299,6 +304,7 @@ int Fun4All_G4_EICDetector(
   G4TRACKING::PROJECTION_BECAL = true;
   G4TRACKING::PROJECTION_EHCAL = true;
   G4TRACKING::PROJECTION_CEMC = true;
+  G4TRACKING::PROJECTION_HCALIN = true;
   G4TRACKING::PROJECTION_HCALOUT = true;
   G4TRACKING::PROJECTION_FEMC = true;
   G4TRACKING::PROJECTION_FHCAL = true;
@@ -329,16 +335,21 @@ int Fun4All_G4_EICDetector(
   // EICDetector geometry - barrel
   Enable::DIRC = true;
   Enable::DIRC_RECO = Enable::DIRC && true;
+
+  Enable::BMMG = false;
   // Enable::DIRC_VERBOSITY = 2;
 
   // EICDetector geometry - 'hadron' direction
   Enable::RICH = true;
-  Enable::RICH_RECO = Enable::DIRC && true;
+  Enable::RICH_RECO = Enable::RICH && true;
+
+  Enable::TRD = false;
+  Enable::TRD_GAS = false;
   // Enable::RICH_VERBOSITY = 2;
 
   // EICDetector geometry - 'electron' direction
   Enable::mRICH = true;
-  Enable::mRICH_RECO = Enable::DIRC && true;
+  Enable::mRICH_RECO = Enable::mRICH && true;
   // Enable::mRICH_VERBOSITY = 2;
 
   Enable::FEMC = true;
@@ -352,7 +363,6 @@ int Fun4All_G4_EICDetector(
   Enable::DRCALO_TOWER = Enable::DRCALO_CELL && true;
   Enable::DRCALO_CLUSTER = Enable::DRCALO_TOWER && true;
   Enable::DRCALO_EVAL = Enable::DRCALO_CLUSTER && false;
-  G4TTL::SETTING::optionDR = 1;
 
   Enable::LFHCAL = true;
   Enable::LFHCAL_ABSORBER = false;
@@ -366,7 +376,6 @@ int Fun4All_G4_EICDetector(
   Enable::EEMCH_TOWER = Enable::EEMCH && true;
   Enable::EEMCH_CLUSTER = Enable::EEMCH_TOWER && true;
   Enable::EEMCH_EVAL = Enable::EEMCH_CLUSTER && true;
-  G4TTL::SETTING::optionEEMCH = Enable::EEMCH && true;
 
   Enable::EHCAL = true;
   Enable::EHCAL_CELL = Enable::EHCAL && true;
@@ -384,7 +393,7 @@ int Fun4All_G4_EICDetector(
 
   // jet reconstruction
   Enable::FWDJETS = true;
-  Enable::FWDJETS_EVAL = Enable::FWDJETS && true;
+  Enable::FWDJETS_EVAL = Enable::FWDJETS && false;
 
   // new settings using Enable namespace in GlobalVariables.C
   Enable::BLACKHOLE = true;
@@ -399,6 +408,13 @@ int Fun4All_G4_EICDetector(
   // Enable::B0_DISABLE_HITPLANE = true;
   // Enable::B0_FULLHITPLANE = true;
 
+  // Enable::B0ECALTOWERS = true;  //To Construct Towers of B0ECal instead of one single volume
+  // Enable::B0ECAL = Enable::B0_DISABLE_HITPLANE && true;
+  // Enable::B0ECAL_CELL = Enable::B0ECAL && true;
+  // Enable::B0ECAL_TOWER = Enable::B0ECAL_CELL && true;
+  // Enable::B0ECAL_CLUSTER = Enable::B0ECAL_TOWER && true;
+  // Enable::B0ECAL_EVAL = Enable::B0ECAL_CLUSTER && true;
+    
   // RP
   // Enable::RP_DISABLE_HITPLANE = true;
   // Enable::RP_FULLHITPLANE = true;
@@ -504,6 +520,9 @@ int Fun4All_G4_EICDetector(
 
   if (Enable::BECAL_TOWER) BECAL_Towers();
   if (Enable::BECAL_CLUSTER) BECAL_Clusters();
+    
+  if (Enable::B0ECAL_TOWER) B0ECAL_Towers(); // For B0Ecal
+  if (Enable::B0ECAL_CLUSTER) B0ECAL_Clusters(); //For B0Ecal
 
   if (Enable::DSTOUT_COMPRESS) ShowerCompress();
 
@@ -570,6 +589,8 @@ int Fun4All_G4_EICDetector(
 
   if (Enable::FFR_EVAL) FFR_Eval(outputroot + "_g4ffr_eval.root");
 
+  if (Enable::B0ECAL_EVAL) B0ECAL_Eval(outputroot + "_g4b0ecal_eval_test.root"); // For B0Ecal
+    
   if (Enable::FWDJETS_EVAL) Jet_FwdEval();
 
   if (Enable::USER) UserAnalysisInit();
