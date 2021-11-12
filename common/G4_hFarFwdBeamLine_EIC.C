@@ -369,11 +369,6 @@ void hFarFwdDefineDetectorsIP6(PHG4Reco *g4Reco)
   // Three choices: 1. Realistic detector; 2. Circulat or square plane; 3. hit plane with realistic detector goemetry
 
 
-
-  ////*********************
-  // RP 
-  // Three choices: 1. Realistic detector; 2. Circulat or square plane; 3. hit plane with realistic detector goemetry
-
   const int rpDetNr = 2;
   const double rp_zCent[rpDetNr] = {2600, 2800};
   const double rp_xCent[rpDetNr] = {-83.22, -92.20};
@@ -1613,5 +1608,7 @@ void FFR_Eval(const std::string &outputfile)
 
   return;
 }
+
+
 
 #endif
