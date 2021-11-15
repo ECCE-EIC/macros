@@ -30,7 +30,7 @@ int Fun4All_G4_EICDetector(
     const string &outputFile = "G4EICDetector.root",
     const string &embed_input_file = "https://www.phenix.bnl.gov/WWW/publish/phnxbld/sPHENIX/files/sPHENIX_G4Hits_sHijing_9-11fm_00000_00010.root",
     const int skip = 0,
-    const string &outdir = ".")
+    const string &outdir = ".", const string &inputGenerator = "EIC-smear")
 {
   //---------------
   // Fun4All server
@@ -48,7 +48,7 @@ int Fun4All_G4_EICDetector(
   // which will produce identical results so you can debug your code
   // rc->set_IntFlag("RANDOMSEED", 12345);
 
-  bool generate_seed = false;
+  bool generate_seed = true;
 
   if (generate_seed)
   {
@@ -93,7 +93,7 @@ int Fun4All_G4_EICDetector(
   //INPUTEMBED::listfile[0] = embed_input_file;
 
   // Use Pythia 8
-  // Input::PYTHIA8 = true;
+  if (inputGenerator == "pythia8") Input::PYTHIA8 = true;
 
   // Use Pythia 6
   // Input::PYTHIA6 = true;
@@ -102,7 +102,7 @@ int Fun4All_G4_EICDetector(
   //   Input::SARTRE = true;
 
   // Simple multi particle generator in eta/phi/pt ranges
-  Input::SIMPLE = true;
+  if (inputGenerator == "pionGun" or inputGenerator == "electronGun") Input::SIMPLE = true;
   // Input::SIMPLE_NUMBER = 2; // if you need 2 of them
   // Input::SIMPLE_VERBOSITY = 1;
 
@@ -119,7 +119,7 @@ int Fun4All_G4_EICDetector(
   // And/Or read generated particles from file
 
   // eic-smear output
-  // Input::READEIC = true;
+  if (inputGenerator == "EIC-smear") Input::READEIC = true;
   INPUTREADEIC::filename = inputFile;
 
   // HepMC2 files
@@ -141,7 +141,8 @@ int Fun4All_G4_EICDetector(
   // add the settings for other with [1], next with [2]...
   if (Input::SIMPLE)
   {
-    INPUTGENERATOR::SimpleEventGenerator[0]->add_particles("pi-", 5);
+    if (inputGenerator == "pionGun") INPUTGENERATOR::SimpleEventGenerator[0]->add_particles("pi+", 1);
+    else INPUTGENERATOR::SimpleEventGenerator[0]->add_particles("e-", 1);
     if (Input::HEPMC || Input::EMBED)
     {
       INPUTGENERATOR::SimpleEventGenerator[0]->set_reuse_existing_vertex(true);
@@ -155,9 +156,9 @@ int Fun4All_G4_EICDetector(
       INPUTGENERATOR::SimpleEventGenerator[0]->set_vertex_distribution_mean(0., 0., 0.);
       INPUTGENERATOR::SimpleEventGenerator[0]->set_vertex_distribution_width(0., 0., 5.);
     }
-    INPUTGENERATOR::SimpleEventGenerator[0]->set_eta_range(-3, 3);
+    INPUTGENERATOR::SimpleEventGenerator[0]->set_eta_range(-3.5, 3.5);
     INPUTGENERATOR::SimpleEventGenerator[0]->set_phi_range(-M_PI, M_PI);
-    INPUTGENERATOR::SimpleEventGenerator[0]->set_pt_range(0.1, 20.);
+    INPUTGENERATOR::SimpleEventGenerator[0]->set_p_range(0., 20.);
   }
   // Upsilons
   // if you run more than one of these Input::UPSILON_NUMBER > 1
@@ -242,7 +243,7 @@ int Fun4All_G4_EICDetector(
   // Write the DST
   //======================
 
-  // Enable::DSTOUT = true;
+  Enable::DSTOUT = true;
   DstOut::OutputDir = outdir;
   DstOut::OutputFile = outputFile;
   Enable::DSTOUT_COMPRESS = true;  // Compress DST files
@@ -297,7 +298,7 @@ int Fun4All_G4_EICDetector(
   Enable::HTOF_GAS = Enable::HTOF && true;
 
   Enable::TRACKING = true;
-  Enable::TRACKING_EVAL = Enable::TRACKING && true;
+  Enable::TRACKING_EVAL = Enable::TRACKING && false;
   G4TRACKING::DISPLACED_VERTEX = true;  // this option exclude vertex in the track fitting and use RAVE to reconstruct primary and 2ndary vertexes
                                         // projections to calorimeters
   G4TRACKING::PROJECTION_EEMC = true;
@@ -314,14 +315,14 @@ int Fun4All_G4_EICDetector(
   Enable::BECAL_CELL = Enable::BECAL && true;
   Enable::BECAL_TOWER = Enable::BECAL_CELL && true;
   Enable::BECAL_CLUSTER = Enable::BECAL_TOWER && true;
-  Enable::BECAL_EVAL = Enable::BECAL_CLUSTER && true;
+  Enable::BECAL_EVAL = Enable::BECAL_CLUSTER && false;
 
   Enable::HCALIN = true;
   //  Enable::HCALIN_ABSORBER = true;
   Enable::HCALIN_CELL = Enable::HCALIN && true;
   Enable::HCALIN_TOWER = Enable::HCALIN_CELL && true;
   Enable::HCALIN_CLUSTER = Enable::HCALIN_TOWER && true;
-  Enable::HCALIN_EVAL = Enable::HCALIN_CLUSTER && true;
+  Enable::HCALIN_EVAL = Enable::HCALIN_CLUSTER && false;
 
   Enable::MAGNET = true;
 
@@ -330,7 +331,7 @@ int Fun4All_G4_EICDetector(
   Enable::HCALOUT_CELL = Enable::HCALOUT && true;
   Enable::HCALOUT_TOWER = Enable::HCALOUT_CELL && true;
   Enable::HCALOUT_CLUSTER = Enable::HCALOUT_TOWER && true;
-  Enable::HCALOUT_EVAL = Enable::HCALOUT_CLUSTER && true;
+  Enable::HCALOUT_EVAL = Enable::HCALOUT_CLUSTER && false;
 
   // EICDetector geometry - barrel
   Enable::DIRC = true;
@@ -356,7 +357,7 @@ int Fun4All_G4_EICDetector(
   //  Enable::FEMC_ABSORBER = true;
   Enable::FEMC_TOWER = Enable::FEMC && true;
   Enable::FEMC_CLUSTER = Enable::FEMC_TOWER && true;
-  Enable::FEMC_EVAL = Enable::FEMC_CLUSTER && true;
+  Enable::FEMC_EVAL = Enable::FEMC_CLUSTER && false;
 
   //Enable::DRCALO = false;
   Enable::DRCALO_CELL = Enable::DRCALO && true;
@@ -369,21 +370,21 @@ int Fun4All_G4_EICDetector(
   Enable::LFHCAL_CELL = Enable::LFHCAL && true;
   Enable::LFHCAL_TOWER = Enable::LFHCAL_CELL && true;
   Enable::LFHCAL_CLUSTER = Enable::LFHCAL_TOWER && true;
-  Enable::LFHCAL_EVAL = Enable::LFHCAL_CLUSTER && true;
+  Enable::LFHCAL_EVAL = Enable::LFHCAL_CLUSTER && false;
 
   // EICDetector geometry - 'electron' direction
   Enable::EEMCH = true;
   Enable::EEMCH_TOWER = Enable::EEMCH && true;
   Enable::EEMCH_CLUSTER = Enable::EEMCH_TOWER && true;
-  Enable::EEMCH_EVAL = Enable::EEMCH_CLUSTER && true;
+  Enable::EEMCH_EVAL = Enable::EEMCH_CLUSTER && false;
 
   Enable::EHCAL = true;
   Enable::EHCAL_CELL = Enable::EHCAL && true;
   Enable::EHCAL_TOWER = Enable::EHCAL_CELL && true;
   Enable::EHCAL_CLUSTER = Enable::EHCAL_TOWER && true;
-  Enable::EHCAL_EVAL = Enable::EHCAL_CLUSTER && true;
+  Enable::EHCAL_EVAL = Enable::EHCAL_CLUSTER && false;
 
-  Enable::FFR_EVAL = Enable::HFARFWD_MAGNETS && Enable::HFARFWD_VIRTUAL_DETECTORS && true;
+  Enable::FFR_EVAL = Enable::HFARFWD_MAGNETS && Enable::HFARFWD_VIRTUAL_DETECTORS && false;
 
   Enable::PLUGDOOR = false;
 
@@ -424,7 +425,7 @@ int Fun4All_G4_EICDetector(
   // Enable::RP2nd_FULLHITPLANE = true;
 
   // Enabling the event evaluator?
-  Enable::EVENT_EVAL = true;
+  Enable::EVENT_EVAL = false;
   // EVENT_EVALUATOR::Verbosity = 1;
   // EVENT_EVALUATOR::EnergyThreshold = 0.05; // GeV
   Enable::EVENT_EVAL_DO_HEPMC = Input::PYTHIA6 or Input::PYTHIA8 or Input::SARTRE or Input::HEPMC or Input::READEIC;
@@ -591,7 +592,7 @@ int Fun4All_G4_EICDetector(
 
   if (Enable::B0ECAL_EVAL) B0ECAL_Eval(outputroot + "_g4b0ecal_eval_test.root"); // For B0Ecal
     
-  if (Enable::FWDJETS_EVAL) Jet_FwdEval();
+  //if (Enable::FWDJETS_EVAL) Jet_FwdEval();
 
   if (Enable::USER) UserAnalysisInit();
 
