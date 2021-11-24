@@ -141,7 +141,7 @@ int Fun4All_G4_EICDetector(
   // add the settings for other with [1], next with [2]...
   if (Input::SIMPLE)
   {
-    INPUTGENERATOR::SimpleEventGenerator[0]->add_particles("pi+", 1);
+    INPUTGENERATOR::SimpleEventGenerator[0]->add_particles("pi-", 1);
     if (Input::HEPMC || Input::EMBED)
     {
       INPUTGENERATOR::SimpleEventGenerator[0]->set_reuse_existing_vertex(true);
