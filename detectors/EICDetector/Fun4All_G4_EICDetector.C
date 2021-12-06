@@ -273,8 +273,8 @@ int Fun4All_G4_EICDetector(
   Enable::HFARBWD_VIRTUAL_DETECTORS = true;
 
   // gems
-  Enable::EGEM = true;
-  Enable::FGEM = true; // deactivated as it's replaced by a FTTL layer
+  Enable::EGEM = false;
+  Enable::FGEM = false; // deactivated as it's replaced by a FTTL layer
   // Enable::BGEM = true; // not yet defined in this model
   Enable::RWELL = true;
   // barrel tracker
@@ -310,27 +310,11 @@ int Fun4All_G4_EICDetector(
   G4TRACKING::PROJECTION_FHCAL = true;
   G4TRACKING::PROJECTION_LFHCAL = true;
 
-  Enable::BECAL = true;
-  Enable::BECAL_CELL = Enable::BECAL && true;
-  Enable::BECAL_TOWER = Enable::BECAL_CELL && true;
-  Enable::BECAL_CLUSTER = Enable::BECAL_TOWER && true;
-  Enable::BECAL_EVAL = Enable::BECAL_CLUSTER && false;
-
-  Enable::HCALIN = true;
-  //  Enable::HCALIN_ABSORBER = true;
-  Enable::HCALIN_CELL = Enable::HCALIN && true;
-  Enable::HCALIN_TOWER = Enable::HCALIN_CELL && true;
-  Enable::HCALIN_CLUSTER = Enable::HCALIN_TOWER && true;
-  Enable::HCALIN_EVAL = Enable::HCALIN_CLUSTER && false;
-
-  Enable::MAGNET = true;
-
+  // enable barrel calos & magnet
+  Enable::BECAL   = true;
+  Enable::HCALIN  = true;
+  Enable::MAGNET  = true;
   Enable::HCALOUT = true;
-  //  Enable::HCALOUT_ABSORBER = true;
-  Enable::HCALOUT_CELL = Enable::HCALOUT && true;
-  Enable::HCALOUT_TOWER = Enable::HCALOUT_CELL && true;
-  Enable::HCALOUT_CLUSTER = Enable::HCALOUT_TOWER && true;
-  Enable::HCALOUT_EVAL = Enable::HCALOUT_CLUSTER && false;
 
   // EICDetector geometry - barrel
   Enable::DIRC = true;
@@ -347,41 +331,22 @@ int Fun4All_G4_EICDetector(
   Enable::TRD_GAS = false;
   // Enable::RICH_VERBOSITY = 2;
 
+
+  // enable forward calos
+  Enable::FEMC    = true;
+  Enable::DRCALO  = false;
+  Enable::LFHCAL  = true;
+
   // EICDetector geometry - 'electron' direction
   Enable::mRICH = true;
   Enable::mRICH_RECO = Enable::mRICH && true;
   // Enable::mRICH_VERBOSITY = 2;
-
-  Enable::FEMC = true;
-  //  Enable::FEMC_ABSORBER = true;
-  Enable::FEMC_TOWER = Enable::FEMC && true;
-  Enable::FEMC_CLUSTER = Enable::FEMC_TOWER && true;
-  Enable::FEMC_EVAL = Enable::FEMC_CLUSTER && false;
-
-  //Enable::DRCALO = false;
-  Enable::DRCALO_CELL = Enable::DRCALO && true;
-  Enable::DRCALO_TOWER = Enable::DRCALO_CELL && true;
-  Enable::DRCALO_CLUSTER = Enable::DRCALO_TOWER && true;
-  Enable::DRCALO_EVAL = Enable::DRCALO_CLUSTER && false;
-
-  Enable::LFHCAL = true;
-  Enable::LFHCAL_ABSORBER = false;
-  Enable::LFHCAL_CELL = Enable::LFHCAL && true;
-  Enable::LFHCAL_TOWER = Enable::LFHCAL_CELL && true;
-  Enable::LFHCAL_CLUSTER = Enable::LFHCAL_TOWER && true;
-  Enable::LFHCAL_EVAL = Enable::LFHCAL_CLUSTER && false;
-
+  
   // EICDetector geometry - 'electron' direction
-  Enable::EEMCH = true;
-  Enable::EEMCH_TOWER = Enable::EEMCH && true;
-  Enable::EEMCH_CLUSTER = Enable::EEMCH_TOWER && true;
-  Enable::EEMCH_EVAL = Enable::EEMCH_CLUSTER && true;
-
-  Enable::EHCAL = true;
-  Enable::EHCAL_CELL = Enable::EHCAL && true;
-  Enable::EHCAL_TOWER = Enable::EHCAL_CELL && true;
-  Enable::EHCAL_CLUSTER = Enable::EHCAL_TOWER && true;
-  Enable::EHCAL_EVAL = Enable::EHCAL_CLUSTER && false;
+  Enable::EEMCH   = true;
+  G4EEMCH::SETTING::USECUSTOMMAPUPDATED = true; // enable proper carbon structure
+  G4TTL::SETTING::optionEEMCH           = Enable::EEMCH && true;
+  Enable::EHCAL   = false;
 
   Enable::FFR_EVAL = Enable::HFARFWD_MAGNETS && Enable::HFARFWD_VIRTUAL_DETECTORS && false;
 
@@ -426,12 +391,56 @@ int Fun4All_G4_EICDetector(
   // RP after 2nd focus for IP8 only
   // Enable::RP2nd_DISABLE_HITPLANE = true;
   // Enable::RP2nd_FULLHITPLANE = true;
+  
+  //************************************************************
+  // details for calos: cells, towers, clusters
+  //************************************************************
+  Enable::BECAL_CELL    = Enable::BECAL && true;
+  Enable::BECAL_TOWER   = Enable::BECAL_CELL && true;
+  Enable::BECAL_CLUSTER = Enable::BECAL_TOWER && true;
+  Enable::BECAL_EVAL    = Enable::BECAL_CLUSTER && false;
 
+  //  Enable::HCALIN_ABSORBER = true;
+  Enable::HCALIN_CELL     = Enable::HCALIN && true;
+  Enable::HCALIN_TOWER    = Enable::HCALIN_CELL && true;
+  Enable::HCALIN_CLUSTER  = Enable::HCALIN_TOWER && true;
+  Enable::HCALIN_EVAL     = Enable::HCALIN_CLUSTER && false;
+
+  //  Enable::HCALOUT_ABSORBER = true;
+  Enable::HCALOUT_CELL    = Enable::HCALOUT && true;
+  Enable::HCALOUT_TOWER   = Enable::HCALOUT_CELL && true;
+  Enable::HCALOUT_CLUSTER = Enable::HCALOUT_TOWER && true;
+  Enable::HCALOUT_EVAL    = Enable::HCALOUT_CLUSTER && false;
+  
+  //  Enable::FEMC_ABSORBER = true;
+  Enable::FEMC_TOWER      = Enable::FEMC && true;
+  Enable::FEMC_CLUSTER    = Enable::FEMC_TOWER && true;
+  Enable::FEMC_EVAL       = Enable::FEMC_CLUSTER && false;
+  
+  Enable::DRCALO_CELL     = Enable::DRCALO && true;
+  Enable::DRCALO_TOWER    = Enable::DRCALO_CELL && true;
+  Enable::DRCALO_CLUSTER  = Enable::DRCALO_TOWER && true;
+  Enable::DRCALO_EVAL     = Enable::DRCALO_CLUSTER && false;
+
+  Enable::LFHCAL_ABSORBER = false;
+  Enable::LFHCAL_CELL     = Enable::LFHCAL && true;
+  Enable::LFHCAL_TOWER    = Enable::LFHCAL_CELL && true;
+  Enable::LFHCAL_CLUSTER  = Enable::LFHCAL_TOWER && true;
+  Enable::LFHCAL_EVAL     = Enable::LFHCAL_CLUSTER && false;
+
+  Enable::EEMCH_TOWER     = Enable::EEMCH && true;
+  Enable::EEMCH_CLUSTER   = Enable::EEMCH_TOWER && true;
+  Enable::EEMCH_EVAL      = Enable::EEMCH_CLUSTER && false;
+
+  Enable::EHCAL_CELL      = Enable::EHCAL && true;
+  Enable::EHCAL_TOWER     = Enable::EHCAL_CELL && true;
+  Enable::EHCAL_CLUSTER   = Enable::EHCAL_TOWER && true;
+  Enable::EHCAL_EVAL      = Enable::EHCAL_CLUSTER && false;
+  
   // Enabling the event evaluator?
-  Enable::EVENT_EVAL = false;
-  // EVENT_EVALUATOR::Verbosity = 1;
-  // EVENT_EVALUATOR::EnergyThreshold = 0.05; // GeV
-  Enable::EVENT_EVAL_DO_HEPMC = Input::PYTHIA6 or Input::PYTHIA8 or Input::SARTRE or Input::HEPMC or Input::READEIC;
+  Enable::EVENT_EVAL            = false;
+  Enable::EVENT_EVAL_DO_HITS    = true;
+  Enable::EVENT_EVAL_DO_HEPMC   = Input::PYTHIA6 or Input::PYTHIA8 or Input::SARTRE or Input::HEPMC or Input::READEIC;
   Enable::EVENT_EVAL_DO_EVT_LVL = Input::PYTHIA6 or Input::PYTHIA8 or Input::READEIC;
 
   //Enable::USER = true;
@@ -595,7 +604,7 @@ int Fun4All_G4_EICDetector(
 
   if (Enable::B0ECAL_EVAL) B0ECAL_Eval(outputroot + "_g4b0ecal_eval_test.root"); // For B0Ecal
     
-  //if (Enable::FWDJETS_EVAL) Jet_FwdEval();
+  if (Enable::FWDJETS_EVAL) Jet_FwdEval();
 
   if (Enable::USER) UserAnalysisInit();
 
