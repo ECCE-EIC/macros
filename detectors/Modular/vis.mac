@@ -1,0 +1,85 @@
+# $Id: vis.mac,v 1.4 2010/04/14 18:32:59 lindenle Exp $
+#
+# Macro file for the initialization phase of "exampleN03.cc"
+# when running in interactive mode
+#
+# Sets some default verbose
+#
+/control/verbose 2
+/control/saveHistory
+/run/verbose 2
+#
+# create empty scene
+#
+/vis/scene/create
+#
+# Create a scene handler for a specific graphics system
+# (Edit the next line(s) to choose another graphic system)
+#
+# Use this open statement to get an .eps and .prim files
+# suitable for viewing in DAWN.
+###/vis/open DAWNFILE
+#
+# Use this open statement instead for OpenGL in immediate mode.
+# OGLIX works on the desktops in 1008 while OGLSX terminates
+# the X server. I've heard similar stories about OGLIX on other
+# machines. You might have to play with it. GEANT prints out a
+# list of available graphics systems at some point.
+#/vis/open OGLIX
+/vis/open OGL 1800x1000-0+0
+# increase display limit for more complex detectors
+/vis/ogl/set/displayListLimit 5000000
+/vis/viewer/set/viewpointThetaPhi 260 -40
+/vis/viewer/addCutawayPlane 0 0 0 m 1 0 0
+/vis/viewer/addCutawayPlane 0 0 0 m 0 -1 0
+/vis/viewer/panTo 50 0 cm
+
+# our world is 4x4 meters, the detector is about 1m across
+# zooming by 4 makes it fill the display
+/vis/viewer/zoom 2
+
+# Draw trajectories at end of event, showing trajectory points as
+# markers of size 2 pixels
+
+/vis/scene/add/trajectories smooth rich
+# remove low energy stuff
+/vis/filtering/trajectories/create/attributeFilter
+/vis/filtering/trajectories/attributeFilter-0/setAttribute IMag
+/vis/filtering/trajectories/attributeFilter-0/addInterval 10 MeV 1000 GeV
+
+# /vis/modeling/trajectories/create/drawByParticleID
+# /vis/modeling/trajectories/drawByParticleID-0/set e+ steelblue
+# /vis/modeling/trajectories/drawByParticleID-0/set e- steelblue
+# /vis/modeling/trajectories/drawByParticleID-0/set pi+ red
+# /vis/modeling/trajectories/drawByParticleID-0/set pi- red
+# /vis/modeling/trajectories/drawByParticleID-0/set kaon- mediumvioletred
+# /vis/modeling/trajectories/drawByParticleID-0/set kaon+ mediumvioletred
+# /vis/modeling/trajectories/drawByParticleID-0/set kaon0 mediumvioletred
+# /vis/modeling/trajectories/drawByParticleID-0/set proton+ orange
+# /vis/modeling/trajectories/drawByParticleID-0/set proton- orange
+# /vis/modeling/trajectories/drawByParticleID-0/set neutron lightgrey
+# /vis/modeling/trajectories/drawByParticleID-0/set gamma wheat
+
+#   remove neutrons and neutrinos
+/vis/filtering/trajectories/create/particleFilter
+/vis/filtering/trajectories/particleFilter-0/add neutron
+/vis/filtering/trajectories/particleFilter-0/add neutrino
+/vis/filtering/trajectories/particleFilter-0/invert true
+
+# /vis/modeling/trajectories/create/drawByCharge
+# /vis/modeling/trajectories/drawByCharge-0/default/setDrawStepPts true
+# /vis/modeling/trajectories/drawByCharge-0/default/setStepPtsSize 2
+# (if too many tracks cause core dump => /tracking/storeTrajectory 0)
+#
+/vis/scene/endOfEventAction accumulate
+#
+# At end of each run, an automatic flush causes graphical output.
+#/run/beamOn 1
+# When you exit Geant4, you will find a file called scene-0.heprep.zip.
+# Unzipping this will give you three separate HepRep files suitable for
+# viewing in WIRED.
+# The first file will contain just detector geometry.
+# The second file will contain the detector plus one event.
+# The third file will contain the detector plus ten events.
+
+/vis/viewer/flush
