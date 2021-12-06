@@ -51,10 +51,8 @@ void Event_Eval(const std::string &filename)
     }
     
     eval->set_do_PROJECTIONS(true);
-    if (G4TRACKING::DISPLACED_VERTEX)
-      eval->set_do_VERTEX(true);
-    if (Enable::DIRC_RECO or Enable::mRICH_RECO or Enable::RICH_RECO)
-      eval->set_do_PID_LogLikelihood(true);
+    if (G4TRACKING::DISPLACED_VERTEX) eval->set_do_VERTEX(true);
+    if (Enable::DIRC_RECO or Enable::mRICH_RECO or Enable::RICH_RECO) eval->set_do_PID_LogLikelihood(true);
   }
   // set calorimeter Infos
   if (Enable::CEMC) eval->set_do_CEMC(true);
@@ -69,6 +67,7 @@ void Event_Eval(const std::string &filename)
   if (Enable::DRCALO) eval->set_do_DRCALO(true);
   if (Enable::LFHCAL) eval->set_do_LFHCAL(true);
   if (Enable::BECAL) eval->set_do_BECAL(true);
+  if (Enable::EHCAL) eval->set_do_EHCAL(true);
 
   // storing MC event info 
   eval->set_do_MCPARTICLES(true);

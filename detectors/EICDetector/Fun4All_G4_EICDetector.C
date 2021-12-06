@@ -48,7 +48,7 @@ int Fun4All_G4_EICDetector(
   // which will produce identical results so you can debug your code
   // rc->set_IntFlag("RANDOMSEED", 12345);
 
-  bool generate_seed = false;
+  bool generate_seed = true;
 
   if (generate_seed)
   {
@@ -102,7 +102,7 @@ int Fun4All_G4_EICDetector(
   //   Input::SARTRE = true;
 
   // Simple multi particle generator in eta/phi/pt ranges
-  Input::SIMPLE = true;
+  //Input::SIMPLE = true;
   // Input::SIMPLE_NUMBER = 2; // if you need 2 of them
   // Input::SIMPLE_VERBOSITY = 1;
 
@@ -119,7 +119,7 @@ int Fun4All_G4_EICDetector(
   // And/Or read generated particles from file
 
   // eic-smear output
-  // Input::READEIC = true;
+  Input::READEIC = true;
   INPUTREADEIC::filename = inputFile;
 
   // HepMC2 files
@@ -242,7 +242,7 @@ int Fun4All_G4_EICDetector(
   // Write the DST
   //======================
 
-  // Enable::DSTOUT = true;
+  Enable::DSTOUT = true;
   DstOut::OutputDir = outdir;
   DstOut::OutputFile = outputFile;
   Enable::DSTOUT_COMPRESS = true;  // Compress DST files
@@ -297,7 +297,7 @@ int Fun4All_G4_EICDetector(
   Enable::HTOF_GAS = Enable::HTOF && true;
 
   Enable::TRACKING = true;
-  Enable::TRACKING_EVAL = Enable::TRACKING && true;
+  Enable::TRACKING_EVAL = Enable::TRACKING && false;
   G4TRACKING::DISPLACED_VERTEX = true;  // this option exclude vertex in the track fitting and use RAVE to reconstruct primary and 2ndary vertexes
                                         // projections to calorimeters
   G4TRACKING::PROJECTION_EEMC = true;
@@ -348,7 +348,7 @@ int Fun4All_G4_EICDetector(
   G4TTL::SETTING::optionEEMCH           = Enable::EEMCH && true;
   Enable::EHCAL   = false;
 
-  Enable::FFR_EVAL = Enable::HFARFWD_MAGNETS && Enable::HFARFWD_VIRTUAL_DETECTORS && true;
+  Enable::FFR_EVAL = Enable::HFARFWD_MAGNETS && Enable::HFARFWD_VIRTUAL_DETECTORS && false;
 
   Enable::PLUGDOOR = false;
 
@@ -364,6 +364,10 @@ int Fun4All_G4_EICDetector(
   Enable::BLACKHOLE = true;
   //Enable::BLACKHOLE_SAVEHITS = false; // turn off saving of bh hits
   //BlackHoleGeometry::visible = true;
+  
+  // ZDC
+  // Enable::ZDC = true;
+  // Enable::ZDC_DISABLE_BLACKHOLE = true;
 
   // ZDC
   // Enable::ZDC = true;
@@ -394,24 +398,24 @@ int Fun4All_G4_EICDetector(
   Enable::BECAL_CELL    = Enable::BECAL && true;
   Enable::BECAL_TOWER   = Enable::BECAL_CELL && true;
   Enable::BECAL_CLUSTER = Enable::BECAL_TOWER && true;
-  Enable::BECAL_EVAL    = Enable::BECAL_CLUSTER && true;
+  Enable::BECAL_EVAL    = Enable::BECAL_CLUSTER && false;
 
   //  Enable::HCALIN_ABSORBER = true;
   Enable::HCALIN_CELL     = Enable::HCALIN && true;
   Enable::HCALIN_TOWER    = Enable::HCALIN_CELL && true;
   Enable::HCALIN_CLUSTER  = Enable::HCALIN_TOWER && true;
-  Enable::HCALIN_EVAL     = Enable::HCALIN_CLUSTER && true;
+  Enable::HCALIN_EVAL     = Enable::HCALIN_CLUSTER && false;
 
   //  Enable::HCALOUT_ABSORBER = true;
   Enable::HCALOUT_CELL    = Enable::HCALOUT && true;
   Enable::HCALOUT_TOWER   = Enable::HCALOUT_CELL && true;
   Enable::HCALOUT_CLUSTER = Enable::HCALOUT_TOWER && true;
-  Enable::HCALOUT_EVAL    = Enable::HCALOUT_CLUSTER && true;
+  Enable::HCALOUT_EVAL    = Enable::HCALOUT_CLUSTER && false;
   
   //  Enable::FEMC_ABSORBER = true;
   Enable::FEMC_TOWER      = Enable::FEMC && true;
   Enable::FEMC_CLUSTER    = Enable::FEMC_TOWER && true;
-  Enable::FEMC_EVAL       = Enable::FEMC_CLUSTER && true;
+  Enable::FEMC_EVAL       = Enable::FEMC_CLUSTER && false;
   
   Enable::DRCALO_CELL     = Enable::DRCALO && true;
   Enable::DRCALO_TOWER    = Enable::DRCALO_CELL && true;
@@ -422,19 +426,19 @@ int Fun4All_G4_EICDetector(
   Enable::LFHCAL_CELL     = Enable::LFHCAL && true;
   Enable::LFHCAL_TOWER    = Enable::LFHCAL_CELL && true;
   Enable::LFHCAL_CLUSTER  = Enable::LFHCAL_TOWER && true;
-  Enable::LFHCAL_EVAL     = Enable::LFHCAL_CLUSTER && true;
+  Enable::LFHCAL_EVAL     = Enable::LFHCAL_CLUSTER && false;
 
   Enable::EEMCH_TOWER     = Enable::EEMCH && true;
   Enable::EEMCH_CLUSTER   = Enable::EEMCH_TOWER && true;
-  Enable::EEMCH_EVAL      = Enable::EEMCH_CLUSTER && true;
+  Enable::EEMCH_EVAL      = Enable::EEMCH_CLUSTER && false;
 
   Enable::EHCAL_CELL      = Enable::EHCAL && true;
   Enable::EHCAL_TOWER     = Enable::EHCAL_CELL && true;
   Enable::EHCAL_CLUSTER   = Enable::EHCAL_TOWER && true;
-  Enable::EHCAL_EVAL      = Enable::EHCAL_CLUSTER && true;
+  Enable::EHCAL_EVAL      = Enable::EHCAL_CLUSTER && false;
   
   // Enabling the event evaluator?
-  Enable::EVENT_EVAL            = true;
+  Enable::EVENT_EVAL            = false;
   Enable::EVENT_EVAL_DO_HITS    = true;
   Enable::EVENT_EVAL_DO_HEPMC   = Input::PYTHIA6 or Input::PYTHIA8 or Input::SARTRE or Input::HEPMC or Input::READEIC;
   Enable::EVENT_EVAL_DO_EVT_LVL = Input::PYTHIA6 or Input::PYTHIA8 or Input::READEIC;
@@ -603,6 +607,7 @@ int Fun4All_G4_EICDetector(
   if (Enable::FWDJETS_EVAL) Jet_FwdEval();
 
   if (Enable::USER) UserAnalysisInit();
+
 
   //--------------
   // Set up Input Managers
