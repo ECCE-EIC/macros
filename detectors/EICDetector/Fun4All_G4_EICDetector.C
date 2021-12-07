@@ -605,7 +605,7 @@ int Fun4All_G4_EICDetector(
 
   if (Enable::B0ECAL_EVAL) B0ECAL_Eval(outputroot + "_g4b0ecal_eval_test.root"); // For B0Ecal
     
-  if (Enable::FWDJETS_EVAL) Jet_FwdEval();
+  //if (Enable::FWDJETS_EVAL) Jet_FwdEval();
 
   if (Enable::USER) UserAnalysisInit();
 
