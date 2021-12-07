@@ -28,14 +28,14 @@ R__LOAD_LIBRARY(libg4eval.so)
 
 namespace Enable
 {
-  bool EEMCH = false;
-  bool EEMCH_ABSORBER = false;
-  bool EEMCH_CELL = false;
-  bool EEMCH_TOWER = false;
-  bool EEMCH_CLUSTER = false;
-  bool EEMCH_EVAL = false;
+  bool EEMCH              = false;
+  bool EEMCH_ABSORBER     = false;
+  bool EEMCH_CELL         = false;
+  bool EEMCH_TOWER        = false;
+  bool EEMCH_CLUSTER      = false;
+  bool EEMCH_EVAL         = false;
   bool EEMCH_OVERLAPCHECK = false;
-  int EEMCH_VERBOSITY = 0;
+  int EEMCH_VERBOSITY     = 0;
 }  // namespace Enable
 
 
@@ -50,8 +50,12 @@ namespace G4EEMCH
   
   namespace SETTING
   {
-    bool USEHYBRID    = false;
-    bool USECEMCGeo   = false;
+    bool USEHYBRID              = false;
+    bool USECEMCGeo             = false;
+    bool USECUSTOMMAPNOCARBON   = false;
+    bool USECUSTOMMAP30CM       = false;
+    bool USECUSTOMMAPCARBON     = false;
+    bool USECUSTOMMAPUPDATED    = false;
   }  // namespace SETTING
   
   // Digitization (default photon digi):
@@ -78,9 +82,11 @@ namespace G4EEMCH
 
 void EEMCHInit()
 {
-  BlackHoleGeometry::max_radius = std::max(BlackHoleGeometry::max_radius, 77.);
+  BlackHoleGeometry::max_radius = std::max(BlackHoleGeometry::max_radius, 90.);
   // from towerMap_EEMC_v006.txt
   BlackHoleGeometry::min_z = std::min(BlackHoleGeometry::min_z, G4EEMCH::Gz0 - G4EEMCH::Gdz / 2.);
+  BlackHoleGeometry::max_z = std::max(BlackHoleGeometry::max_z, 30.);
+
 }
 
 
@@ -101,7 +107,15 @@ void EEMCHSetup(PHG4Reco *g4Reco)
   if (AbsorberActive)
     eemc_crystal->SetAbsorberActive();
   
-  if (G4EEMCH::SETTING::USEHYBRID && !G4EEMCH::SETTING::USECEMCGeo)
+  if(G4EEMCH::SETTING::USECUSTOMMAPNOCARBON){
+    mapping_eemc_1 << getenv("CALIBRATIONROOT") << "/CrystalCalorimeter/mapping/crystal_mapping/tower_map_purecrystal_185_noCarbon.txt";
+  } else if (G4EEMCH::SETTING::USECUSTOMMAP30CM){
+    mapping_eemc_1 << getenv("CALIBRATIONROOT") << "/CrystalCalorimeter/mapping/crystal_mapping/tower_map_purecrystal_185_30cm.txt";
+  } else if (G4EEMCH::SETTING::USECUSTOMMAPCARBON){
+    mapping_eemc_1 << getenv("CALIBRATIONROOT") << "/CrystalCalorimeter/mapping/crystal_mapping/tower_map_purecrystal_185cm_EEEMCcarbon.txt";
+  } else if (G4EEMCH::SETTING::USECUSTOMMAPUPDATED){
+    mapping_eemc_1 << getenv("CALIBRATIONROOT") << "/CrystalCalorimeter/mapping/crystal_mapping/tower_map_purecrystal_185cm_updatedGeo.txt";
+  } else if (G4EEMCH::SETTING::USEHYBRID && !G4EEMCH::SETTING::USECEMCGeo)
     mapping_eemc_1 << getenv("CALIBRATIONROOT") << "/CrystalCalorimeter/mapping/crystal_mapping/tower_map_crystal_200cm_SciGlassBarrel.txt";
   else if (G4EEMCH::SETTING::USEHYBRID && G4EEMCH::SETTING::USECEMCGeo)
     mapping_eemc_1 << getenv("CALIBRATIONROOT") << "/CrystalCalorimeter/mapping/crystal_mapping/tower_map_crystal_200cm_CEMCBarrel.txt";
@@ -119,7 +133,6 @@ void EEMCHSetup(PHG4Reco *g4Reco)
   cout << "setting EEMC crystal mapping: " << mapping_eemc_1.str() << endl;
   eemc_crystal->set_string_param("mappingtower", mapping_eemc_1.str());    
   eemc_crystal->OverlapCheck(OverlapCheck);
-//   eemc_crystal->OverlapCheck(true);
   
   g4Reco->registerSubsystem(eemc_crystal);
   
@@ -143,7 +156,6 @@ void EEMCHSetup(PHG4Reco *g4Reco)
       eemc_glass->SetAbsorberActive();
 
     eemc_glass->set_string_param("mappingtower", mapping_eemc_2.str());
-    
     eemc_glass->OverlapCheck(OverlapCheck);
     g4Reco->registerSubsystem(eemc_glass);
   
@@ -161,7 +173,16 @@ void EEMCH_Towers()
   Fun4AllServer *se = Fun4AllServer::instance();
 
   ostringstream mapping_eemc_1, mapping_eemc_2;
-  if (G4EEMCH::SETTING::USEHYBRID && !G4EEMCH::SETTING::USECEMCGeo)
+  
+  if(G4EEMCH::SETTING::USECUSTOMMAPNOCARBON){
+    mapping_eemc_1 << getenv("CALIBRATIONROOT") << "/CrystalCalorimeter/mapping/crystal_mapping/tower_map_purecrystal_185_noCarbon.txt";
+  } else if (G4EEMCH::SETTING::USECUSTOMMAP30CM){
+    mapping_eemc_1 << getenv("CALIBRATIONROOT") << "/CrystalCalorimeter/mapping/crystal_mapping/tower_map_purecrystal_185_30cm.txt";
+  } else if (G4EEMCH::SETTING::USECUSTOMMAPCARBON){
+    mapping_eemc_1 << getenv("CALIBRATIONROOT") << "/CrystalCalorimeter/mapping/crystal_mapping/tower_map_purecrystal_185cm_EEEMCcarbon.txt";
+  } else if (G4EEMCH::SETTING::USECUSTOMMAPUPDATED){
+    mapping_eemc_1 << getenv("CALIBRATIONROOT") << "/CrystalCalorimeter/mapping/crystal_mapping/tower_map_purecrystal_185cm_updatedGeo.txt";
+  } else if (G4EEMCH::SETTING::USEHYBRID && !G4EEMCH::SETTING::USECEMCGeo)
     mapping_eemc_1 << getenv("CALIBRATIONROOT") << "/CrystalCalorimeter/mapping/crystal_mapping/tower_map_crystal_200cm_SciGlassBarrel.txt";
   else if (G4EEMCH::SETTING::USEHYBRID && G4EEMCH::SETTING::USECEMCGeo)
     mapping_eemc_1 << getenv("CALIBRATIONROOT") << "/CrystalCalorimeter/mapping/crystal_mapping/tower_map_crystal_200cm_CEMCBarrel.txt";
