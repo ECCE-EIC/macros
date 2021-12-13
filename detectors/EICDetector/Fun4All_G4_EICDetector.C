@@ -382,11 +382,6 @@ int Fun4All_G4_EICDetector(
     
   // RP
   // Enable::RP_DISABLE_HITPLANE = true;
-  // Enable::RP_FULLHITPLANE = true;
-
-  // RP after 2nd focus for IP8 only
-  // Enable::RP2nd_DISABLE_HITPLANE = true;
-  // Enable::RP2nd_FULLHITPLANE = true;
   
   //************************************************************
   // details for calos: cells, towers, clusters
