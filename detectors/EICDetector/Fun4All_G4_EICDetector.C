@@ -406,6 +406,12 @@ int Fun4All_G4_EICDetector(
   // B0
   // Enable::B0_DISABLE_HITPLANE = true;
   // Enable::B0_FULLHITPLANE = true;
+  // Options for hadron beam pipe cut off
+  // Enable::B0_VAR_PIPE_HOLE = false; //size changes with the layer number
+  // Enable::B0_CIRCLE_PIPE_HOLE = false; //circular cut off (old implementation)
+  // Enable::B0TRACKING = true; // For B0 Tracking
+  // Enable::B0TRACKING_EVAL = Enable::B0TRACKING && true; //For B0 Tracking
+  // G4B0TRACKING::DISPLACED_VERTEX = true; 
 
   // Enable::B0ECALTOWERS = true;  //To Construct Towers of B0ECal instead of one single volume
   // Enable::B0ECAL = Enable::B0_DISABLE_HITPLANE && true;
