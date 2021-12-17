@@ -71,6 +71,19 @@ namespace TRACKING
   std::set<std::string> ProjectionNames;
 }
 
+//For B0 Tracking
+class B0TrackFastSim;
+namespace B0TRACKING
+{
+  string TrackNodeName = "TrackMap";
+
+  B0TrackFastSim * FastKalmanFilter(nullptr);
+
+  B0TrackFastSim * FastKalmanFilterB0Track(nullptr);
+
+  std::set<std::string> B0ProjectionNames;
+}
+
 namespace G4MAGNET
 {
   // initialize to garbage values - the override is done in the respective
