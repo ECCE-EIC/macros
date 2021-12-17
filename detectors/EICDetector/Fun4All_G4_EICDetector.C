@@ -370,9 +370,17 @@ int Fun4All_G4_EICDetector(
   // Enable::ZDC_DISABLE_BLACKHOLE = true;
 
   // B0
+  // B0 shape
   // Enable::B0_DISABLE_HITPLANE = true;
   // Enable::B0_FULLHITPLANE = true;
+  // Enable::B0_VAR_PIPE_HOLE = true;
+  // Enable::B0_CIRCLE_PIPE_HOLE = false;
+  
+  // B0 Tracking
+  // Enable::B0TRACKING = false; // For B0 Tracking
+  // Enable::B0TRACKING_EVAL = Enable::B0TRACKING && true; //For B0 Tracking
 
+  // B0 ECAL
   // Enable::B0ECALTOWERS = true;  //To Construct Towers of B0ECal instead of one single volume
   // Enable::B0ECAL = Enable::B0_DISABLE_HITPLANE && true;
   // Enable::B0ECAL_CELL = Enable::B0ECAL && true;
