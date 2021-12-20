@@ -898,7 +898,7 @@ void hFarFwdDefineDetectorsIP8(PHG4Reco *g4Reco)
         const double b0Cu_zLen = .2; //B0 dead material length
         const double b0Si_zLen = .1; //B0 Si length
         const double b0Ecal_zLen = 10; //B0 Ecal length
-        const double pipe_hole_r = 3.5; //detector cut off for beam pipe
+        double pipe_hole_r = 3.5; //detector cut off for beam pipe
 	double pipe_hole = 2.5;
 	const double cable_hole = 2.0;
 	const double cable_x = 21.5;
