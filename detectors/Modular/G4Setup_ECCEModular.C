@@ -1,8 +1,5 @@
-#ifndef MACRO_G4SETUPEICDETECTOR_C
-#define MACRO_G4SETUPEICDETECTOR_C
-
-#include <G4_BMMG.C>
-#include <G4_TRD.C>
+#ifndef MACRO_G4SETUPECCEMODULAR_C
+#define MACRO_G4SETUPECCEMODULAR_C
 
 #include <GlobalVariables.C>
 
@@ -33,7 +30,7 @@
 #include <G4_TTL_EIC.C>
 #include <G4_TrackingSupport.C>
 #include <G4_Tracking_EIC.C>
-#include <G4_B0Tracking_EIC.C> //for B0 Tracking
+//#include <G4_B0Tracking_EIC.C> for B0 Tracking
 #include <G4_dRICH.C>
 #include <G4_mRICH.C>
 #include <G4_mRwell_EIC.C>
@@ -71,7 +68,7 @@ void G4Init()
 {
   // First some check for subsystems which do not go together
 
-  if (Enable::IP6 and Enable::IP8)
+   if (Enable::IP6 and Enable::IP8)
   {
     cout << "Can not enable Enable::IP6 and Enable::IP8 at the same time!" << endl;
     gSystem->Exit(1);
@@ -117,17 +114,13 @@ void G4Init()
     cout << "Can not enable TRD* and RICH at the same time!" << endl;
     gSystem->Exit(1);
   }
-  if ((Enable::LFHCAL||Enable::EHCAL) and Enable::PLUGDOOR)
-  {
-    cout << "Can not enable *HCal and PLUGDOOR at the same time!" << endl;
-    gSystem->Exit(1);
-  }
+
   // load detector/material macros and execute Init() function
   if (Enable::PIPE) PipeInit();
   if (Enable::PLUGDOOR) PlugDoorInit();
   if (Enable::TRACKING) TrackingInit();
-  if (Enable::B0TRACKING) B0TrackingInit();
-
+//  if (Enable::B0TRACKING) B0TrackingInit();
+  
   //Farforward/backward
   if (Enable::HFARFWD_MAGNETS) hFarBwdBeamLineInit();  //Shouldnt this be far backward enables
   if (Enable::HFARFWD_MAGNETS) hFarFwdBeamLineInit();
@@ -145,7 +138,7 @@ void G4Init()
   if (Enable::DIRC) DIRCInit();
   if (Enable::BTOF) BToFInit();
   if (Enable::BMMG) BMMGInit();
-  
+
   //Forward
   if (Enable::FGEM) FGEM_Init();
   if (Enable::FEMC) FEMCInit();
@@ -202,10 +195,7 @@ int G4Setup()
   {  // conversion to double fails -> we have a string
 
     if (G4MAGNET::magfield.find("sPHENIX.root") != string::npos)
-//    if (G4MAGNET::magfield.find("B0MagField_all_v2.root") != string::npos) // for B0 Tracking
-//    if (G4MAGNET::magfield.find("/cvmfs/eic.opensciencegrid.org/ecce/gcc-8.3/opt/fun4all/core/calibrations/Field/Map/sphenix3dbigmapxyz.root") != string::npos)
     {
-//	std::cout <<"G4 Setup: Using B0MagField_all_v1.root as 3D fieldMap"<<std::endl;
       g4Reco->set_field_map(G4MAGNET::magfield, PHFieldConfig::Field3DCartesian);
     }
     else
@@ -261,7 +251,7 @@ int G4Setup()
   if (Enable::RICH) RICHSetup(g4Reco);
   if (Enable::TRD) TRDSetup(g4Reco);
   if (Enable::HTOF) HTOFSetup(g4Reco);
-  
+
   //Backward
   if (Enable::ETTL) ETTLSetup(g4Reco);
   if (Enable::EGEM) EGEMSetup(g4Reco);
@@ -303,6 +293,7 @@ void ShowerCompress()
   //
   //  compress->AddHitContainer("G4HIT_ZDC");
   //  compress->AddHitContainer("G4HIT_RomanPots");
+  //  compress->AddHitContainer("G4HIT_B0detector");
   compress->AddHitContainer("G4HIT_b0Truth");
   compress->AddHitContainer("G4HIT_FIELDCAGE");
 
@@ -409,6 +400,7 @@ void DstCompress(Fun4AllDstOutputManager *out)
     //
     //    out->StripNode("G4HIT_ZDC");
     //    out->StripNode("G4HIT_RomanPots");
+    //    out->StripNode("G4HIT_B0detectors");
     out->StripNode("G4HIT_b0Truth");
     out->StripNode("G4HIT_SVTXSUPPORT");
     out->StripNode("G4HIT_CEMC_ELECTRONICS");
