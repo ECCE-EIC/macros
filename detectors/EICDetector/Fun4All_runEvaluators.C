@@ -74,7 +74,7 @@ int Fun4All_runEvaluators(
   Enable::FEMC_EVAL = true;
   Enable::LFHCAL_EVAL = true;
   Enable::EEMCH_EVAL = true;
-  Enable::EHCAL_EVAL = true;
+  Enable::EHCAL_EVAL = false;
   Enable::FWDJETS_EVAL = false;
   Enable::FFR_EVAL = true;
 
@@ -101,12 +101,12 @@ int Fun4All_runEvaluators(
   Enable::FEMC = true;
   Enable::LFHCAL = true;
   Enable::EEMCH = true;
-  Enable::EHCAL = true;
+  Enable::EHCAL = false;
 
   TRACKING::ProjectionNames = {"BECAL"
                               ,"CTTL_0"
                               ,"EEMC"
-                              ,"EHCAL"
+                              //,"EHCAL"
                               ,"ETTL_0"
                               ,"ETTL_1" 
                               ,"FEMC"
