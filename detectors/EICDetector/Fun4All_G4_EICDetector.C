@@ -30,7 +30,7 @@ int Fun4All_G4_EICDetector(
     const string &outputFile = "G4EICDetector.root",
     const string &embed_input_file = "https://www.phenix.bnl.gov/WWW/publish/phnxbld/sPHENIX/files/sPHENIX_G4Hits_sHijing_9-11fm_00000_00010.root",
     const int skip = 0,
-    const string &outdir = ".", const string particleType = "e-")
+    const string &outdir = ".")
 {
   //---------------
   // Fun4All server
@@ -141,7 +141,7 @@ int Fun4All_G4_EICDetector(
   // add the settings for other with [1], next with [2]...
   if (Input::SIMPLE)
   {
-    INPUTGENERATOR::SimpleEventGenerator[0]->add_particles(particleType, 5);
+    INPUTGENERATOR::SimpleEventGenerator[0]->add_particles("pi-", 5);
     if (Input::HEPMC || Input::EMBED)
     {
       INPUTGENERATOR::SimpleEventGenerator[0]->set_reuse_existing_vertex(true);
