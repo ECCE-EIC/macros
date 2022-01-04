@@ -66,8 +66,12 @@ int Fun4All_G4_EICDetector(
 
   // switching IPs by comment/uncommenting the following lines
   // used for both beamline setting and for the event generator crossing boost
-  Enable::IP6 = true;
+//  Enable::IP6 = true;
   // Enable::IP8 = true;
+
+  Enable::IP8 = true;
+  G4PIPE::use_forward_pipes = false;
+  G4WORLD::WorldMaterial = "G4_Galactic"; // set to G4_GALACTIC for material scans
 
   // Setting proton beam pipe energy. If you don't know what to set here, leave it at 275
   Enable::HFARFWD_ION_ENERGY = 275;
@@ -264,7 +268,7 @@ int Fun4All_G4_EICDetector(
   // whether to simulate the Be section of the beam pipe
   Enable::PIPE = true;
   // If need to disable EIC beam pipe extension beyond the Be-section:
-  G4PIPE::use_forward_pipes = true;
+  // G4PIPE::use_forward_pipes = true;
   //EIC hadron far forward magnets and detectors. IP6 and IP8 are incompatible (pick either or);
   Enable::HFARFWD_MAGNETS = true;
   Enable::HFARFWD_VIRTUAL_DETECTORS = true;
@@ -297,7 +301,7 @@ int Fun4All_G4_EICDetector(
   Enable::HTOF_GAS = Enable::HTOF && true;
 
   Enable::TRACKING = true;
-  Enable::TRACKING_EVAL = Enable::TRACKING && true;
+  Enable::TRACKING_EVAL = Enable::TRACKING && false;
   G4TRACKING::DISPLACED_VERTEX = true;  // this option exclude vertex in the track fitting and use RAVE to reconstruct primary and 2ndary vertexes
                                         // projections to calorimeters
   G4TRACKING::PROJECTION_EEMC = true;
@@ -348,7 +352,7 @@ int Fun4All_G4_EICDetector(
   G4TTL::SETTING::optionEEMCH           = Enable::EEMCH && true;
   Enable::EHCAL   = false;
 
-  Enable::FFR_EVAL = Enable::HFARFWD_MAGNETS && Enable::HFARFWD_VIRTUAL_DETECTORS && true;
+  Enable::FFR_EVAL = Enable::HFARFWD_MAGNETS && Enable::HFARFWD_VIRTUAL_DETECTORS && false;
 
   Enable::PLUGDOOR = false;
 
@@ -389,19 +393,19 @@ int Fun4All_G4_EICDetector(
   Enable::BECAL_CELL    = Enable::BECAL && true;
   Enable::BECAL_TOWER   = Enable::BECAL_CELL && true;
   Enable::BECAL_CLUSTER = Enable::BECAL_TOWER && true;
-  Enable::BECAL_EVAL    = Enable::BECAL_CLUSTER && true;
+  Enable::BECAL_EVAL    = Enable::BECAL_CLUSTER && false;
 
   //  Enable::HCALIN_ABSORBER = true;
   Enable::HCALIN_CELL     = Enable::HCALIN && true;
   Enable::HCALIN_TOWER    = Enable::HCALIN_CELL && true;
   Enable::HCALIN_CLUSTER  = Enable::HCALIN_TOWER && true;
-  Enable::HCALIN_EVAL     = Enable::HCALIN_CLUSTER && true;
+  Enable::HCALIN_EVAL     = Enable::HCALIN_CLUSTER && false;
 
   //  Enable::HCALOUT_ABSORBER = true;
   Enable::HCALOUT_CELL    = Enable::HCALOUT && true;
   Enable::HCALOUT_TOWER   = Enable::HCALOUT_CELL && true;
   Enable::HCALOUT_CLUSTER = Enable::HCALOUT_TOWER && true;
-  Enable::HCALOUT_EVAL    = Enable::HCALOUT_CLUSTER && true;
+  Enable::HCALOUT_EVAL    = Enable::HCALOUT_CLUSTER && false;
   
   //  Enable::FEMC_ABSORBER = true;
   Enable::FEMC_TOWER      = Enable::FEMC && true;
@@ -421,15 +425,15 @@ int Fun4All_G4_EICDetector(
 
   Enable::EEMCH_TOWER     = Enable::EEMCH && true;
   Enable::EEMCH_CLUSTER   = Enable::EEMCH_TOWER && true;
-  Enable::EEMCH_EVAL      = Enable::EEMCH_CLUSTER && true;
+  Enable::EEMCH_EVAL      = Enable::EEMCH_CLUSTER && false;
 
   Enable::EHCAL_CELL      = Enable::EHCAL && true;
   Enable::EHCAL_TOWER     = Enable::EHCAL_CELL && true;
   Enable::EHCAL_CLUSTER   = Enable::EHCAL_TOWER && true;
-  Enable::EHCAL_EVAL      = Enable::EHCAL_CLUSTER && true;
+  Enable::EHCAL_EVAL      = Enable::EHCAL_CLUSTER && false;
   
   // Enabling the event evaluator?
-  Enable::EVENT_EVAL            = true;
+  Enable::EVENT_EVAL            = false;
   Enable::EVENT_EVAL_DO_HITS    = true;
   Enable::EVENT_EVAL_DO_HEPMC   = Input::PYTHIA6 or Input::PYTHIA8 or Input::SARTRE or Input::HEPMC or Input::READEIC;
   Enable::EVENT_EVAL_DO_EVT_LVL = Input::PYTHIA6 or Input::PYTHIA8 or Input::READEIC;
