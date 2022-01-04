@@ -33,7 +33,7 @@
 #include <G4_TTL_EIC.C>
 #include <G4_TrackingSupport.C>
 #include <G4_Tracking_EIC.C>
-//#include <G4_B0Tracking_EIC.C> for B0 Tracking
+#include <G4_B0Tracking_EIC.C> //for B0 Tracking
 #include <G4_dRICH.C>
 #include <G4_mRICH.C>
 #include <G4_mRwell_EIC.C>
@@ -126,7 +126,7 @@ void G4Init()
   if (Enable::PIPE) PipeInit();
   if (Enable::PLUGDOOR) PlugDoorInit();
   if (Enable::TRACKING) TrackingInit();
-//  if (Enable::B0TRACKING) B0TrackingInit();
+  if (Enable::B0TRACKING) B0TrackingInit();
 
   //Farforward/backward
   if (Enable::HFARFWD_MAGNETS) hFarBwdBeamLineInit();  //Shouldnt this be far backward enables
