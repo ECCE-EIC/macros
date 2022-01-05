@@ -861,7 +861,6 @@ void hFarFwdDefineDetectorsIP8(PHG4Reco *g4Reco)
 	  }
   }
 
-
   if (verbosity > 0)
   {
     std::cout << "B0Magnet can be mother = " << hFarFwdBeamLine::B0Magnet->CanBeMotherSubsystem() << std::endl;
