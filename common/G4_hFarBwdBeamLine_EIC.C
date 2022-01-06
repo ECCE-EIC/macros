@@ -428,9 +428,8 @@ void hFarBwdDefineDetectorsIP6(PHG4Reco *g4Reco)
 		if (!Enable::BWDN[i])continue;
 	cout <<"Detector "<<i<<bwddetname[i]<<endl;
 	  	ostringstream mapping_bwd;
-	//	mapping_b0ecal << getenv("CALIBRATIONROOT") << "/B0Ecal/mapping/B0ECAL_mapping_v1.txt"; // Specify the mapping file for B0 ECal Towers here
-		mapping_bwd << G4BWD::mapname[i]; // Specify the mapping file for B0 ECal Towers here
-  		mapping_bwd = G4BWD::mappath+mapping_bwd;
+		mapping_bwd << getenv("CALIBRATIONROOT") << "/BWD/mapping/"<<G4BWD::mapname[i];
+		//mapping_bwd << G4BWD::mapname[i]; // Specify the mapping file for B0 ECal Towers here
 		auto *Bwd = new EICG4BwdSubsystem("BWD");
 		Bwd->SetTowerMappingFile(mapping_bwd.str());
 	        Bwd->SuperDetector(Form("BWD_%d", i));
