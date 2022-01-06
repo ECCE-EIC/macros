@@ -393,7 +393,19 @@ int Fun4All_G4_EICDetector(
     
   // RP
   // Enable::RP_DISABLE_HITPLANE = true;
-  
+   
+   //Far Backward detectors
+//  Enable::BWD = true;
+//  Enable::BWDN[0]=true; // 1st Q2 tagger
+//  Enable::BWDN[1]=true; // 2nd Q2 tagger
+//  Enable::BWDN[2]=true; // 1st Lumi
+//  Enable::BWDN[3]=true; // 2nd Lumi (+)
+//  Enable::BWDN[4]=true; // 3rd Lumi (-)
+//  Enable::BWD_CELL = Enable::BWD && true;
+//  Enable::BWD_TOWER = Enable::BWD_CELL && true;
+//  Enable::BWD_CLUSTER = Enable::BWD_TOWER && true;
+//  Enable::BWD_EVAL = Enable::BWD_CLUSTER && true;
+
   //************************************************************
   // details for calos: cells, towers, clusters
   //************************************************************
@@ -538,6 +550,9 @@ int Fun4All_G4_EICDetector(
     
   if (Enable::B0ECAL_TOWER) B0ECAL_Towers(); // For B0Ecal
   if (Enable::B0ECAL_CLUSTER) B0ECAL_Clusters(); //For B0Ecal
+    
+  if (Enable::BWD_TOWER) BWD_Towers(); // For Bwd
+  if (Enable::BWD_CLUSTER) BWD_Clusters(); //For Bwd
 
   if (Enable::DSTOUT_COMPRESS) ShowerCompress();
 
@@ -605,6 +620,8 @@ int Fun4All_G4_EICDetector(
   if (Enable::FFR_EVAL) FFR_Eval(outputroot + "_g4ffr_eval.root");
 
   if (Enable::B0ECAL_EVAL) B0ECAL_Eval(outputroot + "_g4b0ecal_eval_test.root"); // For B0Ecal
+    
+  if (Enable::BWD_EVAL) BWD_Eval(outputroot + "_g4bwd_eval_e0100_debug"); // For Bwd
     
   if (Enable::FWDJETS_EVAL) Jet_FwdEval();
 
