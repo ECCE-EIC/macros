@@ -52,7 +52,7 @@ namespace G4BWD
 {
   
   string mappath;
-	mappath << getenv("CALIBRATIONROOT") << "/B0Ecal/mapping/";
+	mappath << getenv("CALIBRATIONROOT") << "/BWD/mapping/";
   string mapname[5]={"BWD_mapping_v1.txt","BWD_mapping_v2.txt","BWD_mapping_v3.txt","BWD_mapping_v4.txt","BWD_mapping_v5.txt"};
   double minz = -5000;
   double maxz = -300;
