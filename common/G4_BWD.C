@@ -51,8 +51,6 @@ namespace Enable
 namespace G4BWD
 {
   
-  string mappath;
-	mappath << getenv("CALIBRATIONROOT") << "/BWD/mapping/";
   string mapname[5]={"BWD_mapping_v1.txt","BWD_mapping_v2.txt","BWD_mapping_v3.txt","BWD_mapping_v4.txt","BWD_mapping_v5.txt"};
   double minz = -5000;
   double maxz = -300;
@@ -94,10 +92,8 @@ for (int i = 0; i < 5; i++){
 	if (!Enable::BWDN[i])continue;
   Fun4AllServer *se = Fun4AllServer::instance();
   ostringstream mapping_bwd;
-  //mapping_b0ecal << getenv("CALIBRATIONROOT") << "/B0Ecal/mapping/B0ECAL_mapping_v1.txt";
-  //mapping_bwd << "BWD_mapping_v1.txt";
-  mapping_bwd << G4BWD::mapname[i];
-  mapping_bwd = G4BWD::mappath+mapping_bwd;
+  mapping_bwd << getenv("CALIBRATIONROOT") << "/BWD/mapping/"<<G4BWD::mapname[i];
+  //mapping_bwd << G4BWD::mapname[i];
   BwdRawTowerBuilderByHitIndex *tower_BWD = new BwdRawTowerBuilderByHitIndex(Form("TowerBuilder_BWD_%d", i));
   tower_BWD->Detector(Form("BWD_%d", i));
   tower_BWD->set_sim_tower_node_prefix("SIM");
