@@ -43,7 +43,7 @@ namespace G4LFHCAL
   // from LFHcal/mapping/towerMap_LFHCAL_v005.txt
   double Gz0 = 400.;
   double Gdz = 100.;
-  double outer_radius = 262.;
+  double outer_radius = 265.;
   enum enu_FHcal_clusterizer
   {
     kFHcalGraphClusterizer,
@@ -55,13 +55,14 @@ namespace G4LFHCAL
   //enu_FHcal_clusterizer FHcal_clusterizer = kFHcalGraphClusterizer;
   namespace SETTING
   {
-    bool FullEtaAcc = false;
-    bool HC2x = false;
-    bool asymmetric = true;
-    bool wDR = false;
-    bool FwdSquare = false;
-    bool FwdConfig = false;
-    bool longer = true;
+    bool FullEtaAcc   = false;
+    bool HC2x         = false;
+    bool asymmetric   = true;
+    bool wDR          = false;
+    bool FwdSquare    = false;
+    bool FwdConfig    = false;
+    bool longer       = true;
+    bool tailcatcher  = true;
   }  // namespace SETTING
 }  // namespace G4LFHCAL
 
@@ -102,9 +103,12 @@ TString GetMappingFile(){
   else if (G4LFHCAL::SETTING::asymmetric)
   {
     if (Enable::IP6){
-      if (G4LFHCAL::SETTING::longer)
-        mappinFileName += "/LFHcal/mapping/towerMap_LFHCAL_IP6-asymmetric-long.txt";
-      else 
+      if (G4LFHCAL::SETTING::longer){
+        if (G4LFHCAL::SETTING::tailcatcher)
+          mappinFileName += "/LFHcal/mapping/towerMap_LFHCAL_IP6-asymmetric-long-tailcatcher.txt";
+        else
+          mappinFileName += "/LFHcal/mapping/towerMap_LFHCAL_IP6-asymmetric-long.txt";
+      } else 
         mappinFileName += "/LFHcal/mapping/towerMap_LFHCAL_IP6-asymmetric.txt";
     } else {
       if (G4LFHCAL::SETTING::longer)
@@ -162,7 +166,7 @@ void LFHCALSetup(PHG4Reco *g4Reco)
   fhcal->SetTowerMappingFile(mapping_fhcal_s.str());
   fhcal->OverlapCheck(OverlapCheck);
   fhcal->SetActive();
-  fhcal->SetDetailed(true);
+  //fhcal->SetDetailed(true);
   fhcal->SuperDetector("LFHCAL");
   if (AbsorberActive) fhcal->SetAbsorberActive();
 

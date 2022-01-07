@@ -36,6 +36,8 @@ namespace Enable
   bool HFARBWD_VIRTUAL_DETECTORS_IP6 = false;
   bool HFARBWD_VIRTUAL_DETECTORS_IP8 = false;
 
+  float HFARBWD_E_ENERGY = 0;
+
 }  // namespace Enable
 
 namespace hFarBwdBeamLine
@@ -108,13 +110,14 @@ void hFarBwdDefineMagnets(PHG4Reco *g4Reco)
   hFarBwdBeamLine::hFarBwdBeamLineEnclosure->set_string_param("material", "G4_Galactic");
   hFarBwdBeamLine::hFarBwdBeamLineEnclosure->set_color(.5, .5, .5, 0.2);
   hFarBwdBeamLine::hFarBwdBeamLineEnclosure->OverlapCheck(overlapCheck);
+  hFarBwdBeamLine::hFarBwdBeamLineEnclosure->SetActive();
   if (verbosity)
     hFarBwdBeamLine::hFarBwdBeamLineEnclosure->Verbosity(verbosity);
   g4Reco->registerSubsystem(hFarBwdBeamLine::hFarBwdBeamLineEnclosure);
 
   string magFile;
   if (Enable::HFARFWD_MAGNETS_IP6)
-    magFile = string(getenv("CALIBRATIONROOT")) + "/Beam/ip6_h_farFwdBeamLineMagnets.dat";
+    magFile = string(getenv("CALIBRATIONROOT")) + "/Beam/ip6_h_farBwdBeamLineMagnets.dat";
   else if (Enable::HFARFWD_MAGNETS_IP8)
     magFile = string(getenv("CALIBRATIONROOT")) + "/Beam/ip8_35mrad_h_farFwdBeamLineMagnets.dat";
   else
@@ -124,7 +127,9 @@ void hFarBwdDefineMagnets(PHG4Reco *g4Reco)
   }
 
   // make magnet active volume if you want to study the hits
-  bool magnet_active = false;
+//  bool magnet_active = false;
+  bool magnet_active = true;
+
   int absorberactive = 0;
 
   // if you insert numbers it only displays those magnets, do not comment out the set declaration
@@ -140,9 +145,9 @@ void hFarBwdDefineMagnets(PHG4Reco *g4Reco)
     std::string line;
     while (std::getline(infile, line))
     {
-      if (!line.compare(0, 1, "B") ||
-          !line.compare(0, 1, "Q") ||
-          !line.compare(0, 1, "S"))
+      if (!line.compare(0, 3, "eDB") ||
+          !line.compare(0, 2, "eQ") ||
+          !line.compare(0, 2, "eS"))
       {
         std::istringstream iss(line);
         string magname;
@@ -193,15 +198,15 @@ void hFarBwdDefineMagnets(PHG4Reco *g4Reco)
             cout << "dipole_field_x: " << dipole_field_x << endl;
             cout << "fieldgradient: " << fieldgradient << endl;
           }
-          if (!magname.compare(0, 1, "B"))
+          if (!magname.compare(0, 3, "eDB"))
           {
             magtype = "DIPOLE";
           }
-          else if (!magname.compare(0, 1, "Q"))
+          else if (!magname.compare(0, 2, "eQ"))
           {
             magtype = "QUADRUPOLE";
           }
-          else if (!magname.compare(0, 1, "S"))
+          else if (!magname.compare(0, 2, "eS"))
           {
             magtype = "SEXTUPOLE";
           }
@@ -221,9 +226,10 @@ void hFarBwdDefineMagnets(PHG4Reco *g4Reco)
 
 	  //------------------------
 	  // Linearly scaling down the magnetic field for lower energy proton
-	  if( Enable::HFARFWD_ION_ENERGY != 275 ) {
-             float scaleFactor = Enable::HFARFWD_ION_ENERGY / 275. ;
+	  if( Enable::HFARBWD_E_ENERGY != 18 ) {
+             float scaleFactor = Enable::HFARBWD_E_ENERGY / 18. ;
 	     dipole_field_x = dipole_field_x*scaleFactor;
+	     fieldgradient = fieldgradient * scaleFactor;
    	  }
 
           if (magnetlist.empty() || magnetlist.find(imagnet) != magnetlist.end())
@@ -276,6 +282,44 @@ void hFarBwdDefineMagnets(PHG4Reco *g4Reco)
 
 void hFarBwdDefineDetectorsIP6(PHG4Reco *g4Reco)
 {
+
+//  bool overlapCheck = Enable::OVERLAPCHECK || Enable::HFARBWD_OVERLAPCHECK;
+//  if (Enable::HFARBWD_VIRTUAL_DETECTORS_IP6 && Enable::HFARBWD_VIRTUAL_DETECTORS_IP8)
+//  {
+//    cout << "You cannot have detectors enabled for both IP6 and IP8 ON at the same time" << endl;
+//    gSystem->Exit(1);
+//  }
+// 
+//   int verbosity = std::max(Enable::VERBOSITY, Enable::HFARBWD_VERBOSITY);
+//
+//   auto *detBackward = new PHG4CylinderSubsystem("detBackward");
+//    detBackward->SuperDetector("backTruth");
+//    detBackward->set_double_param("place_x", 0);
+//    detBackward->set_double_param("place_y", 0);
+////    detBackward->set_double_param("place_z", -500);
+//    detBackward->set_double_param("place_z", -500 - hFarBwdBeamLine::enclosure_center);
+//    detBackward->set_double_param("rot_y", 0);
+//    detBackward->set_double_param("radius", 0);
+//    detBackward->set_double_param("thickness", 30);  // This is intentionally made large 25cm radius
+//    detBackward->set_double_param("length", 0.03);
+//    detBackward->set_string_param("material", "G4_Si");
+//
+//    detBackward->SetMotherSubsystem(hFarBwdBeamLine::hFarBwdBeamLineEnclosure);
+//
+//
+//    detBackward->SetActive();
+//    detBackward->OverlapCheck(overlapCheck);
+//    detBackward->set_color(1, 0, 0, 0.5);
+//
+//    detBackward->BlackHole();
+//    if (verbosity) detBackward->Verbosity(verbosity);
+//    g4Reco->registerSubsystem(detBackward);
+//
+////  int verbosity = std::max(Enable::VERBOSITY, Enable::HFARFWD_VERBOSITY);
+
+  // **********************************************
+  // Luminosity monitor
+
   bool overlapCheck = Enable::OVERLAPCHECK || Enable::HFARBWD_OVERLAPCHECK;
   if (Enable::HFARBWD_VIRTUAL_DETECTORS_IP6 && Enable::HFARBWD_VIRTUAL_DETECTORS_IP8)
   {
@@ -285,28 +329,84 @@ void hFarBwdDefineDetectorsIP6(PHG4Reco *g4Reco)
  
    int verbosity = std::max(Enable::VERBOSITY, Enable::HFARBWD_VERBOSITY);
 
-   auto *detBackward = new PHG4CylinderSubsystem("detBackward");
-    detBackward->SuperDetector("backTruth");
-    detBackward->set_double_param("place_x", 0);
-    detBackward->set_double_param("place_y", 0);
-//    detBackward->set_double_param("place_z", -500);
-    detBackward->set_double_param("place_z", -500 - hFarBwdBeamLine::enclosure_center);
-    detBackward->set_double_param("rot_y", 0);
-    detBackward->set_double_param("radius", 0);
-    detBackward->set_double_param("thickness", 30);  // This is intentionally made large 25cm radius
-    detBackward->set_double_param("length", 0.03);
-    detBackward->set_string_param("material", "G4_Si");
+   auto *detLumi = new PHG4CylinderSubsystem("detLumi");
+   detLumi->SuperDetector("backLumi");
+   detLumi->set_double_param("place_x", 0);
+   detLumi->set_double_param("place_y", 0);
+   detLumi->set_double_param("place_z", -3400 - hFarBwdBeamLine::enclosure_center);
+   detLumi->set_double_param("rot_y", 0);
+   detLumi->set_double_param("radius", 0);
+   detLumi->set_double_param("thickness", 20);  // This is intentionally made large 25cm radius
+   detLumi->set_double_param("length", 0.03);
+   detLumi->set_string_param("material", "G4_Si");
+   detLumi->SetMotherSubsystem(hFarBwdBeamLine::hFarBwdBeamLineEnclosure);
 
-    detBackward->SetMotherSubsystem(hFarBwdBeamLine::hFarBwdBeamLineEnclosure);
+   detLumi->SetActive();
+   detLumi->OverlapCheck(overlapCheck);
+   detLumi->set_color(0, 1, 0, 0.5);
+
+   detLumi->BlackHole();
+   if (verbosity) detLumi->Verbosity(verbosity);
+   g4Reco->registerSubsystem(detLumi);
+
+  // **********************************************
+  // Low Q2 Tagger
+  // There are two set of Q2 taggers: 1st at 24m; 2nd at 37m.
+  //
+  // 1st Set of Low Q2 tagger, z location 24m 
+
+//   auto *detLowQ2Tag_1 = new PHG4CylinderSubsystem("detLowQ2Tag_1");
+
+   auto *detLowQ2Tag_1= new PHG4BlockSubsystem("detLowQ2Tag_1");
+
+   detLowQ2Tag_1->SuperDetector("backLowQ2Tag_1");
+   detLowQ2Tag_1->set_double_param("place_x", -50);
+   detLowQ2Tag_1->set_double_param("place_y", 0);
+   detLowQ2Tag_1->set_double_param("place_z", -2400 - hFarBwdBeamLine::enclosure_center);
+//   detLowQ2Tag_1->set_double_param("rot_y", 0);
+//   detLowQ2Tag_1->set_double_param("radius", 0);
+//   detLowQ2Tag_1->set_double_param("thickness", 30);  // This is intentionally made large 25cm radius
+   detLowQ2Tag_1->set_double_param("size_x", 50);  // This is intentionally made large 25cm radius
+   detLowQ2Tag_1->set_double_param("size_y", 35);  // This is intentionally made large 25cm radius
+   detLowQ2Tag_1->set_double_param("size_z", 0.03);  // This is intentionally made large 25cm radius
+//   detLowQ2Tag_1->set_double_param("length", 0.03);
+   detLowQ2Tag_1->set_string_param("material", "G4_Si");
+   detLowQ2Tag_1->SetMotherSubsystem(hFarBwdBeamLine::hFarBwdBeamLineEnclosure);
+
+   detLowQ2Tag_1->SetActive();
+   detLowQ2Tag_1->OverlapCheck(overlapCheck);
+   detLowQ2Tag_1->set_color(1, 0, 0, 0.5);
+
+   detLowQ2Tag_1->BlackHole();
+   if (verbosity) detLowQ2Tag_1->Verbosity(verbosity);
+   g4Reco->registerSubsystem(detLowQ2Tag_1);
 
 
-    detBackward->SetActive();
-    detBackward->OverlapCheck(overlapCheck);
-    detBackward->set_color(1, 0, 0, 0.5);
+  // 2nd Set of Low Q2 tagger, z location 37m 
 
-    detBackward->BlackHole();
-    if (verbosity) detBackward->Verbosity(verbosity);
-    g4Reco->registerSubsystem(detBackward);
+//   auto *detLowQ2Tag_2 = new PHG4CylinderSubsystem("detLowQ2Tag_2");
+   auto *detLowQ2Tag_2 = new PHG4BlockSubsystem("detLowQ2Tag_2");
+   detLowQ2Tag_2->SuperDetector("backLowQ2Tag_2");
+   detLowQ2Tag_2->set_double_param("place_x", -80);
+   detLowQ2Tag_2->set_double_param("place_y", 0);
+   detLowQ2Tag_2->set_double_param("place_z", -3700 - hFarBwdBeamLine::enclosure_center);
+//   detLowQ2Tag_2->set_double_param("rot_y", 0);
+//   detLowQ2Tag_2->set_double_param("radius", 0);
+//   detLowQ2Tag_2->set_double_param("thickness", 30);  // This is intentionally made large 25cm radius
+   detLowQ2Tag_2->set_double_param("size_x", 50);  // This is intentionally made large 25cm radius
+   detLowQ2Tag_2->set_double_param("size_y", 35);  // This is intentionally made large 25cm radius
+   detLowQ2Tag_2->set_double_param("size_z", 0.03);  // This is intentionally made large 25cm radius
+//   detLowQ2Tag_2->set_double_param("length", 0.03);
+   detLowQ2Tag_2->set_string_param("material", "G4_Si");
+   detLowQ2Tag_2->SetMotherSubsystem(hFarBwdBeamLine::hFarBwdBeamLineEnclosure);
+
+   detLowQ2Tag_2->SetActive();
+   detLowQ2Tag_2->OverlapCheck(overlapCheck);
+   detLowQ2Tag_2->set_color(1, 0, 0, 0.5);
+
+   detLowQ2Tag_2->BlackHole();
+   if (verbosity) detLowQ2Tag_2->Verbosity(verbosity);
+   g4Reco->registerSubsystem(detLowQ2Tag_2);
 
 //  int verbosity = std::max(Enable::VERBOSITY, Enable::HFARFWD_VERBOSITY);
 
