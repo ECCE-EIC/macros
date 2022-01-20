@@ -30,8 +30,6 @@ float PosFlip(float pos);
 float AngleFlip(float angle);
 float MagFieldFlip(float Bfield);
 
-template <class T>
-T GetParameterFromFile( std::string filename, std::string param);
 
 // This creates the Enable Flag to be used in the main steering macro
 namespace Enable
@@ -1409,45 +1407,6 @@ void FFR_Eval(const std::string &outputfile)
   se->registerSubsystem(eval);
 
   return;
-}
-
-//--------------------------------------------------------
-template <class T>
-T GetParameterFromFile(std::string filename, std::string param)
-{
-	std::ifstream infile;
-        std::string line;
-
-	infile.open( filename );
-
-	if( ! infile.is_open() ) 
-	{
-		std::cout << "ERROR in G4_hFarFwdBeamLine: Failed to open parameter file " << filename << std::endl;
-		gSystem->Exit(1);
-	}
-
-	while( std::getline(infile, line) ) {
-
-	    std::string name;
-	    double value;
-
-	    std::istringstream iss( line );
-
-	    // skip comment lines
-	    if( line.find("#") != std::string::npos ) { continue; }
-
-	    if( !(iss >> name >> value) ) {
-		std::cout << "Could not decode " << line << std::endl;
-		gSystem->Exit(1);
-	    }
-	    
-            if( name.compare(param) == 0 ) {
-		    return value;
-	    }
-	}
-
-        infile.close();
-	return 0;
 }
 
 
