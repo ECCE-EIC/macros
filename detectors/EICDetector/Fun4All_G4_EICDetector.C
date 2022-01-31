@@ -69,11 +69,35 @@ int Fun4All_G4_EICDetector(
   Enable::IP6 = true;
   // Enable::IP8 = true;
 
+   
+  //===============
+  // The following Ion energy and electron energy setting needs to be speficied
+  // The setting options for e-p high divergence setting (p energy x e energy):
+  // Option: 275x18, 275x10, 100x10, 100x5, 41x5
+  //
+  // The setting options for e-p high divergence setting (p energy x e energy):
+  // Option: 275x18, 275x10, 100x10, 100x5, 41x5
+  //
+  // The setting options for e-p high divergence setting (A energy x e energy):
+  // Option: 110x18, 110x10, 110x5, 41x5
+
   // Setting proton beam pipe energy. If you don't know what to set here, leave it at 275
   Enable::HFARFWD_ION_ENERGY = 275;
 
   // Setting electron beam pipe energy. If you don't know what to set here, leave it at 18
   Enable::HFARBWD_E_ENERGY = 18;
+
+  // Beam Scattering configuration setting specified by CDR
+  //
+  // Option 1: ep-high-acceptance
+  // Option 2: ep-high-divergence
+  // Option 3: eA
+  //
+  // Enable::BEAM_COLLISION_SETTING = "ep-high-divergence";
+  // If you don't know what to put here, set it to ep-high-divergence   
+  //
+  // Enable::BEAM_COLLISION_SETTING = "eA";
+  Enable::BEAM_COLLISION_SETTING = "ep-high-divergence";
 
   // Either:
   // read previously generated g4-hits files, in this case it opens a DST and skips

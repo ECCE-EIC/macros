@@ -37,6 +37,11 @@ namespace Enable
   // IP selection require explicit choice in the main macros
   bool IP6 = false;
   bool IP8 = false;
+
+  float HFARFWD_ION_ENERGY = 0;
+  float HFARBWD_E_ENERGY = 0;
+  TString BEAM_COLLISION_SETTING;
+
 }  // namespace Enable
 
 // every G4 subsystem needs to implement this

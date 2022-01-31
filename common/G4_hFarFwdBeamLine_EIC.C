@@ -58,8 +58,6 @@ namespace Enable
   bool HFARFWD_VIRTUAL_DETECTORS_IP6 = false;
   bool HFARFWD_VIRTUAL_DETECTORS_IP8 = false;
 
-  float HFARFWD_ION_ENERGY = 0;
-
   bool FFR_EVAL = false;
 
 }  // namespace Enable

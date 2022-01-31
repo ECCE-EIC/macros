@@ -37,8 +37,6 @@ namespace Enable
   bool HFARBWD_VIRTUAL_DETECTORS_IP6 = false;
   bool HFARBWD_VIRTUAL_DETECTORS_IP8 = false;
 
-  float HFARBWD_E_ENERGY = 0;
-
 }  // namespace Enable
 
 namespace hFarBwdBeamLine
