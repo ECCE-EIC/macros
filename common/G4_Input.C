@@ -121,6 +121,122 @@ namespace Input
       exit(1);
     }
 
+    // ---------------------------------------
+
+
+    cout << Enable::HFARFWD_ION_ENERGY << "    " << Enable::HFARBWD_E_ENERGY << endl;
+
+    TString beam_setting_str;
+    beam_setting_str.Form("%.0fx%.0f", Enable::HFARFWD_ION_ENERGY, Enable::HFARBWD_E_ENERGY);
+
+    cout << "Beam scattering setting: " << beam_setting_str << endl;
+
+    TString beam_opt;
+//    beam_opt = "ep-high-acceptance";
+    beam_opt = Enable::BEAM_COLLISION_SETTING;
+//    beam_opt = "ep-high-divergence";
+//    beam_opt = "eA";
+//    cout << Enable::HFARFWD_ION_ENERGY << endl;;
+//    cout << Enable::IP6 << endl;;
+
+    string beamFile;
+
+    if (beam_opt == "ep-high-acceptance") {
+    	beamFile = string(getenv("CALIBRATIONROOT")) + "/Beam/ip6_ep_high_acceptance_parameter.dat";
+    } else if (beam_opt == "ep-high-divergence") {
+    	beamFile = string(getenv("CALIBRATIONROOT")) + "/Beam/ip6_ep_high_divergence_parameter.dat";
+    } else if (beam_opt == "eA") {
+    	beamFile = string(getenv("CALIBRATIONROOT")) + "/Beam/ip6_eAu_parameter.dat";
+    } else {
+       cout << "No beam scattering configuration file was identified." << endl;
+       gSystem->Exit(1);
+    }
+
+//    cout <<  << endl;
+//    beamFile = string(getenv("CALIBRATIONROOT")) + "/Beam/ip6_ep_high_acceptance_parameter.dat";
+//    beamFile = string(getenv("CALIBRATIONROOT")) + "/Beam/ip6_eAu_parameter.dat";
+
+    string settingname;
+ 
+    double beta_star_p_h, beta_star_p_v, beta_star_e_h, beta_star_e_v;
+    double emit_p_h, emit_p_v, emit_e_h, emit_e_v;
+
+    double beam_angular_divergence_p_h;
+    double beam_angular_divergence_p_v;
+    double beam_angular_divergence_e_h;
+    double beam_angular_divergence_e_v;
+
+    double sigma_e_l, sigma_p_l;
+
+    bool setting_found = false;
+
+
+    std::ifstream infile(beamFile);
+
+    if (infile.is_open())
+    {
+      double biggest_z = 0.;
+      int imagnet = 0;
+      std::string line;
+      while (std::getline(infile, line))
+      {
+
+//	if (!line.compare(0, 1, "#")) {
+	if (line.find("#")!=std::string::npos) {
+	   continue;
+	}
+
+        std::istringstream iss(line);
+
+        if (!(iss >> settingname >> beta_star_p_h >> beta_star_p_v >> beta_star_e_h >> beta_star_e_v >> emit_p_h >> emit_p_v >> emit_e_h >> emit_e_v >> beam_angular_divergence_p_h >> beam_angular_divergence_p_v >> beam_angular_divergence_e_h >> beam_angular_divergence_e_v >> sigma_p_l >> sigma_e_l))
+         {
+           cout << "could not decode " << line << endl;
+           gSystem->Exit(1);
+
+         } else {
+//
+	   cout << line << endl;
+///
+            if (settingname==beam_setting_str) {
+//            if (settingname=="275x18") {
+//            if (settingname=="41x5") {
+
+		cout << beta_star_p_h << "  "<< beta_star_p_v << endl;
+		cout << "BBBbBBBB" << endl;
+		
+                setting_found = true;
+		
+		break;
+	    }
+
+         }
+
+//     cout << "Could not find the specifed beam collision energy setting setting!" << endl;
+//     gSystem->Exit(1);
+
+     }
+
+     infile.close();
+
+    }
+
+
+    if (!setting_found) {
+
+     cout << "Could not find the specifed beam collision energy setting setting!" << endl;
+     gSystem->Exit(1);
+
+    }
+
+
+    cout << "AAAA" << endl;
+
+    cout << beta_star_p_h << "  " << beta_star_p_v << "  "<< beta_star_e_h << "  " << beta_star_e_v << endl;
+
+    cout << "-----------------------------" << endl;
+
+    // ---------------------------------------
+
     HepMCGen->PHHepMCGenHelper_Verbosity(VERBOSITY);
 
     //25mrad x-ing as in EIC CDR
@@ -128,10 +244,16 @@ namespace Input
     // beta* for 275*x18 collisions
     // Table 4 of
     // https://github.com/eic/documents/blob/master/reports/general/Note-Simulations-BeamEffects.pdf
-    const double beta_star_p_h = 80;
-    const double beta_star_p_v = 7.1;
-    const double beta_star_e_h = 59;
-    const double beta_star_e_v = 5.7;
+//    const double beta_star_p_h = 80;
+//    const double beta_star_p_v = 7.1;
+//    const double beta_star_e_h = 59;
+//    const double beta_star_e_v = 5.7;
+
+//    beta_star_p_h = 80;
+//    beta_star_p_v = 7.1;
+//    beta_star_e_h = 59;
+//    beta_star_e_v = 5.7;
+
     // Table 1-2 of
     // https://github.com/eic/documents/blob/master/reports/general/Note-Simulations-BeamEffects.pdf
     const double beta_crab_p = 1300e2;
@@ -145,10 +267,16 @@ namespace Input
     );
     // Table 4 of
     // https://github.com/eic/documents/blob/master/reports/general/Note-Simulations-BeamEffects.pdf
+//    HepMCGen->set_beam_angular_divergence_hv(
+//        150e-6, 150e-6,  // proton beam divergence horizontal & vertical
+//        202e-6, 187e-6   // electron beam divergence horizontal & vertical
+//    );
+
     HepMCGen->set_beam_angular_divergence_hv(
-        150e-6, 150e-6,  // proton beam divergence horizontal & vertical
-        202e-6, 187e-6   // electron beam divergence horizontal & vertical
+        beam_angular_divergence_p_h*1e-6, beam_angular_divergence_p_v*1e-6,  // proton beam divergence horizontal & vertical
+        beam_angular_divergence_e_h*1e-6, beam_angular_divergence_e_v*1e-6   // electron beam divergence horizontal & vertical
     );
+
 
     // vertex shape from beam_bunch_sim
     HepMCGen->use_beam_bunch_sim(true);
@@ -162,12 +290,27 @@ namespace Input
 
     // Table 4 of
     // https://github.com/eic/documents/blob/master/reports/general/Note-Simulations-BeamEffects.pdf
-    const double sigma_p_h = sqrt(beta_star_p_h * 18e-7);
-    const double sigma_p_v = sqrt(beta_star_p_v * 1.6e-7);
-    const double sigma_p_l = 6;
-    const double sigma_e_h = sqrt(beta_star_e_h * 24e-7);
-    const double sigma_e_v = sqrt(beta_star_e_v * 2.0e-7);
-    const double sigma_e_l = 0.9;
+
+//    const double sigma_p_h = sqrt(beta_star_p_h * 18e-7);
+//    const double sigma_p_v = sqrt(beta_star_p_v * 1.6e-7);
+////    const double sigma_p_l = 6;
+////    sigma_p_l = 6;
+//    const double sigma_e_h = sqrt(beta_star_e_h * 24e-7);
+//    const double sigma_e_v = sqrt(beta_star_e_v * 2.0e-7);
+////    const double sigma_e_l = 0.9;
+////    sigma_e_l = 0.9;
+
+    const double sigma_p_h = sqrt(beta_star_p_h * emit_p_h * 1e-7);
+    const double sigma_p_v = sqrt(beta_star_p_v * emit_p_v * 1e-7);
+
+//    const double sigma_p_l = 6;
+//    sigma_p_l = 6;
+
+    const double sigma_e_h = sqrt(beta_star_e_h * emit_e_h * 1e-7);
+    const double sigma_e_v = sqrt(beta_star_e_v * emit_e_v * 1e-7);
+
+//    const double sigma_e_l = 0.9;
+//    sigma_e_l = 0.9;
 
     HepMCGen->set_beam_bunch_width(
         std::vector<double>{sigma_p_h, sigma_p_v, sigma_p_l},
