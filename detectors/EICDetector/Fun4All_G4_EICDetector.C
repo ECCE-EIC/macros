@@ -67,7 +67,7 @@ int Fun4All_G4_EICDetector(
   // switching IPs by comment/uncommenting the following lines
   // used for both beamline setting and for the event generator crossing boost
   Enable::IP6 = true;
-  // Enable::IP8 = true;
+  //Enable::IP8 = true;
 
    
   //===============
@@ -137,6 +137,9 @@ int Fun4All_G4_EICDetector(
   // Input::GUN = true;
   // Input::GUN_NUMBER = 3; // if you need 3 of them
   // Input::GUN_VERBOSITY = 0;
+
+  // Particle ion gun
+  // Input::IONGUN = true; 
 
   // Upsilon generator
   // Input::UPSILON = true;
@@ -210,6 +213,43 @@ int Fun4All_G4_EICDetector(
     INPUTGENERATOR::Gun[0]->AddParticle("pi-", 0, 1, 0);
     INPUTGENERATOR::Gun[0]->set_vtx(0, 0, 0);
   }
+
+  if (Input::IONGUN)
+   {
+     float theta = -25e-3;
+//     float theta = 35e-3;
+ 
+     INPUTGENERATOR::IonGun[0]->SetA(197);
+     INPUTGENERATOR::IonGun[0]->SetZ(79);
+     INPUTGENERATOR::IonGun[0]->SetCharge(79);
+//     INPUTGENERATOR::IonGun[0]->SetMom(sin(theta)*275*79/197.*197 ,0,cos(theta)*275*79/197.*197); // 5 mrad                        
+     INPUTGENERATOR::IonGun[0]->SetMom(sin(theta)*110*197, 0,cos(theta)*110*197); // 5 mrad                        
+
+     INPUTGENERATOR::IonGun[0]->Print();
+
+//     exit(0);
+
+////     float theta = -25e-3;
+//     INPUTGENERATOR::IonGun[0]->SetA(1);
+//     INPUTGENERATOR::IonGun[0]->SetZ(1);
+//     INPUTGENERATOR::IonGun[0]->SetCharge(1);
+//     INPUTGENERATOR::IonGun[0]->SetMom(sin(theta)*275,0,cos(theta)*275); // 5 m
+
+//     float theta = -25e-3;
+//     INPUTGENERATOR::IonGun[0]->SetA(4);
+//     INPUTGENERATOR::IonGun[0]->SetZ(2);
+//     INPUTGENERATOR::IonGun[0]->SetCharge(2);
+//     INPUTGENERATOR::IonGun[0]->SetMom(sin(theta)*275*2/4.*4,0,cos(theta)*275*2/4.*4); // 5 m
+
+
+//     INPUTGENERATOR::IonGun[0]->SetA(89);
+//     INPUTGENERATOR::IonGun[0]->SetZ(40);
+//     INPUTGENERATOR::IonGun[0]->SetCharge(40);
+////     INPUTGENERATOR::IonGun[0]->SetMom(sin(theta)*275*79/197.*197 ,0,cos(theta)*275*79/197.*197); // 5 mrad                        
+//     INPUTGENERATOR::IonGun[0]->SetMom(sin(theta)*89*123, 0, cos(theta)*89*123); // 5 mrad 
+
+   }
+
   // pythia6
   if (Input::PYTHIA6)
   {
@@ -278,7 +318,7 @@ int Fun4All_G4_EICDetector(
   // Enable::DSTREADER = true;
 
   // turn the display on (default off)
-  //  Enable::DISPLAY = true;
+  // Enable::DISPLAY = true;
 
   //======================
   // What to run
@@ -488,6 +528,7 @@ int Fun4All_G4_EICDetector(
   //---------------
   //  G4WORLD::PhysicsList = "FTFP_BERT"; //FTFP_BERT_HP best for calo
   //  G4WORLD::WorldMaterial = "G4_AIR"; // set to G4_GALACTIC for material scans
+  //  G4WORLD::WorldMaterial = "G4_Galactic"; // set to G4_GALACTIC for material scans
 
   //---------------
   // Magnet Settings
