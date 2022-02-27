@@ -217,36 +217,13 @@ int Fun4All_G4_EICDetector(
   if (Input::IONGUN)
    {
      float theta = -25e-3;
-//     float theta = 35e-3;
  
      INPUTGENERATOR::IonGun[0]->SetA(197);
      INPUTGENERATOR::IonGun[0]->SetZ(79);
      INPUTGENERATOR::IonGun[0]->SetCharge(79);
-//     INPUTGENERATOR::IonGun[0]->SetMom(sin(theta)*275*79/197.*197 ,0,cos(theta)*275*79/197.*197); // 5 mrad                        
-     INPUTGENERATOR::IonGun[0]->SetMom(sin(theta)*110*197, 0,cos(theta)*110*197); // 5 mrad                        
+     INPUTGENERATOR::IonGun[0]->SetMom(sin(theta)*110*197, 0,cos(theta)*110*197); // -25 mrad                        
 
      INPUTGENERATOR::IonGun[0]->Print();
-
-//     exit(0);
-
-////     float theta = -25e-3;
-//     INPUTGENERATOR::IonGun[0]->SetA(1);
-//     INPUTGENERATOR::IonGun[0]->SetZ(1);
-//     INPUTGENERATOR::IonGun[0]->SetCharge(1);
-//     INPUTGENERATOR::IonGun[0]->SetMom(sin(theta)*275,0,cos(theta)*275); // 5 m
-
-//     float theta = -25e-3;
-//     INPUTGENERATOR::IonGun[0]->SetA(4);
-//     INPUTGENERATOR::IonGun[0]->SetZ(2);
-//     INPUTGENERATOR::IonGun[0]->SetCharge(2);
-//     INPUTGENERATOR::IonGun[0]->SetMom(sin(theta)*275*2/4.*4,0,cos(theta)*275*2/4.*4); // 5 m
-
-
-//     INPUTGENERATOR::IonGun[0]->SetA(89);
-//     INPUTGENERATOR::IonGun[0]->SetZ(40);
-//     INPUTGENERATOR::IonGun[0]->SetCharge(40);
-////     INPUTGENERATOR::IonGun[0]->SetMom(sin(theta)*275*79/197.*197 ,0,cos(theta)*275*79/197.*197); // 5 mrad                        
-//     INPUTGENERATOR::IonGun[0]->SetMom(sin(theta)*89*123, 0, cos(theta)*89*123); // 5 mrad 
 
    }
 
