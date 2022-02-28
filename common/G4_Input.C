@@ -123,11 +123,13 @@ namespace Input
 
     // ---------------------------------------
 
+//    cout << Enable::HFARFWD_ION_ENERGY << "    " << Enable::HFARBWD_E_ENERGY << endl;
 
-    cout << Enable::HFARFWD_ION_ENERGY << "    " << Enable::HFARBWD_E_ENERGY << endl;
+    float ION_Energy      = Enable::HFARFWD_ION_ENERGY;
+    float ELECTRON_Energy = Enable::HFARBWD_E_ENERGY;
 
     TString beam_setting_str;
-    beam_setting_str.Form("%.0fx%.0f", Enable::HFARFWD_ION_ENERGY, Enable::HFARBWD_E_ENERGY);
+    beam_setting_str.Form("%.0fx%.0f", ION_Energy, ELECTRON_Energy);
 
     cout << "Beam scattering setting: " << beam_setting_str << endl;
 
@@ -170,70 +172,98 @@ namespace Input
 
     bool setting_found = false;
 
+    float ION_Energy_Setting = 275;
+    float ION_Energy_Setting_diff = 275;
 
     std::ifstream infile(beamFile);
 
-    if (infile.is_open())
-    {
-      double biggest_z = 0.;
-      int imagnet = 0;
-      std::string line;
-      while (std::getline(infile, line))
+      if (infile.is_open())
       {
-
-//	if (!line.compare(0, 1, "#")) {
-	if (line.find("#")!=std::string::npos) {
-	   continue;
-	}
-
-        std::istringstream iss(line);
-
-        if (!(iss >> settingname >> beta_star_p_h >> beta_star_p_v >> beta_star_e_h >> beta_star_e_v >> emit_p_h >> emit_p_v >> emit_e_h >> emit_e_v >> beam_angular_divergence_p_h >> beam_angular_divergence_p_v >> beam_angular_divergence_e_h >> beam_angular_divergence_e_v >> sigma_p_l >> sigma_e_l))
-         {
-           cout << "could not decode " << line << endl;
-           gSystem->Exit(1);
-
-         } else {
-//
-	   cout << line << endl;
-///
-            if (settingname==beam_setting_str) {
-//            if (settingname=="275x18") {
-//            if (settingname=="41x5") {
-
-		cout << beta_star_p_h << "  "<< beta_star_p_v << endl;
-		cout << "BBBbBBBB" << endl;
-		
-                setting_found = true;
-		
-		break;
-	    }
-
-         }
-
-//     cout << "Could not find the specifed beam collision energy setting setting!" << endl;
-//     gSystem->Exit(1);
-
-     }
-
-     infile.close();
-
-    }
-
+        double biggest_z = 0.;
+        int imagnet = 0;
+        std::string line;
+        while (std::getline(infile, line))
+        {
+  
+  	if (line.find("#")!=std::string::npos) {
+  	   continue;
+  	}
+  
+          std::istringstream iss(line);
+  
+          if (!(iss >> settingname >> beta_star_p_h >> beta_star_p_v >> beta_star_e_h >> beta_star_e_v >> emit_p_h >> emit_p_v >> emit_e_h >> emit_e_v >> beam_angular_divergence_p_h >> beam_angular_divergence_p_v >> beam_angular_divergence_e_h >> beam_angular_divergence_e_v >> sigma_p_l >> sigma_e_l))
+           {
+             cout << "could not decode " << line << endl;
+             gSystem->Exit(1);
+  
+           } else {
+  
+  	   cout << line << endl;
+  
+              if (settingname==beam_setting_str) {
+                  setting_found = true;
+  	    }
+  
+//             cout << "aaaaaa "<< settingname.find("x") << "  " <<  settingname.substr(0, settingname.find("x")) << endl;
+  
+  	    float hadron_setting =  stof(settingname.substr(0, settingname.find("x")));
+  
+//  	   cout << hadron_setting - ION_Energy << endl;
+  
+  	   if (fabs(hadron_setting - ION_Energy) < ION_Energy_Setting_diff ) {
+  		ION_Energy_Setting = hadron_setting;
+                  ION_Energy_Setting_diff = fabs(hadron_setting - ION_Energy);  
+  	   }
+           }
+       }
+  
+       // Reseting the pointer to the infile 
+       infile.clear();
+       infile.seekg(0,std::ios::beg);
+  //    cout << infile.getline() << endl;;
+  
+        if(!setting_found) {  
+          beam_setting_str.Form("%.0fx%.0f", ION_Energy_Setting, ELECTRON_Energy);
+        }
+  
+        while (std::getline(infile, line))
+        {
+  
+  	if (line.find("#")!=std::string::npos) {
+  	   continue;
+  	}
+  
+          std::istringstream iss(line);
+  
+          if (!(iss >> settingname >> beta_star_p_h >> beta_star_p_v >> beta_star_e_h >> beta_star_e_v >> emit_p_h >> emit_p_v >> emit_e_h >> emit_e_v >> beam_angular_divergence_p_h >> beam_angular_divergence_p_v >> beam_angular_divergence_e_h >> beam_angular_divergence_e_v >> sigma_p_l >> sigma_e_l))
+           {
+             cout << "could not decode " << line << endl;
+             gSystem->Exit(1);
+  
+           } else {
+  
+  	   cout << line << endl;
+  
+              if (settingname == beam_setting_str) {
+  
+//  		cout << beta_star_p_h << "  "<< beta_star_p_v << endl;
+//  		cout << "BBBbBBBB" << endl;
+  		
+                  setting_found = true;
+  		
+  		break;
+  	    }
+  
+           }
+       }
+  
+       infile.close();
+      }
 
     if (!setting_found) {
-
-     cout << "Could not find the specifed beam collision energy setting setting!" << endl;
+     cout << "Could not find the specifed beam collision energy setting!" << endl;
      gSystem->Exit(1);
-
     }
-
-
-    cout << "AAAA" << endl;
-
-    cout << beta_star_p_h << "  " << beta_star_p_v << "  "<< beta_star_e_h << "  " << beta_star_e_v << endl;
-
-    cout << "-----------------------------" << endl;
 
     // ---------------------------------------
 
