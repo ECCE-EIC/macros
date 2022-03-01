@@ -67,13 +67,37 @@ int Fun4All_G4_EICDetector(
   // switching IPs by comment/uncommenting the following lines
   // used for both beamline setting and for the event generator crossing boost
   Enable::IP6 = true;
-  // Enable::IP8 = true;
+  //Enable::IP8 = true;
+
+   
+  //===============
+  // The following Ion energy and electron energy setting needs to be speficied
+  // The setting options for e-p high divergence setting (p energy x e energy):
+  // Option: 275x18, 275x10, 100x10, 100x5, 41x5
+  //
+  // The setting options for e-p high divergence setting (p energy x e energy):
+  // Option: 275x18, 275x10, 100x10, 100x5, 41x5
+  //
+  // The setting options for e-p high divergence setting (A energy x e energy):
+  // Option: 110x18, 110x10, 110x5, 41x5
 
   // Setting proton beam pipe energy. If you don't know what to set here, leave it at 275
   Enable::HFARFWD_ION_ENERGY = 275;
 
   // Setting electron beam pipe energy. If you don't know what to set here, leave it at 18
   Enable::HFARBWD_E_ENERGY = 18;
+
+  // Beam Scattering configuration setting specified by CDR
+  //
+  // Option 1: ep-high-acceptance
+  // Option 2: ep-high-divergence
+  // Option 3: eA
+  //
+  // Enable::BEAM_COLLISION_SETTING = "ep-high-divergence";
+  // If you don't know what to put here, set it to ep-high-divergence   
+  //
+  // Enable::BEAM_COLLISION_SETTING = "eA";
+  Enable::BEAM_COLLISION_SETTING = "ep-high-divergence";
 
   // Either:
   // read previously generated g4-hits files, in this case it opens a DST and skips
@@ -113,6 +137,9 @@ int Fun4All_G4_EICDetector(
   // Input::GUN = true;
   // Input::GUN_NUMBER = 3; // if you need 3 of them
   // Input::GUN_VERBOSITY = 0;
+
+  // Particle ion gun
+  // Input::IONGUN = true; 
 
   // Upsilon generator
   // Input::UPSILON = true;
@@ -186,6 +213,20 @@ int Fun4All_G4_EICDetector(
     INPUTGENERATOR::Gun[0]->AddParticle("pi-", 0, 1, 0);
     INPUTGENERATOR::Gun[0]->set_vtx(0, 0, 0);
   }
+
+  if (Input::IONGUN)
+   {
+     float theta = -25e-3;
+ 
+     INPUTGENERATOR::IonGun[0]->SetA(197);
+     INPUTGENERATOR::IonGun[0]->SetZ(79);
+     INPUTGENERATOR::IonGun[0]->SetCharge(79);
+     INPUTGENERATOR::IonGun[0]->SetMom(sin(theta)*110*197, 0,cos(theta)*110*197); // -25 mrad                        
+
+     INPUTGENERATOR::IonGun[0]->Print();
+
+   }
+
   // pythia6
   if (Input::PYTHIA6)
   {
@@ -254,7 +295,7 @@ int Fun4All_G4_EICDetector(
   // Enable::DSTREADER = true;
 
   // turn the display on (default off)
-  //  Enable::DISPLAY = true;
+  // Enable::DISPLAY = true;
 
   //======================
   // What to run
@@ -464,6 +505,7 @@ int Fun4All_G4_EICDetector(
   //---------------
   //  G4WORLD::PhysicsList = "FTFP_BERT"; //FTFP_BERT_HP best for calo
   //  G4WORLD::WorldMaterial = "G4_AIR"; // set to G4_GALACTIC for material scans
+  //  G4WORLD::WorldMaterial = "G4_Galactic"; // set to G4_GALACTIC for material scans
 
   //---------------
   // Magnet Settings
