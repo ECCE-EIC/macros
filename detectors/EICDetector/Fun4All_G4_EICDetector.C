@@ -30,7 +30,7 @@ int Fun4All_G4_EICDetector(
     const string &outputFile = "G4EICDetector.root",
     const string &embed_input_file = "https://www.phenix.bnl.gov/WWW/publish/phnxbld/sPHENIX/files/sPHENIX_G4Hits_sHijing_9-11fm_00000_00010.root",
     const int skip = 0,
-    const string &outdir = ".", const string &inputGenerator = "EIC-smear")
+    const string &outdir = ".", const string &inputGenerator = "EIC-smear", const string &particleType = "e-")
 {
   //---------------
   // Fun4All server
@@ -102,7 +102,7 @@ int Fun4All_G4_EICDetector(
   //   Input::SARTRE = true;
 
   // Simple multi particle generator in eta/phi/pt ranges
-  if (inputGenerator == "pionGun" or inputGenerator == "electronGun") Input::SIMPLE = true;
+  if (inputGenerator == "particleGun") Input::SIMPLE = true;
   // Input::SIMPLE_NUMBER = 2; // if you need 2 of them
   // Input::SIMPLE_VERBOSITY = 1;
 
@@ -141,8 +141,7 @@ int Fun4All_G4_EICDetector(
   // add the settings for other with [1], next with [2]...
   if (Input::SIMPLE)
   {
-    if (inputGenerator == "pionGun") INPUTGENERATOR::SimpleEventGenerator[0]->add_particles("pi+", 1);
-    else INPUTGENERATOR::SimpleEventGenerator[0]->add_particles("e-", 1);
+    INPUTGENERATOR::SimpleEventGenerator[0]->add_particles(particleType, 1);
     if (Input::HEPMC || Input::EMBED)
     {
       INPUTGENERATOR::SimpleEventGenerator[0]->set_reuse_existing_vertex(true);

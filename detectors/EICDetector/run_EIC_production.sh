@@ -31,15 +31,33 @@ Skip: $4
 EOF
 
 inputGenerator=
+particleType="e-"
 if [ "${12}" == "production_AI_Optimization" ]
 then
   if [ "${10}" == "particleGun" ]
   then
+    inputGenerator="${10}"
     if [ "${11}" == "singlePion" ] 
     then
-      inputGenerator="pionGun"
+      particleType="pi-"
+    elif [ "${11}" == "singlePionPlus" ] 
+    then
+      particleType="pi+"
+    elif [ "${11}" == "singleMuon" ] 
+    then
+      particleType="mu-"
+    elif [ "${11}" == "singleMuonPlus" ] 
+    then
+      particleType="mu+"
+    elif [ "${11}" == "singleElectron" ] 
+    then
+      particleType="e-"
+    elif [ "${11}" == "singlePositron" ] 
+    then
+      particleType="e+"
     else
-      inputGenerator="electronGun"
+      echo "Your particle type, ${11}, was not recognised"
+      exit 1
     fi
   elif [ "${10}" == "pythia8" ]
   then
@@ -52,8 +70,8 @@ fi
 # Run Fun4all. Send output to stdout but also capture to temporary local file
 if [ "${12}" == "production_AI_Optimization" ]
 then
-  echo running root.exe -q -b Fun4All_G4_EICDetector.C\($1,\"$2\",\"$3\",\"\",$4,\"$5\"\,\"${inputGenerator}\"\)
-  root.exe -q -b Fun4All_G4_EICDetector.C\($1,\"$2\",\"$3\",\"\",$4,\"$5\",\"${inputGenerator}\"\) | tee ${tmpLogFile}
+  echo running root.exe -q -b Fun4All_G4_EICDetector.C\($1,\"$2\",\"$3\",\"\",$4,\"$5\"\,\"${inputGenerator}\"\,\"${particleType}\"\)
+  root.exe -q -b Fun4All_G4_EICDetector.C\($1,\"$2\",\"$3\",\"\",$4,\"$5\",\"${inputGenerator}\",\"${particleType}\"\) | tee ${tmpLogFile}
 else
   echo running root.exe -q -b Fun4All_G4_EICDetector.C\($1,\"$2\",\"$3\",\"\",$4,\"$5\"\)
   root.exe -q -b Fun4All_G4_EICDetector.C\($1,\"$2\",\"$3\",\"\",$4,\"$5\"\) | tee ${tmpLogFile}
