@@ -50,7 +50,7 @@ void RICHSetup(PHG4Reco *g4Reco)
   double dz = 100;  //Length of dRICH
 
   EICG4dRICHSubsystem *drichSubsys = new EICG4dRICHSubsystem("dRICh");
-  drichSubsys->SetGeometryFile(string(getenv("CALIBRATIONROOT")) + "/dRICH/mapping/drich-g4model_v3.txt");
+  drichSubsys->SetGeometryFile(string(getenv("CALIBRATIONROOT")) + "/dRICH/mapping/drich-g4model_v5.txt");
   drichSubsys->set_double_param("place_z", z + dz * 0.5);  // relative position to mother vol.
   drichSubsys->OverlapCheck(OverlapCheck);
   drichSubsys->Verbosity(verbosity);
