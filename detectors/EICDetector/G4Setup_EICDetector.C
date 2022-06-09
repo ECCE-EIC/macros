@@ -32,6 +32,7 @@
 #include <G4_Pipe_EIC.C>
 #include <G4_PlugDoor_EIC.C>
 #include <G4_TTL_EIC.C>
+#include <G4_BST.C>
 #include <G4_TrackingSupport.C>
 #include <G4_Tracking_EIC.C>
 #include <G4_B0Tracking_EIC.C> //for B0 Tracking
@@ -119,7 +120,7 @@ void G4Init()
     cout << "Can not enable TRD* and RICH at the same time!" << endl;
     gSystem->Exit(1);
   }
-  if ((Enable::LFHCAL||Enable::EHCAL) and Enable::PLUGDOOR)
+  if (Enable::EHCAL and Enable::PLUGDOOR)
   {
     cout << "Can not enable *HCal and PLUGDOOR at the same time!" << endl;
     gSystem->Exit(1);
@@ -145,6 +146,7 @@ void G4Init()
   MagnetFieldInit();  // We want the field - even if the magnet volume is disabled
   if (Enable::HCALOUT) HCalOuterInit();
   if (Enable::DIRC) DIRCInit();
+  if (Enable::BST) BSTInit();
   if (Enable::BTOF) BToFInit();
   if (Enable::BMMG) BMMGInit();
   
@@ -253,6 +255,7 @@ int G4Setup()
   if (Enable::DIRC) DIRCSetup(g4Reco);
   if (Enable::BTOF) BToFSetup(g4Reco);
   if (Enable::BMMG) BMMGSetup(g4Reco);
+  if (Enable::BST) BSTSetup(g4Reco);
 
   //Forward
   if (Enable::FGEM) FGEMSetup(g4Reco);
@@ -419,6 +422,7 @@ void DstCompress(Fun4AllDstOutputManager *out)
     //
     //    out->StripNode("G4HIT_ZDC");
     //    out->StripNode("G4HIT_RomanPots");
+    out->StripNode("G4HIT_BSTSUPPORT");
     out->StripNode("G4HIT_b0Truth");
     out->StripNode("G4HIT_BWD");
     out->StripNode("G4HIT_SVTXSUPPORT");

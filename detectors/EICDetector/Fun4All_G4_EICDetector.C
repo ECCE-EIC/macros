@@ -324,7 +324,8 @@ int Fun4All_G4_EICDetector(
   // barrel tracker
   Enable::TrackingService = true;
   // Enable::TrackingService_VERBOSITY = INT_MAX - 10;
-  Enable::BARREL = true;
+  // Enable::BARREL = true;
+  Enable::BST = true;
   // fst
   Enable::FST = true;
 
@@ -494,7 +495,6 @@ int Fun4All_G4_EICDetector(
   
   // Enabling the event evaluator?
   Enable::EVENT_EVAL            = true;
-  Enable::EVENT_EVAL_DO_HITS    = true;
   Enable::EVENT_EVAL_DO_HEPMC   = Input::PYTHIA6 or Input::PYTHIA8 or Input::SARTRE or Input::HEPMC or Input::READEIC;
   Enable::EVENT_EVAL_DO_EVT_LVL = Input::PYTHIA6 or Input::PYTHIA8 or Input::READEIC;
 

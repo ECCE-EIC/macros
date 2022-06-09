@@ -4,7 +4,7 @@
 #include <GlobalVariables.C>
 
 #include <DisplayOn.C>
-#include <G4Setup_EICDetector.C>
+#include <G4Setup_ECCEModular.C>
 #include <G4_DSTReader_EICDetector.C>
 #include <G4_EventEvaluator.C>
 #include <G4_FwdJets.C>
@@ -115,6 +115,8 @@ int Fun4All_G4_ECCEModular(
   if (particlemomMin>-1 && particlemomMax>-1){
     Input::SIMPLE = true;
     Input::SIMPLE_VERBOSITY = 0;
+    if (generatorSettings.Contains("Two"))
+      Input::SIMPLE_NUMBER = 2; // if you need 2 of them
     if (generatorSettings.Contains("Multi"))
       Input::SIMPLE_NUMBER = 3; // if you need 2 of them
   }
@@ -134,7 +136,39 @@ int Fun4All_G4_ECCEModular(
   // if you run more than one of these Input::SIMPLE_NUMBER > 1
   // add the settings for other with [1], next with [2]...
   if (Input::SIMPLE){
-      if (generatorSettings.Contains("Multi")){
+    if (generatorSettings.Contains("Two")){
+      for(int igen=0;igen<Input::SIMPLE_NUMBER;igen++){
+        if (generatorSettings.Contains("PiPi")){
+          if(igen==0)INPUTGENERATOR::SimpleEventGenerator[igen]->add_particles("pi-", 1);
+          else if(igen==1)INPUTGENERATOR::SimpleEventGenerator[igen]->add_particles("pi-", 1);
+        }
+        else if (generatorSettings.Contains("PiEl")){
+          if(igen==0)INPUTGENERATOR::SimpleEventGenerator[igen]->add_particles("pi-", 1);
+          else if(igen==1)INPUTGENERATOR::SimpleEventGenerator[igen]->add_particles("e-", 1);
+        }
+        else {
+          std::cout << "You didn't specify which particle you wanted to generate, exiting" << std::endl;
+          return 0;
+        }
+        INPUTGENERATOR::SimpleEventGenerator[igen]->set_vertex_distribution_function(PHG4SimpleEventGenerator::Uniform,
+                                                                                  PHG4SimpleEventGenerator::Uniform,
+                                                                                  PHG4SimpleEventGenerator::Uniform);
+        INPUTGENERATOR::SimpleEventGenerator[igen]->set_vertex_distribution_mean(0., 0., 0.);
+        INPUTGENERATOR::SimpleEventGenerator[igen]->set_vertex_distribution_width(0., 0., 0.);
+
+        if (generatorSettings.Contains("central"))
+          INPUTGENERATOR::SimpleEventGenerator[igen]->set_eta_range(-1.8, 1.2);
+        else if (generatorSettings.Contains("bck"))
+          INPUTGENERATOR::SimpleEventGenerator[igen]->set_eta_range(-4, -1.7);
+        else if (generatorSettings.Contains("fwd"))
+          INPUTGENERATOR::SimpleEventGenerator[igen]->set_eta_range(1.2, 3.7);
+        else
+          INPUTGENERATOR::SimpleEventGenerator[igen]->set_eta_range(-4.0, 4.0);
+
+        INPUTGENERATOR::SimpleEventGenerator[igen]->set_phi_range(-M_PI, M_PI);
+        INPUTGENERATOR::SimpleEventGenerator[igen]->set_p_range(particlemomMin, particlemomMax);
+      }
+    } else if (generatorSettings.Contains("Multi")){
         for(int igen=0;igen<Input::SIMPLE_NUMBER;igen++){
           if (generatorSettings.Contains("PiPrEl")){
             if(igen==0)INPUTGENERATOR::SimpleEventGenerator[igen]->add_particles("pi-", 1);
@@ -352,7 +386,18 @@ int Fun4All_G4_ECCEModular(
   // barrel tracker
   Enable::TrackingService = true;
   // Enable::TrackingService_VERBOSITY = INT_MAX - 10;
-  Enable::BARREL = true;
+  Enable::BST = true;
+  G4TrackingService::SETTING::BSTactive = true;
+  if (detectorSettings.find("BARREL") != std::string::npos) {
+    Enable::BST = false;
+    Enable::BARREL = true;
+    G4TrackingService::SETTING::BSTactive = false;
+    std::string sagittaSettingToFind = "SAGITTAMAT_"; // needs to have two decial points: e.g. 0.05
+    if (detectorSettings.find(sagittaSettingToFind) != std::string::npos) {
+        auto pos = detectorSettings.find(sagittaSettingToFind);
+        G4BARRELEIC::SETTING::SAGITTAX0 = std::stof(string(detectorSettings.substr(pos + sagittaSettingToFind.size(), pos + sagittaSettingToFind.size() + 4)));
+    }
+  }
   // fst
   Enable::FST = true;
 
@@ -367,16 +412,21 @@ int Fun4All_G4_ECCEModular(
   if (detectorSettings.find(ttlSettingToFind) != std::string::npos) {
     auto pos = detectorSettings.find(ttlSettingToFind);
     G4TTL::SETTING::optionGeo = std::stoi(detectorSettings.substr(pos + ttlSettingToFind.size(), pos + ttlSettingToFind.size() + 1));
-  }  else {
-    G4TTL::SETTING::optionGeo = 1;
   }
-
+  if (detectorSettings.find("TTLOFF") != std::string::npos) {
+    Enable::FTTL = false;
+    Enable::ETTL = false;
+    Enable::CTTL = false;
+  }
   //***********************************************
   // gems fwd & bwd
   //***********************************************
   Enable::EGEM = false;
   Enable::FGEM = false;
 
+  if (detectorSettings.find("NONPROJT") != std::string::npos) {
+    Enable::AI_TRACKINGGEO = false;
+  }
   //***********************************************
   // tracking macro settings
   //***********************************************
@@ -398,6 +448,12 @@ int Fun4All_G4_ECCEModular(
   // barrel calos & magnet
   //***********************************************
   Enable::BECAL   = true;
+  if (detectorSettings.find("BCNP") != std::string::npos) {
+    G4BECAL::SETTING::useNonProjective = true;
+  }
+  if (detectorSettings.find("BCNGMT") != std::string::npos) {
+    G4BECAL::SETTING::useMoreTowers = true;
+  }
   Enable::HCALIN  = true;
   Enable::MAGNET  = true;
   Enable::HCALOUT = true;
@@ -414,6 +470,14 @@ int Fun4All_G4_ECCEModular(
   //***********************************************
   Enable::FEMC    = true;
   Enable::DRCALO  = false;
+  if (detectorSettings.find("DRCALO") != std::string::npos) {
+    Enable::DRCALO = true;
+    G4DRCALO::SETTING::FwdConfig = true;
+    G4LFHCAL::SETTING::FwdConfig = true;
+    G4FEMC::SETTING::FwdConfig = true;
+    G4FEMC::SETTING::asymmetric = false;
+    cout << "setting DRCALO stuff" << endl;
+  }
   G4TTL::SETTING::optionDR = 1;
   Enable::LFHCAL  = true;
 
@@ -421,21 +485,27 @@ int Fun4All_G4_ECCEModular(
   // bwd calos
   //***********************************************
   Enable::EEMCH = true;
-  if (detectorSettings.find("EEMAPNC") != std::string::npos) {
-    G4EEMCH::SETTING::USECUSTOMMAPNOCARBON = true;
-  }
-  if (detectorSettings.find("EEMAP30CM") != std::string::npos) {
-    G4EEMCH::SETTING::USECUSTOMMAP30CM = true;
-  }
-  if (detectorSettings.find("EEMAPCARBON") != std::string::npos) {
-    G4EEMCH::SETTING::USECUSTOMMAPCARBON = true;
-  }
-  if (detectorSettings.find("EEMAPUPDATE") != std::string::npos) {
-    G4EEMCH::SETTING::USECUSTOMMAPUPDATED = true;
-  }
   Enable::EHCAL     = false;
   Enable::PLUGDOOR  = true;
 
+
+  double defTimeCut = 200.;
+  if (detectorSettings.find("TIMECUT") != std::string::npos) {
+    auto pos = detectorSettings.find("TIMECUT");
+    defTimeCut = std::stod(detectorSettings.substr(pos + 8, pos + 8 + 3));
+    cout << "using timecut of " << defTimeCut << " ns" << endl;
+    G4LFHCAL::timecut = defTimeCut;
+    G4DRCALO::timecut = defTimeCut;
+    G4BECAL::timecut = defTimeCut;
+    G4FEMC::timecut = defTimeCut;
+    G4EEMCH::timecut = defTimeCut;
+  }
+
+  if (detectorSettings.find("LIGHTPROP") != std::string::npos) {
+    G4EEMCH::SETTING::USELIGHTPROP = true;
+    G4FEMC::SETTING::doLightProp = true;
+    G4LFHCAL::SETTING::doLightProp = true;
+  }
   // Other options
   Enable::GLOBAL_RECO = G4TRACKING::DISPLACED_VERTEX;  // use reco vertex for global event vertex
   Enable::GLOBAL_FASTSIM = true;
@@ -508,6 +578,7 @@ int Fun4All_G4_ECCEModular(
     Enable::LFHCAL = false;
     Enable::BECAL = false;
     Enable::FTTL = false;
+    Enable::BST = false;
     Enable::CTTL = false;
     Enable::ETTL = false;
     Enable::EEMCH = false;
@@ -521,10 +592,24 @@ int Fun4All_G4_ECCEModular(
       Enable::PIPE = true;
       G4PIPE::use_forward_pipes = true;
     }
+    if(detectorSettings.find("TSERV")!= std::string::npos ){
+      Enable::TrackingService = true;
+    }
+    if(detectorSettings.find("BRRL")!= std::string::npos ){
+      Enable::BARREL = true;
+    }
+    if (detectorSettings.find("BST") != std::string::npos) {
+      Enable::BST = true;
+    }
+    if(detectorSettings.find("FST")!= std::string::npos ){
+      Enable::FST = true;
+    }
     if(detectorSettings.find("Magnet")!= std::string::npos )
       Enable::MAGNET = true;
     if(detectorSettings.find("dRICH")!= std::string::npos )
       Enable::RICH = true;
+    if(detectorSettings.find("mRICH")!= std::string::npos )
+      Enable::mRICH = true;
     // if(detectorSettings.find("ALLSILICON")!= std::string::npos )
     //   Enable::ALLSILICON = true;
     if(detectorSettings.find("CEMC")!= std::string::npos )
@@ -539,17 +624,29 @@ int Fun4All_G4_ECCEModular(
       Enable::HCALOUT = true;
       Enable::HCALIN = true;
     }
-    if(detectorSettings.find("DR")!= std::string::npos )
+    if(detectorSettings.find("DR")!= std::string::npos ){
       Enable::DRCALO = true;
-    if(detectorSettings.find("FEMC")!= std::string::npos )
+      // G4DRCALO::SETTING::PMMA = true;
+      G4DRCALO::SETTING::FwdConfig = true;
+      G4LFHCAL::SETTING::FwdConfig = true;
+      G4FEMC::SETTING::FwdConfig = true;
+      G4FEMC::SETTING::asymmetric = false;
+      cout << "setting DRCALO stuff" << endl;
+    }
+    if(detectorSettings.find("FEMC")!= std::string::npos ){
       Enable::FEMC = true;
+      if(detectorSettings.find("FWDC")!= std::string::npos ){
+        G4FEMC::SETTING::FwdSquare = true;
+        G4FEMC::SETTING::asymmetric = false;
+      }
+    }
     if(detectorSettings.find("FGEM")!= std::string::npos )
       Enable::FGEM = true;
     if((detectorSettings.find("FHCAL")!= std::string::npos) && !(detectorSettings.find("LFHCAL")!= std::string::npos) )
       Enable::FHCAL = true;
     if(detectorSettings.find("LFHCAL")!= std::string::npos )
       Enable::LFHCAL = true;
-    if(detectorSettings.find("BECAL")!= std::string::npos )
+    if(detectorSettings.find("BECAL")!= std::string::npos || detectorSettings.find("BEMC")!= std::string::npos )
       Enable::BECAL = true;
     if(detectorSettings.find("EHCAL")!= std::string::npos )
       Enable::EHCAL = true;
@@ -557,6 +654,8 @@ int Fun4All_G4_ECCEModular(
       Enable::EEMCH = true;
     if(detectorSettings.find("RWELL")!= std::string::npos )
       Enable::RWELL = true;
+    if(detectorSettings.find("EEMC")!= std::string::npos )
+      Enable::EEMCH    = true;
     if(detectorSettings.find("CHCAL")!= std::string::npos ){
       Enable::HCALIN   = true;
       Enable::HCALOUT  = true;
@@ -659,15 +758,14 @@ int Fun4All_G4_ECCEModular(
 
   // Enabling the event evaluator?
   Enable::EVENT_EVAL = true;
-  if (detectorSettings.find("HITS") != std::string::npos) {
-    Enable::EVENT_EVAL_DO_HITS = true;
-    if (detectorSettings.find("HITSABS") != std::string::npos) {
-      Enable::EVENT_EVAL_DO_HITS_ABSORBER = true;
-    }
-    if (detectorSettings.find("HITSC") != std::string::npos) {
-      Enable::EVENT_EVAL_DO_HITS_CALO = true;
-    }
+  if (detectorSettings.find("HITSABS") != std::string::npos) {
+    Enable::EVENT_EVAL_DO_HITS_ABSORBER = true;
   }
+  if (detectorSettings.find("HITSC") != std::string::npos) {
+    Enable::EVENT_EVAL_DO_HITS_CALO = true;
+  }
+  // EVENT_EVALUATOR::Verbosity = 1;
+  EVENT_EVALUATOR::MCStackDepth = 1;
   Enable::EVENT_EVAL_DO_HEPMC   = Input::PYTHIA6 or Input::PYTHIA8 or Input::SARTRE or Input::HEPMC or Input::READEIC;
   Enable::EVENT_EVAL_DO_EVT_LVL = Input::PYTHIA6 or Input::PYTHIA8 or Input::READEIC;
   // EVENT_EVALUATOR::Verbosity = 1;
@@ -683,10 +781,14 @@ int Fun4All_G4_ECCEModular(
   // ---------------
   // Magnet Settings
   //---------------
+  std::string fieldSettingToFind = "FIELD_";
   if (detectorSettings.find("NOFIELD") != std::string::npos) {
     const string magfield = "0.0"; // alternatively to specify a constant magnetic field, give a float number, which will be translated to solenoidal field in T, if string use as fieldmap name (including path)
     G4MAGNET::magfield = magfield;
     G4WORLD::WorldMaterial = "G4_Galactic"; // set to G4_GALACTIC for material scans
+  } else if (detectorSettings.find(fieldSettingToFind) != std::string::npos) {
+      auto pos = detectorSettings.find(fieldSettingToFind);
+      G4MAGNET::magfield = detectorSettings.substr(pos + fieldSettingToFind.size(), pos + fieldSettingToFind.size() + 3);
   } else {
     // const string magfield = "1.5"; // alternatively to specify a constant magnetic field, give a float number, which will be translated to solenoidal field in T, if string use as fieldmap name (including path)
     //  G4MAGNET::magfield = string(getenv("CALIBRATIONROOT")) + string("/Field/Map/sPHENIX.2d.root");  // default map from the calibration database

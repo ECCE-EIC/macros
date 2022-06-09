@@ -96,7 +96,6 @@ void Barrel(PHG4Reco *g4Reco, int det_ver = 3)
       BarrelFastKalmanFilterConfigSVTX(TRACKING::FastKalmanFilter, ilayer, si_vtx_r_pos[ilayer],true);
       BarrelFastKalmanFilterConfigSVTX(TRACKING::FastKalmanFilterInnerTrack, ilayer, si_vtx_r_pos[ilayer],false);
       BarrelFastKalmanFilterConfigSVTX(TRACKING::FastKalmanFilterSiliconTrack, ilayer, si_vtx_r_pos[ilayer],false);
-      BarrelFastKalmanFilterConfigSVTX(TRACKING::FastKalmanFilterDefaultECCE, ilayer, si_vtx_r_pos[ilayer],false);
     }
   } else {
     //---------------------------
@@ -151,7 +150,6 @@ void Barrel(PHG4Reco *g4Reco, int det_ver = 3)
       BarrelFastKalmanFilterConfigBARR(TRACKING::FastKalmanFilter, ilayer, si_r_pos[ilayer],true);
       BarrelFastKalmanFilterConfigBARR(TRACKING::FastKalmanFilterInnerTrack, ilayer, si_r_pos[ilayer],false);
       BarrelFastKalmanFilterConfigBARR(TRACKING::FastKalmanFilterSiliconTrack, ilayer, si_r_pos[ilayer],false);
-      BarrelFastKalmanFilterConfigBARR(TRACKING::FastKalmanFilterDefaultECCE, ilayer, si_r_pos[ilayer],false);
     }
   } else {
     double z_e_length[] = {-27, -29.0};

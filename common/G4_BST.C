@@ -58,8 +58,7 @@ void BSTSetup(PHG4Reco *g4Reco)
 
   /** Use dedicated BST module */
   PHG4BSTSubsystem *hhcal = new PHG4BSTSubsystem("BST");
-  // hhcal->OverlapCheck(OverlapCheck);
-  hhcal->OverlapCheck(true);
+  hhcal->OverlapCheck(OverlapCheck);
   hhcal->SuperDetector("BST");
   hhcal->SetActive();
   if (AbsorberActive) hhcal->SetAbsorberActive();

@@ -54,14 +54,11 @@ void Event_Eval(const std::string &filename)
       eval->set_do_PID_LogLikelihood(true);
   }
 
-  if (Enable::CEMC) eval->set_do_CEMC(true);
   if (Enable::EEMC || Enable::EEMCH) eval->set_do_EEMC(true);
-  if (Enable::EEMCH && G4EEMCH::SETTING::USEHYBRID) eval->set_do_EEMCG(true);
   if (Enable::FEMC) eval->set_do_FEMC(true);
   if (Enable::EHCAL) eval->set_do_EHCAL(true);
   if (Enable::HCALIN) eval->set_do_HCALIN(true);
   if (Enable::HCALOUT) eval->set_do_HCALOUT(true);
-  if (Enable::FHCAL) eval->set_do_FHCAL(true);
   if (Enable::FHCAL_CLUSTER || Enable::FEMC_CLUSTER || Enable::EEMC_CLUSTER) eval->set_do_CLUSTERS(true);
   if (Enable::DRCALO) eval->set_do_DRCALO(true);
   if (Enable::LFHCAL) eval->set_do_LFHCAL(true);
