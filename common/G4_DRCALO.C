@@ -42,6 +42,7 @@ namespace G4DRCALO
   double Gz0 = 400.;
   double Gdz = 100.;
   double outer_radius = 262.;
+  double timecut = -1;
   enum enu_FHcal_clusterizer
   {
     kFHcalGraphClusterizer,
@@ -169,6 +170,9 @@ void DRCALO_Towers()
   RawTowerBuilderDRCALO *tower_DRCALO = new RawTowerBuilderDRCALO("TowerBuilder_DRCALO");
   tower_DRCALO->Detector("DRCALO");
   tower_DRCALO->set_sim_tower_node_prefix("SIM");
+  if(G4DRCALO::timecut != -1){
+    tower_DRCALO->set_hit_time_window(G4DRCALO::timecut); // in ns
+  }
   tower_DRCALO->GeometryTableFile(mapping_drcalo.str());
 
   se->registerSubsystem(tower_DRCALO);

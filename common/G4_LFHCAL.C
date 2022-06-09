@@ -43,7 +43,8 @@ namespace G4LFHCAL
   // from LFHcal/mapping/towerMap_LFHCAL_v005.txt
   double Gz0 = 400.;
   double Gdz = 100.;
-  double outer_radius = 265.;
+  double outer_radius = 262.;
+  double timecut = -1;
   enum enu_FHcal_clusterizer
   {
     kFHcalGraphClusterizer,
@@ -55,14 +56,15 @@ namespace G4LFHCAL
   //enu_FHcal_clusterizer FHcal_clusterizer = kFHcalGraphClusterizer;
   namespace SETTING
   {
-    bool FullEtaAcc   = false;
-    bool HC2x         = false;
-    bool asymmetric   = true;
-    bool wDR          = false;
-    bool FwdSquare    = false;
-    bool FwdConfig    = false;
-    bool longer       = true;
-    bool tailcatcher  = true;
+    bool FullEtaAcc = false;
+    bool HC2x = false;
+    bool asymmetric = true;
+    bool wDR = false;
+    bool FwdSquare = false;
+    bool FwdConfig = false;
+    bool longer = true;
+    bool doLightProp = false;
+    bool tailcatcher = true;
   }  // namespace SETTING
 }  // namespace G4LFHCAL
 
@@ -95,7 +97,7 @@ TString GetMappingFile(){
   else if (G4LFHCAL::SETTING::FwdSquare)
   {
     if (G4LFHCAL::SETTING::longer)
-      mappinFileName += "/LFHcal/mapping/towerMap_LFHCAL_FwdSquare-long.txt";
+      mappinFileName += "/LFHcal/mapping/towerMap_LFHCAL_FwdConfig-long-tailcatcher.txt";
     else 
       mappinFileName += "/LFHcal/mapping/towerMap_LFHCAL_FwdSquare.txt";
   }
@@ -153,6 +155,7 @@ void LFHCALSetup(PHG4Reco *g4Reco)
 {
   const bool AbsorberActive = Enable::ABSORBER || Enable::LFHCAL_ABSORBER;
   bool OverlapCheck = Enable::OVERLAPCHECK || Enable::LFHCAL_OVERLAPCHECK;
+  bool doLightPropagation = Enable::LIGHTPROPAGATION || G4LFHCAL::SETTING::doLightProp;
   Fun4AllServer *se = Fun4AllServer::instance();
 
   /** Use dedicated LFHCAL module */
@@ -166,9 +169,10 @@ void LFHCALSetup(PHG4Reco *g4Reco)
   fhcal->SetTowerMappingFile(mapping_fhcal_s.str());
   fhcal->OverlapCheck(OverlapCheck);
   fhcal->SetActive();
-  //fhcal->SetDetailed(true);
+  fhcal->SetDetailed(true);
   fhcal->SuperDetector("LFHCAL");
   if (AbsorberActive) fhcal->SetAbsorberActive();
+  fhcal->DoFullLightPropagation(doLightPropagation);
 
   g4Reco->registerSubsystem(fhcal);
 }
@@ -193,6 +197,9 @@ void LFHCAL_Towers()
   RawTowerBuilderByHitIndexLHCal *tower_LFHCAL = new RawTowerBuilderByHitIndexLHCal("TowerBuilder_LFHCAL");
   tower_LFHCAL->Detector("LFHCAL");
   tower_LFHCAL->set_sim_tower_node_prefix("SIM");
+  if(G4LFHCAL::timecut != -1){
+    tower_LFHCAL->set_hit_time_window(G4LFHCAL::timecut); // in ns
+  }
   tower_LFHCAL->GeometryTableFile(mapping_fhcal_s.str());
 
   se->registerSubsystem(tower_LFHCAL);

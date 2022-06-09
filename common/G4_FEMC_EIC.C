@@ -43,8 +43,9 @@ namespace G4FEMC
 {
   // from ForwardEcal/mapping/towerMap_FEMC_v007.txt
   const double Gz0 = 310.;
-  const double Gdz = 36.5;
-  const double outer_radius = 182.655;
+  const double Gdz = 38.5;
+  const double outer_radius = 185;
+  double timecut = -1;
   enum enu_Femc_clusterizer
   {
     kFemcGraphClusterizer,
@@ -63,6 +64,8 @@ namespace G4FEMC
     bool asymmetric = true;
     bool wDR = false;
     bool FwdSquare = false;
+    bool FwdConfig = false;
+    bool doLightProp = false;
   }  // namespace SETTING
 }  // namespace G4FEMC
 
@@ -84,6 +87,7 @@ void FEMCSetup(PHG4Reco *g4Reco)
 {
   bool AbsorberActive = Enable::ABSORBER || Enable::FEMC_ABSORBER;
   bool OverlapCheck = Enable::OVERLAPCHECK || Enable::FEMC_OVERLAPCHECK;
+  bool doLightPropagation = Enable::LIGHTPROPAGATION || G4FEMC::SETTING::doLightProp;
 
   Fun4AllServer *se = Fun4AllServer::instance();
 
@@ -102,11 +106,6 @@ void FEMCSetup(PHG4Reco *g4Reco)
   {
     mapping_femc << getenv("CALIBRATIONROOT") << "/ForwardEcal/mapping/towerMap_FEMC_2x.txt";
   }
-  // fsPHENIX ECAL
-  else if (G4FEMC::SETTING::fsPHENIX)
-  {
-    mapping_femc << getenv("CALIBRATIONROOT") << "/ForwardEcal/mapping/towerMap_FEMC_fsPHENIX_v004.txt";
-  }
   // asymmetric ECAL around beampipe
   else if (G4FEMC::SETTING::asymmetric)
   {
@@ -121,6 +120,14 @@ void FEMCSetup(PHG4Reco *g4Reco)
       else
         mapping_femc << getenv("CALIBRATIONROOT") << "/ForwardEcal/mapping/towerMap_FEMC_asymmetric.txt";
     }
+  }
+  // ECAL surrounding dual readout calorimeter
+  else if (G4FEMC::SETTING::FwdConfig)
+  {
+    if (G4FEMC::SETTING::readoutsplit)
+      mapping_femc << getenv("CALIBRATIONROOT") << "/ForwardEcal/mapping/towerMap_FEMC_IP6-ROS_FwdConfig.txt";
+    else
+      mapping_femc << getenv("CALIBRATIONROOT") << "/ForwardEcal/mapping/towerMap_FEMC_FwdSquare.txt";
   }
   // ECAL surrounding dual readout calorimeter
   else if (G4FEMC::SETTING::FwdSquare)
@@ -147,6 +154,7 @@ void FEMCSetup(PHG4Reco *g4Reco)
   femc->SetDetailed(false);
   femc->SuperDetector("FEMC");
   if (AbsorberActive) femc->SetAbsorberActive();
+  femc->DoFullLightPropagation(doLightPropagation);
 
   g4Reco->registerSubsystem(femc);
 }
@@ -178,11 +186,6 @@ void FEMC_Towers()
   {
     mapping_femc << getenv("CALIBRATIONROOT") << "/ForwardEcal/mapping/towerMap_FEMC_2x.txt";
   }
-  // fsPHENIX ECAL
-  else if (G4FEMC::SETTING::fsPHENIX)
-  {
-    mapping_femc << getenv("CALIBRATIONROOT") << "/ForwardEcal/mapping/towerMap_FEMC_fsPHENIX_v004.txt";
-  }
   // ECAL surrounding dual readout calorimeter
   else if (G4FEMC::SETTING::FwdSquare)
   {
@@ -209,6 +212,14 @@ void FEMC_Towers()
     }
   }
   // ECAL surrounding dual readout calorimeter
+  else if (G4FEMC::SETTING::FwdConfig)
+  {
+    if (G4FEMC::SETTING::readoutsplit)
+      mapping_femc << getenv("CALIBRATIONROOT") << "/ForwardEcal/mapping/towerMap_FEMC_IP6-ROS_FwdConfig.txt";
+    else
+      mapping_femc << getenv("CALIBRATIONROOT") << "/ForwardEcal/mapping/towerMap_FEMC_FwdSquare.txt";
+  }
+  // ECAL surrounding dual readout calorimeter
   else if (G4FEMC::SETTING::FwdSquare)
   {
     if (G4FEMC::SETTING::readoutsplit)
@@ -225,6 +236,9 @@ void FEMC_Towers()
   RawTowerBuilderByHitIndex *tower_FEMC = new RawTowerBuilderByHitIndex("TowerBuilder_FEMC");
   tower_FEMC->Detector("FEMC");
   tower_FEMC->set_sim_tower_node_prefix("SIM");
+  if(G4FEMC::timecut != -1){
+    tower_FEMC->set_hit_time_window(G4FEMC::timecut); // in ns
+  }
   tower_FEMC->GeometryTableFile(mapping_femc.str());
 
   se->registerSubsystem(tower_FEMC);

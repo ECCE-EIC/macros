@@ -35,6 +35,7 @@ namespace G4TRACKING
   bool PROJECTION_FEMC = false;
   bool PROJECTION_FHCAL = false;
   bool PROJECTION_LFHCAL = false;
+  bool PROJECTION_DRCALO = false;
 }  // namespace G4TRACKING
 
 //-----------------------------------------------------------------------------//
@@ -163,7 +164,14 @@ void Tracking_Reco()
     TRACKING::FastKalmanFilter->add_state_name("EHCAL");
     TRACKING::ProjectionNames.insert("EHCAL");
   }
-
+  //-------------------------
+  // DRCALO
+  //-------------------------
+  if (Enable::DRCALO && G4TRACKING::PROJECTION_DRCALO)
+  {
+    TRACKING::FastKalmanFilter->add_state_name("DRCALO");
+    TRACKING::ProjectionNames.insert("DRCALO");
+  }
   se->registerSubsystem(TRACKING::FastKalmanFilter);
 
   // next, tracks with partial usage of the tracker stack

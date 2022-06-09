@@ -68,10 +68,16 @@ void FSTSetup(PHG4Reco *g4Reco)
   //const double max_radius = 50.;
 
 
+  // AI optimized values
+  const double bkwd_z[] = {33.2, 58.29, 80.05, 107.4};
+  double bkwd_rmin[] = {3.3, 3.3, 5.25, 6.4};
+  double bkwd_rmax[] = {15.3, 27.3, 35.25, 48.4};
 
-  const double bkwd_z[] = {25, 52, 79, 106};
-  double bkwd_rmin[] = {3.5, 3.5, 4.5, 5.5};
-  double bkwd_rmax[] = {18.5, 36.5, 40.5, 41.5};
+  // non-projective values
+  const double bkwd_z_np[] = {25, 52, 79, 106};
+  double bkwd_rmin_np[] = {3.5, 3.5, 4.5, 5.5};
+  double bkwd_rmax_np[] = {18.5, 36.5, 40.5, 41.5};
+
   const int n_bkwd_disk = sizeof(bkwd_z) / sizeof(*bkwd_z);
   for (unsigned int i = 0; i < n_bkwd_disk; i++)
   {
@@ -85,13 +91,23 @@ void FSTSetup(PHG4Reco *g4Reco)
     if(bkwd_z[i]>79.8 && bkwd_z[i]>0) bkwd_rmin[i] = (0.0521*bkwd_z[i] + 1.0);
     else bkwd_rmin[i] = 3.3;
 */  
-    make_LANL_FST_station(Form("EST_%i", i), g4Reco, -1*bkwd_z[i], bkwd_rmin[i], bkwd_rmax[i], 35 * um, 10e-4);  //cm
+    if(Enable::AI_TRACKINGGEO){
+      make_LANL_FST_station(Form("EST_%i", i), g4Reco, -1*bkwd_z[i], bkwd_rmin[i], bkwd_rmax[i], 35 * um, 10e-4);  //cm
+    } else {
+      make_LANL_FST_station(Form("EST_%i", i), g4Reco, -1*bkwd_z_np[i], bkwd_rmin_np[i], bkwd_rmax_np[i], 35 * um, 10e-4);  //cm
+    }
   }
 
+  // AI optimized values
+  const double fwd_z[] = {33.2, 58.29, 79.85, 115, 125};
+  double fwd_rmin[] = {3.3, 3.3, 5.2, 6.5, 7.5};
+  double fwd_rmax[] = {15.3, 27.3, 35.2, 49.5, 49.5};
 
-  const double fwd_z[] = {25, 52, 73, 106, 125};
-  double fwd_rmin[] = {3.5, 3.5, 4.5, 5.5, 7.5};
-  double fwd_rmax[] = {18.5, 36.5, 40.5, 41.5, 43.4};
+  // non-projective values
+  const double fwd_z_np[] = {25, 52, 73, 106, 125};
+  double fwd_rmin_np[] = {3.5, 3.5, 4.5, 5.5, 7.5};
+  double fwd_rmax_np[] = {18.5, 36.5, 40.5, 41.5, 43.4};
+
   const int n_fwd_disk = sizeof(fwd_z) / sizeof(*fwd_z);
   for (unsigned int i = 0; i < n_fwd_disk; i++)
   {
@@ -107,7 +123,11 @@ void FSTSetup(PHG4Reco *g4Reco)
     if(fwd_z[i]>66.8 && fwd_z[i]>0) fwd_rmin[i] = (0.0521*fwd_z[i] + 1.0);
     else fwd_rmin[i] = 3.3;
 */
-    make_LANL_FST_station(Form("FST_%i", i), g4Reco, fwd_z[i], fwd_rmin[i], fwd_rmax[i], 35 * um, 10e-4);  //cm
+    if(Enable::AI_TRACKINGGEO){
+      make_LANL_FST_station(Form("FST_%i", i), g4Reco, fwd_z[i], fwd_rmin[i], fwd_rmax[i], 35 * um, 10e-4);  //cm
+    } else {
+      make_LANL_FST_station(Form("FST_%i", i), g4Reco, fwd_z_np[i], fwd_rmin_np[i], fwd_rmax_np[i], 35 * um, 10e-4);  //cm
+    }
   }
 
   if (G4FST::SETTING::SUPPORTCYL)

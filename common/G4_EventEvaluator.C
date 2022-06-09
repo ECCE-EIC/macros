@@ -10,12 +10,11 @@ R__LOAD_LIBRARY(libeiceval.so)
 namespace Enable
 {
   // use Enable::EVENT_EVAL = true; in your macro
-  bool EVENT_EVAL                   = false;
-  bool EVENT_EVAL_DO_HEPMC          = false;
-  bool EVENT_EVAL_DO_EVT_LVL        = false;
-  bool EVENT_EVAL_DO_HITS           = false;
-  bool EVENT_EVAL_DO_HITS_ABSORBER  = false;
-  bool EVENT_EVAL_DO_HITS_CALO      = false;
+  bool EVENT_EVAL = false;
+  bool EVENT_EVAL_DO_HEPMC = false;
+  bool EVENT_EVAL_DO_EVT_LVL = false;
+  bool EVENT_EVAL_DO_HITS_ABSORBER = false;
+  bool EVENT_EVAL_DO_HITS_CALO = false;
   bool EVENT_EVAL_DO_HITS_BLACKHOLE = false;
 }  // namespace Enable
 
@@ -23,6 +22,7 @@ namespace EVENT_EVALUATOR
 {
   int Verbosity = 0;
   float EnergyThreshold = 0.05;
+  int MCStackDepth = 0;
 }  // namespace EVENT_EVALUATOR
 
 void Event_Eval(const std::string &filename)
@@ -36,27 +36,24 @@ void Event_Eval(const std::string &filename)
   if (Enable::TRACKING)
   {
     eval->set_do_TRACKS(true);
-    if (Enable::EVENT_EVAL_DO_HITS) {
-      std::cout << "Enabled hits in event eval.\n";
-      eval->set_do_HITS(true);
-      if (Enable::EVENT_EVAL_DO_HITS_ABSORBER) {
-        std::cout << "Enabled absorber hits in event eval.\n";
-        eval->set_do_HITS_ABSORBER(true);
-      }
-      if (Enable::EVENT_EVAL_DO_HITS_CALO) {
-        std::cout << "Enabled calorimeter hits in event eval.\n";
-        eval->set_do_HITS_CALO(true);
-      }
+    eval->set_do_HITS(true);
+    std::cout << "Enabled hits in event eval.\n";
+    if (Enable::EVENT_EVAL_DO_HITS_ABSORBER) {
+      std::cout << "Enabled absorber hits in event eval.\n";
+      eval->set_do_HITS_ABSORBER(true);
+    }
+    if (Enable::EVENT_EVAL_DO_HITS_CALO) {
+      std::cout << "Enabled calorimeter hits in event eval.\n";
+      eval->set_do_HITS_CALO(true);
       if (Enable::BLACKHOLE_SAVEHITS && Enable::EVENT_EVAL_DO_HITS_BLACKHOLE) eval->set_do_BLACKHOLE(true);
     }
-    
     eval->set_do_PROJECTIONS(true);
     if (G4TRACKING::DISPLACED_VERTEX)
       eval->set_do_VERTEX(true);
     if (Enable::DIRC_RECO or Enable::mRICH_RECO or Enable::RICH_RECO)
       eval->set_do_PID_LogLikelihood(true);
   }
-  // set calorimeter Infos
+
   if (Enable::CEMC) eval->set_do_CEMC(true);
   if (Enable::EEMC || Enable::EEMCH) eval->set_do_EEMC(true);
   if (Enable::EEMCH && G4EEMCH::SETTING::USEHYBRID) eval->set_do_EEMCG(true);
@@ -70,14 +67,11 @@ void Event_Eval(const std::string &filename)
   if (Enable::LFHCAL) eval->set_do_LFHCAL(true);
   if (Enable::BECAL) eval->set_do_BECAL(true);
 
-  // storing MC event info 
   eval->set_do_MCPARTICLES(true);
+  eval->set_do_GEOMETRY(true);
+  eval->set_depth_MCstack(EVENT_EVALUATOR::MCStackDepth);
   eval->set_do_HEPMC(Enable::EVENT_EVAL_DO_HEPMC);
   eval->set_do_store_event_level_info(Enable::EVENT_EVAL_DO_EVT_LVL);
-  
-  // storing geometry
-  eval->set_do_GEOMETRY(true);
-  
   se->registerSubsystem(eval);
 
   return;

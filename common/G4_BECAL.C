@@ -48,7 +48,8 @@ namespace G4BECAL
   double minz = -453;
   double maxz = 371;
   double topradius =  138;
-  double radius =  80;
+  double radius =  85;
+  double timecut =  -1;
 
   // this is default set to -1.5<eta<1.24 for 2018 Letter of Intent
   // if the user changes these, the z position of the
@@ -61,6 +62,11 @@ namespace G4BECAL
   // kSimple_photon_digitization
   // digitization with photon statistics on SiPM with an effective pixel N, ADC conversion and pedestal
   // kSiPM_photon_digitization
+  namespace SETTING
+  {
+    bool useMoreTowers = false;
+    bool useNonProjective = false;
+  }
 
 }  // namespace G4BECAL
 
@@ -84,11 +90,20 @@ double BECALSetup(PHG4Reco *g4Reco)
   // From Nathaly Santiesteban:
   // https://raw.githubusercontent.com/eic/fun4all_eiccalibrations/main/BarrelEcal/mapping/towerMap_BEMC_v002.txt
   // It uses IR of 80.3.
-  ostringstream mapping_becal;
-  mapping_becal << getenv("CALIBRATIONROOT") << "/BarrelEcal/mapping/towerMap_BEMC_v002.txt";
+  ostringstream mapping_BECAL;
+  if(G4BECAL::SETTING::useNonProjective){
+    mapping_BECAL << getenv("CALIBRATIONROOT") << "/BarrelEcal/mapping/towerMap_BEMC_v001_nonproj.txt";
+  }else {
+    if(G4BECAL::SETTING::useMoreTowers){
+      mapping_BECAL << getenv("CALIBRATIONROOT") << "/BarrelEcal/mapping/towerMap_BEMC_v001_geochange_moretow.txt";
+    }else {
+      mapping_BECAL << getenv("CALIBRATIONROOT") << "/BarrelEcal/mapping/towerMap_BEMC_v001_geochange.txt";
+    }
+  }
 
   PHG4BarrelEcalSubsystem *becal = new PHG4BarrelEcalSubsystem("BECAL");
-  becal->set_string_param("mapping_file", mapping_becal.str());
+  becal->set_string_param("mapping_file", mapping_BECAL.str());
+  std::cout << "using " << mapping_BECAL.str() << std::endl;
   becal->OverlapCheck(OverlapCheck);
   becal->SetActive();
   becal->SuperDetector("BECAL");
@@ -113,7 +128,15 @@ void BECAL_Towers()
   Fun4AllServer *se = Fun4AllServer::instance();
 
   ostringstream mapping_BECAL;
-  mapping_BECAL << getenv("CALIBRATIONROOT") << "/BarrelEcal/mapping/towerMap_BEMC_v001.txt";
+  if(G4BECAL::SETTING::useNonProjective){
+    mapping_BECAL << getenv("CALIBRATIONROOT") << "/BarrelEcal/mapping/towerMap_BEMC_v001_nonproj.txt";
+  }else {
+    if(G4BECAL::SETTING::useMoreTowers){
+      mapping_BECAL << getenv("CALIBRATIONROOT") << "/BarrelEcal/mapping/towerMap_BEMC_v001_geochange_moretow.txt";
+    }else {
+      mapping_BECAL << getenv("CALIBRATIONROOT") << "/BarrelEcal/mapping/towerMap_BEMC_v001_geochange.txt";
+    }
+  }
   
   const double photoelectron_per_GeV = 5000;
 
@@ -121,6 +144,9 @@ void BECAL_Towers()
   tower_BECAL->Detector("BECAL");
   tower_BECAL->set_sim_tower_node_prefix("SIM");
   tower_BECAL->EminCut(1e-7);
+  if(G4BECAL::timecut != -1){
+    tower_BECAL->set_hit_time_window(G4BECAL::timecut); // in ns
+  }
   tower_BECAL->GeometryTableFile(mapping_BECAL.str());
   tower_BECAL->Verbosity(verbosity);
   se->registerSubsystem(tower_BECAL);

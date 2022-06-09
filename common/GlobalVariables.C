@@ -30,8 +30,10 @@ namespace Enable
 {
   bool OVERLAPCHECK = false;
   bool ABSORBER = false;
+  bool LIGHTPROPAGATION = false;
   bool DSTOUT = false;
   bool DSTOUT_COMPRESS = false;
+  bool AI_TRACKINGGEO = true;
   int VERBOSITY = 0;
 
   // IP selection require explicit choice in the main macros
@@ -41,7 +43,6 @@ namespace Enable
   float HFARFWD_ION_ENERGY = 0;
   float HFARBWD_E_ENERGY = 0;
   TString BEAM_COLLISION_SETTING;
-
 }  // namespace Enable
 
 // every G4 subsystem needs to implement this
