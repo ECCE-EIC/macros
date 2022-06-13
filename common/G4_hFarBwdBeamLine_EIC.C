@@ -12,7 +12,7 @@
 #include <eicg4zdc/EICG4ZDCNtuple.h>
 #include <eicg4zdc/EICG4ZDCSubsystem.h>
 
-#include <eicg4bwd/EICG4BwdSubsystem.h>
+#include <eicg4lumi/EICG4LumiSubsystem.h>
 #include <g4main/PHG4Reco.h>
 
 #include <TSystem.h>
@@ -115,10 +115,12 @@ void hFarBwdDefineMagnets(PHG4Reco *g4Reco)
   g4Reco->registerSubsystem(hFarBwdBeamLine::hFarBwdBeamLineEnclosure);
 
   string magFile;
-  if (Enable::HFARFWD_MAGNETS_IP6)
+  if (Enable::HFARFWD_MAGNETS_IP6) {
     magFile = string(getenv("CALIBRATIONROOT")) + "/Beam/ip6_h_farBwdBeamLineMagnets.dat";
-  else if (Enable::HFARFWD_MAGNETS_IP8)
+  }
+  else if (Enable::HFARFWD_MAGNETS_IP8) {
     magFile = string(getenv("CALIBRATIONROOT")) + "/Beam/ip8_35mrad_h_farBwdBeamLineMagnets.dat";
+  }
   else
   {
     cout << " You have to enable either the IP6 or IP8 Magnet configuration to define magnets! " << endl;
@@ -126,7 +128,7 @@ void hFarBwdDefineMagnets(PHG4Reco *g4Reco)
   }
 
   // make magnet active volume if you want to study the hits
-//  bool magnet_active = false;
+  //  bool magnet_active = false;
   bool magnet_active = true;
 
   int absorberactive = 0;
@@ -407,8 +409,26 @@ void hFarBwdDefineDetectorsIP6(PHG4Reco *g4Reco)
 //   if (verbosity) detLowQ2Tag_2->Verbosity(verbosity);
 //   g4Reco->registerSubsystem(detLowQ2Tag_2);
 
-	if (Enable::BWD) {
- 	int DetNr = 5; //number of Backward Detectors 
+   if (Enable::BWD) {
+
+     //-----------------------------------------------------------------------
+     // New Luminosity detector design with input from Jaroslav and Bill Schmidke
+     
+     string paramFileLumi = string(getenv("CALIBRATIONROOT")) + "/LumiMonAndTaggers/LumiMon.dat";
+
+     auto *LumiDet = new EICG4LumiSubsystem("Lumi");
+     LumiDet->SetParametersFromFile( paramFileLumi );
+     LumiDet->OverlapCheck( overlapCheck );
+     LumiDet->set_double_param("FBenclosure_center", hFarBwdBeamLine::enclosure_center );
+     LumiDet->SetMotherSubsystem( hFarBwdBeamLine::hFarBwdBeamLineEnclosure );
+     LumiDet->SetActive( true );
+     if( verbosity ) { LumiDet->Verbosity( verbosity ); }
+     g4Reco->registerSubsystem( LumiDet );
+
+     //-----------------------------------------------------------------------
+
+          /*
+        int DetNr = 5; //number of Backward Detectors 
 	string bwddetname[5]={" is the first Q2 tagger", " is the second Q2 tagger", " is Lumi 0"," is Lumi +"," is Lumi -"};
 //	string mapname[5]={"BWD_mapping_v1.txt","BWD_mapping_v2.txt","BWD_mapping_v3.txt","BWD_mapping_v3.txt","BWD_mapping_v3.txt"};
 	float placex[5] = {-50,-80,0,0,0};
@@ -519,6 +539,7 @@ void hFarBwdDefineDetectorsIP6(PHG4Reco *g4Reco)
 		
 		}
 		}
+        */
 	}
 //  int verbosity = std::max(Enable::VERBOSITY, Enable::HFARFWD_VERBOSITY);
 
