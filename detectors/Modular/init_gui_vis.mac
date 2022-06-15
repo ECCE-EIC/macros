@@ -18,3 +18,9 @@
 /vis/scene/create
 # open graphics (opengl QT)
 /vis/open OGL
+/vis/viewer/set/background white
+
+#/vis/scene/endOfEventAction accumulate 1
+/vis/ogl/set/displayListLimit 2000000
+
+

@@ -583,6 +583,7 @@ int Fun4All_G4_ECCEModular(
     Enable::ETTL = false;
     Enable::EEMCH = false;
     Enable::RWELL = false;
+    Enable::PLUGDOOR  = false;
     Enable::TrackingService = false;
     Enable::BARREL = false;
     Enable::FST = false;
