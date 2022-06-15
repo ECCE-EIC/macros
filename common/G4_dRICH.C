@@ -13,6 +13,8 @@
 #include <eccefastpidreco/ECCEFastPIDReco.h>
 #include <eccefastpidreco/ECCEdRICHFastPIDMap.h>
 #include <g4drich/EICG4dRICHSubsystem.h>
+#include <g4detectors/PHG4SectorSubsystem.h>
+#include <g4detectors/PHG4CylinderSubsystem.h>
 #include <g4trackfastsim/PHG4TrackFastSim.h>
 
 #include <g4main/PHG4Reco.h>
@@ -58,11 +60,34 @@ void RICHSetup(PHG4Reco *g4Reco)
 
   g4Reco->registerSubsystem(drichSubsys);
 
-  if (TRACKING::FastKalmanFilter)
+  
+  const double cm = PHG4Sector::Sector_Geometry::Unit_cm();
+  const double mm = .1 * cm;
+  const double um = 1e-3 * mm;
+  double zposOrg = 184.7;
+  double Rmin = 10;
+  double Rmax = 88;
+    
+  PHG4CylinderSubsystem* dRichDummy = new PHG4CylinderSubsystem("dRICH_Plane");
+  dRichDummy->set_string_param("material", "G4_AIR");
+  dRichDummy->set_double_param("radius", Rmin);
+  dRichDummy->set_double_param("thickness", Rmax-Rmin);
+  dRichDummy->set_double_param("place_z", zposOrg);
+  dRichDummy->set_double_param("length", 100* um);
+//   dRichDummy->OverlapCheck(true);
+  dRichDummy->SetActive();
+  g4Reco->registerSubsystem(dRichDummy);
+  
+   if (TRACKING::FastKalmanFilter)
   {
     // project to an reference plane at z=170 cm
-    TRACKING::FastKalmanFilter->add_zplane_state("RICH", 185);
-    TRACKING::ProjectionNames.insert("RICH");
+    TRACKING::FastKalmanFilter->add_zplane_state("dRICH_Plane", zposOrg);
+    TRACKING::ProjectionNames.insert("dRICH_Plane");
+  }
+  if (TRACKING::FastKalmanFilterDefaultECCE)
+  {
+    // project to an reference plane at z=170 cm
+    TRACKING::FastKalmanFilterDefaultECCE->add_zplane_state("dRICH_Plane", zposOrg);
   }
 }
 
