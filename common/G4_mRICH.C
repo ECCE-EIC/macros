@@ -103,11 +103,6 @@ void mRICHSetup(PHG4Reco *g4Reco, const int detectorSetup = 1,  //1: full setup;
     TRACKING::FastKalmanFilter-> add_zplane_state("mRICH_Plane", zposOrg);
     TRACKING::ProjectionNames.insert("mRICH_Plane");
   }
-  if (TRACKING::FastKalmanFilterDefaultECCE)
-  {
-    // project to an reference plane at z=170 cm
-    TRACKING::FastKalmanFilterDefaultECCE-> add_zplane_state("mRICH_Plane", zposOrg);
-  }
 }
 
 
