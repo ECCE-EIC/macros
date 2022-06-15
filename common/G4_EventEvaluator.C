@@ -59,7 +59,7 @@ void Event_Eval(const std::string &filename)
   if (Enable::EHCAL) eval->set_do_EHCAL(true);
   if (Enable::HCALIN) eval->set_do_HCALIN(true);
   if (Enable::HCALOUT) eval->set_do_HCALOUT(true);
-  if (Enable::FHCAL_CLUSTER || Enable::FEMC_CLUSTER || Enable::EEMC_CLUSTER) eval->set_do_CLUSTERS(true);
+  if (Enable::FEMC_CLUSTER || Enable::EEMC_CLUSTER) eval->set_do_CLUSTERS(true);
   if (Enable::DRCALO) eval->set_do_DRCALO(true);
   if (Enable::LFHCAL) eval->set_do_LFHCAL(true);
   if (Enable::BECAL) eval->set_do_BECAL(true);
