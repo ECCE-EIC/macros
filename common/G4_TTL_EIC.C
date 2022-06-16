@@ -56,7 +56,9 @@ namespace G4TTL
   // This detector can provide better coverage and provide further constraints in track
   // reconstruction within high pseudorapidity regions.
 
-  const double PositionResolution(30e-4);
+  double PositionResolution = 30e-4; // in units of cm
+  double PositionResolution_eta = 30e-4; // in units of cm
+  double PositionResolution_phi = 30e-4; // in units of cm
 
 }  // namespace G4TTL
 
@@ -84,6 +86,29 @@ void TTL_Init()
     G4TTL::maxExtension[1][0]   = -25;
   }
 
+  // setting for less granuarity in disks (assume factor 2 worse resolution with 1mmx1mm AC-LGAD sensors
+  if(G4TTL::SETTING::optionGran  == 2){
+    G4TTL::PositionResolution = 60e-4;
+  }
+  // 0.5 x 3 mm strip AC-LGAD in barrel
+  else if(G4TTL::SETTING::optionGran  == 3){
+    G4TTL::PositionResolution_eta = 6*G4TTL::PositionResolution;
+  }
+  // 0.5 x 1.5mm strip AC-LGAD in barrel
+  else if(G4TTL::SETTING::optionGran  == 4){
+    G4TTL::PositionResolution_eta = 3*G4TTL::PositionResolution;
+  }
+  // combined configs of barrel strips and less granularity in disks
+  else if(G4TTL::SETTING::optionGran  == 5){
+    G4TTL::PositionResolution_eta = 6*G4TTL::PositionResolution;
+    G4TTL::PositionResolution = 60e-4;
+  }
+  // combined configs of barrel strips and less granularity in disks
+  else if(G4TTL::SETTING::optionGran  == 6){
+    G4TTL::PositionResolution_eta = 3*G4TTL::PositionResolution;
+    G4TTL::PositionResolution = 60e-4;
+  }
+  cout << "TTL granularity setting " << G4TTL::SETTING::optionGran << endl;
   if (G4TTL::SETTING::optionGeo == 1){
     cout << "TTL setup infront of ECals with 2 layers fwd/bwd & 1 layer barrel" << endl;  
   }
@@ -419,8 +444,8 @@ int make_barrel_layer(string name, PHG4Reco *g4Reco,
     TRACKING::FastKalmanFilter->add_phg4hits(string("G4HIT_") + name,     //      const std::string& phg4hitsNames,
                                              PHG4TrackFastSim::Cylinder,  //      const DETECTOR_TYPE phg4dettype,
                                              tSilicon / sqrt(12.),        //      const float radres,
-                                             G4TTL::PositionResolution,     //      const float phires,
-                                             G4TTL::PositionResolution,     //      const float lonres,
+                                             G4TTL::PositionResolution_phi,     //      const float phires,
+                                             G4TTL::PositionResolution_eta,     //      const float lonres,
                                              1,                           //      const float eff,
                                              0);                          //      const float noise
     TRACKING::FastKalmanFilter->add_cylinder_state(name, radius);
@@ -432,8 +457,8 @@ int make_barrel_layer(string name, PHG4Reco *g4Reco,
     TRACKING::FastKalmanFilterInnerTrack->add_phg4hits(string("G4HIT_") + name,     //      const std::string& phg4hitsNames,
                                              PHG4TrackFastSim::Cylinder,  //      const DETECTOR_TYPE phg4dettype,
                                              tSilicon / sqrt(12.),        //      const float radres,
-                                             G4TTL::PositionResolution,     //      const float phires,
-                                             G4TTL::PositionResolution,     //      const float lonres,
+                                             G4TTL::PositionResolution_phi,     //      const float phires,
+                                             G4TTL::PositionResolution_eta,     //      const float lonres,
                                              1,                           //      const float eff,
                                              0);                          //      const float noise
 
@@ -492,8 +517,8 @@ int make_barrel_layer_basic(string name, PHG4Reco *g4Reco,
     TRACKING::FastKalmanFilter->add_phg4hits(string("G4HIT_") + name,     //      const std::string& phg4hitsNames,
                                              PHG4TrackFastSim::Cylinder,  //      const DETECTOR_TYPE phg4dettype,
                                              tSilicon / sqrt(12.),        //      const float radres,
-                                             G4TTL::PositionResolution,     //      const float phires,
-                                             G4TTL::PositionResolution,     //      const float lonres,
+                                             G4TTL::PositionResolution_phi,     //      const float phires,
+                                             G4TTL::PositionResolution_eta,     //      const float lonres,
                                              1,                           //      const float eff,
                                              0);                          //      const float noise
     TRACKING::FastKalmanFilter->add_cylinder_state(name, radius);
@@ -505,8 +530,8 @@ int make_barrel_layer_basic(string name, PHG4Reco *g4Reco,
     TRACKING::FastKalmanFilterInnerTrack->add_phg4hits(string("G4HIT_") + name,     //      const std::string& phg4hitsNames,
                                              PHG4TrackFastSim::Cylinder,  //      const DETECTOR_TYPE phg4dettype,
                                              tSilicon / sqrt(12.),        //      const float radres,
-                                             G4TTL::PositionResolution,     //      const float phires,
-                                             G4TTL::PositionResolution,     //      const float lonres,
+                                             G4TTL::PositionResolution_phi,     //      const float phires,
+                                             G4TTL::PositionResolution_eta,     //      const float lonres,
                                              1,                           //      const float eff,
                                              0);                          //      const float noise
 

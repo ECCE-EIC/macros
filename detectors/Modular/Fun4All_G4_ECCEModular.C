@@ -413,6 +413,11 @@ int Fun4All_G4_ECCEModular(
     auto pos = detectorSettings.find(ttlSettingToFind);
     G4TTL::SETTING::optionGeo = std::stoi(detectorSettings.substr(pos + ttlSettingToFind.size(), pos + ttlSettingToFind.size() + 1));
   }
+  ttlSettingToFind = "TTLGRAN_";
+  if (detectorSettings.find(ttlSettingToFind) != std::string::npos) {
+    auto pos = detectorSettings.find(ttlSettingToFind);
+    G4TTL::SETTING::optionGran = std::stoi(detectorSettings.substr(pos + ttlSettingToFind.size(), pos + ttlSettingToFind.size() + 1));
+  }
   if (detectorSettings.find("TTLOFF") != std::string::npos) {
     Enable::FTTL = false;
     Enable::ETTL = false;
