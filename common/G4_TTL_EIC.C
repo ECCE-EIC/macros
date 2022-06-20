@@ -118,7 +118,7 @@ void TTL_Init()
   // combined configs of barrel strips and less granularity in disks
   else if(G4TTL::SETTING::optionGran  == 8){
     G4TTL::PositionResolution_eta = 10.0*mm/sqrt(12.);
-    G4TTL::PositionResolution = 10.0*mm/sqrt(12.);
+    G4TTL::PositionResolution_R = 10.0*mm/sqrt(12.);
   }
   else if(G4TTL::SETTING::optionGran  == 9){
     G4TTL::PositionResolution_eta = 30.0*mm/sqrt(12.);
