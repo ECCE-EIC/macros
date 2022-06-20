@@ -24,3 +24,4 @@
 /vis/ogl/set/displayListLimit 2000000
 
 
+/vis/viewer/set/lineSegmentsPerCircle 360

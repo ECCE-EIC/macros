@@ -57,6 +57,7 @@ namespace G4TTL
   // reconstruction within high pseudorapidity regions.
 
   double PositionResolution = 30e-4; // in units of cm
+  double PositionResolution_R = 30e-4; // in units of cm
   double PositionResolution_eta = 30e-4; // in units of cm
   double PositionResolution_phi = 30e-4; // in units of cm
 
@@ -89,6 +90,7 @@ void TTL_Init()
   // setting for less granuarity in disks (assume factor 2 worse resolution with 1mmx1mm AC-LGAD sensors
   if(G4TTL::SETTING::optionGran  == 2){
     G4TTL::PositionResolution = 60e-4;
+    G4TTL::PositionResolution_R = 60e-4;
   }
   // 0.5 x 3 mm strip AC-LGAD in barrel
   else if(G4TTL::SETTING::optionGran  == 3){
@@ -101,12 +103,26 @@ void TTL_Init()
   // combined configs of barrel strips and less granularity in disks
   else if(G4TTL::SETTING::optionGran  == 5){
     G4TTL::PositionResolution_eta = 6*G4TTL::PositionResolution;
-    G4TTL::PositionResolution = 60e-4;
+    G4TTL::PositionResolution_R = 6*G4TTL::PositionResolution; // was 60e-4
   }
   // combined configs of barrel strips and less granularity in disks
   else if(G4TTL::SETTING::optionGran  == 6){
     G4TTL::PositionResolution_eta = 3*G4TTL::PositionResolution;
-    G4TTL::PositionResolution = 60e-4;
+    G4TTL::PositionResolution_R = 3*G4TTL::PositionResolution;
+  }
+  // combined configs of barrel strips and less granularity in disks
+  else if(G4TTL::SETTING::optionGran  == 7){
+    G4TTL::PositionResolution_eta = 3.0*mm/sqrt(12.);
+    G4TTL::PositionResolution_R = 3.0*mm/sqrt(12.);
+  }
+  // combined configs of barrel strips and less granularity in disks
+  else if(G4TTL::SETTING::optionGran  == 8){
+    G4TTL::PositionResolution_eta = 10.0*mm/sqrt(12.);
+    G4TTL::PositionResolution = 10.0*mm/sqrt(12.);
+  }
+  else if(G4TTL::SETTING::optionGran  == 9){
+    G4TTL::PositionResolution_eta = 30.0*mm/sqrt(12.);
+    G4TTL::PositionResolution_R = 30.0*mm/sqrt(12.);
   }
   cout << "TTL granularity setting " << G4TTL::SETTING::optionGran << endl;
   if (G4TTL::SETTING::optionGeo == 1){
@@ -311,7 +327,7 @@ int make_forward_station(string name, PHG4Reco *g4Reco,
   {
     TRACKING::FastKalmanFilter->add_phg4hits(string("G4HIT_") + name,           //      const std::string& phg4hitsNames,
                                              PHG4TrackFastSim::Vertical_Plane,  //      const DETECTOR_TYPE phg4dettype,
-                                             G4TTL::PositionResolution,           //      const float radres,
+                                             G4TTL::PositionResolution_R,           //      const float radres,
                                              G4TTL::PositionResolution,           //      const float phires,
                                              tSilicon / sqrt(12.),              //      const float lonres, *ignored in plane detector*
                                              1,                                 //      const float eff,
@@ -323,7 +339,7 @@ int make_forward_station(string name, PHG4Reco *g4Reco,
   {
     TRACKING::FastKalmanFilterInnerTrack->add_phg4hits(string("G4HIT_") + name,           //      const std::string& phg4hitsNames,
                                              PHG4TrackFastSim::Vertical_Plane,  //      const DETECTOR_TYPE phg4dettype,
-                                             G4TTL::PositionResolution,           //      const float radres,
+                                             G4TTL::PositionResolution_R,           //      const float radres,
                                              G4TTL::PositionResolution,           //      const float phires,
                                              tSilicon / sqrt(12.),              //      const float lonres, *ignored in plane detector*
                                              1,                                 //      const float eff,
@@ -395,7 +411,7 @@ int make_forward_station_basic(string name, PHG4Reco *g4Reco,
   {
     TRACKING::FastKalmanFilter->add_phg4hits(string("G4HIT_") + name,           //      const std::string& phg4hitsNames,
                                              PHG4TrackFastSim::Vertical_Plane,  //      const DETECTOR_TYPE phg4dettype,
-                                             G4TTL::PositionResolution,           //      const float radres,
+                                             G4TTL::PositionResolution_R,           //      const float radres,
                                              G4TTL::PositionResolution,           //      const float phires,
                                              tSilicon / sqrt(12.),              //      const float lonres, *ignored in plane detector*
                                              1,                                 //      const float eff,
@@ -407,7 +423,7 @@ int make_forward_station_basic(string name, PHG4Reco *g4Reco,
   {
     TRACKING::FastKalmanFilterInnerTrack->add_phg4hits(string("G4HIT_") + name,           //      const std::string& phg4hitsNames,
                                              PHG4TrackFastSim::Vertical_Plane,  //      const DETECTOR_TYPE phg4dettype,
-                                             G4TTL::PositionResolution,           //      const float radres,
+                                             G4TTL::PositionResolution_R,           //      const float radres,
                                              G4TTL::PositionResolution,           //      const float phires,
                                              tSilicon / sqrt(12.),              //      const float lonres, *ignored in plane detector*
                                              1,                                 //      const float eff,
