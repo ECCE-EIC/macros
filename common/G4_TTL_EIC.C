@@ -45,6 +45,7 @@ namespace G4TTL
     int optionDR    = 0;
     int optionGeo   = 7;
     int optionGran  = 1;
+    int optionMat  = 1;
   }  // namespace SETTING
 
 
@@ -317,6 +318,13 @@ int make_forward_station(string name, PHG4Reco *g4Reco,
   ttl->set_double_param("rMax", rMax * cm);                    //
   ttl->set_double_param("offset_x", xoffset * cm);                    //
   ttl->set_double_param("tSilicon", tSilicon);                    //
+  if(G4TTL::SETTING::optionMat==2){          //
+    ttl->set_double_param("cooling_plate_height", 4.5*mm);
+  } else if(G4TTL::SETTING::optionMat==3){
+    ttl->set_double_param("cooling_plate_height", 0.01*mm);
+  } else {
+    ttl->set_double_param("cooling_plate_height", 1.0*mm);
+  }
   // ttl->OverlapCheck(true);
   ttl->OverlapCheck(Enable::OVERLAPCHECK);
   
@@ -450,6 +458,14 @@ int make_barrel_layer(string name, PHG4Reco *g4Reco,
   ttl->set_double_param("rMin", radius * cm);                    //
   ttl->set_double_param("length", 2.0 * halflength * cm);
   ttl->set_double_param("tSilicon", tSilicon);                    //
+  if(G4TTL::SETTING::optionMat==2){          //
+    ttl->set_double_param("cooling_plate_height", 4.5*mm);
+  } else if(G4TTL::SETTING::optionMat==3){
+    ttl->set_double_param("cooling_plate_height", 0.01*mm);
+  } else {
+    ttl->set_double_param("cooling_plate_height", 1.0*mm);
+  }
+
   ttl->OverlapCheck(Enable::OVERLAPCHECK);
 
   g4Reco->registerSubsystem(ttl);
