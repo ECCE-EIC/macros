@@ -387,6 +387,11 @@ int Fun4All_G4_ECCEModular(
   Enable::TrackingService = true;
   // Enable::TrackingService_VERBOSITY = INT_MAX - 10;
   Enable::BST = true;
+  std::string bstsSettingToFind = "BSTMAT_";
+  if (detectorSettings.find(bstsSettingToFind) != std::string::npos) {
+    auto pos = detectorSettings.find(bstsSettingToFind);
+    G4BST::SETTING::optionMat = std::stoi(detectorSettings.substr(pos + bstsSettingToFind.size(), pos + bstsSettingToFind.size() + 1));
+  }
   G4TrackingService::SETTING::BSTactive = true;
   if (detectorSettings.find("BARREL") != std::string::npos) {
     Enable::BST = false;

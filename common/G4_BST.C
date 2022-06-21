@@ -40,6 +40,7 @@ namespace G4BST
   namespace SETTING
   {
     bool Tungsten = false;
+    int optionMat = 0;
   }  // namespace SETTING
 }  // namespace G4BST
 
@@ -57,12 +58,23 @@ void BSTSetup(PHG4Reco *g4Reco)
   Fun4AllServer *se = Fun4AllServer::instance();
 
   /** Use dedicated BST module */
-  PHG4BSTSubsystem *hhcal = new PHG4BSTSubsystem("BST");
-  hhcal->OverlapCheck(OverlapCheck);
-  hhcal->SuperDetector("BST");
-  hhcal->SetActive();
-  if (AbsorberActive) hhcal->SetAbsorberActive();
-  g4Reco->registerSubsystem(hhcal);
+  PHG4BSTSubsystem *hbst = new PHG4BSTSubsystem("BST");
+  // hbst->OverlapCheck(true);
+  hbst->OverlapCheck(OverlapCheck);
+  cout << "BST material special setting " << G4BST::SETTING::optionMat << endl;
+  if(G4BST::SETTING::optionMat==1){
+    hbst->set_double_param("layer_backing_thickness", 0.035 / 100 * 28.57 * cm); // 100 microns of Kapton
+  }
+  else if(G4BST::SETTING::optionMat==2){
+    hbst->set_double_param("layer_backing_thickness", 0.07 / 100 * 28.57 * cm); // 200 microns of Kapton
+  }
+  else if(G4BST::SETTING::optionMat==3){
+    hbst->set_double_param("layer_backing_thickness", 0.14 / 100 * 28.57 * cm); // 400 microns of Kapton
+  }
+  hbst->SuperDetector("BST");
+  hbst->SetActive();
+  if (AbsorberActive) hbst->SetAbsorberActive();
+  g4Reco->registerSubsystem(hbst);
 
   // TODO FIX currently hardcoded values!
   G4double layerradii[5] = {
