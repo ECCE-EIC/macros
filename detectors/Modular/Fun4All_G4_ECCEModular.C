@@ -606,7 +606,7 @@ int Fun4All_G4_ECCEModular(
     if(detectorSettings.find("TSERV")!= std::string::npos ){
       Enable::TrackingService = true;
     }
-    if(detectorSettings.find("BRRL")!= std::string::npos ){
+    if(detectorSettings.find("BARREL")!= std::string::npos ){
       Enable::BARREL = true;
     }
     if (detectorSettings.find("BST") != std::string::npos) {

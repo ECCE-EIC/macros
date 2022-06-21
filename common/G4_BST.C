@@ -63,6 +63,49 @@ void BSTSetup(PHG4Reco *g4Reco)
   hhcal->SetActive();
   if (AbsorberActive) hhcal->SetAbsorberActive();
   g4Reco->registerSubsystem(hhcal);
+
+  // TODO FIX currently hardcoded values!
+  G4double layerradii[5] = {
+    36.16,
+    48.2239,
+    60.1924,
+    198.307,
+    210.276
+  };
+
+
+  if (TRACKING::FastKalmanFilter)
+  {
+    TRACKING::FastKalmanFilter->add_phg4hits(string("G4HIT_BST"),     //      const std::string& phg4hitsNames,
+                                            PHG4TrackFastSim::Cylinder,
+                                            999.,                      // radial-resolution [cm]
+                                            10. / 10000. / sqrt(12.),  // azimuthal-resolution [cm]
+                                            10. / 10000. / sqrt(12.),  // z-resolution [cm]
+                                            1,                         // efficiency,
+                                            0                          // noise hits
+    );
+    for(int ilay=0; ilay<5; ilay++){
+      TRACKING::FastKalmanFilter->add_cylinder_state(Form("BST_%d",ilay), layerradii[ilay]);
+      TRACKING::ProjectionNames.insert(Form("BST_%d",ilay));
+    }
+  }
+  if (TRACKING::FastKalmanFilterInnerTrack)
+  {
+    TRACKING::FastKalmanFilterInnerTrack->add_phg4hits(string("G4HIT_BST"),     //      const std::string& phg4hitsNames,
+                                            PHG4TrackFastSim::Cylinder,
+                                            999.,                      // radial-resolution [cm]
+                                            10. / 10000. / sqrt(12.),  // azimuthal-resolution [cm]
+                                            10. / 10000. / sqrt(12.),  // z-resolution [cm]
+                                            1,                         // efficiency,
+                                            0                          // noise hits
+    );
+    for(int ilay=0; ilay<5; ilay++){
+      TRACKING::FastKalmanFilterInnerTrack->add_cylinder_state(Form("BST_%d",ilay), layerradii[ilay]);
+    }
+
+  }
+
+
 }
 
 void BST_Cells(int verbosity = 0)
