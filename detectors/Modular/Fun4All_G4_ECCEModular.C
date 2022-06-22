@@ -385,12 +385,15 @@ int Fun4All_G4_ECCEModular(
   Enable::RWELL = true;
   // barrel tracker
   Enable::TrackingService = true;
-  // Enable::TrackingService_VERBOSITY = INT_MAX - 10;
   Enable::BST = true;
   std::string bstsSettingToFind = "BSTMAT_";
   if (detectorSettings.find(bstsSettingToFind) != std::string::npos) {
     auto pos = detectorSettings.find(bstsSettingToFind);
     G4BST::SETTING::optionMat = std::stoi(detectorSettings.substr(pos + bstsSettingToFind.size(), pos + bstsSettingToFind.size() + 1));
+  }
+  if (detectorSettings.find("BSTNOSUPP") != std::string::npos) {
+    G4BST::SETTING::BSTnoSupport = true;
+    G4TrackingService::SETTING::BSTactive = false;
   }
   G4TrackingService::SETTING::BSTactive = true;
   if (detectorSettings.find("BARREL") != std::string::npos) {
@@ -403,6 +406,10 @@ int Fun4All_G4_ECCEModular(
         G4BARRELEIC::SETTING::SAGITTAX0 = std::stof(string(detectorSettings.substr(pos + sagittaSettingToFind.size(), pos + sagittaSettingToFind.size() + 4)));
     }
   }
+  if (detectorSettings.find("TSERVSPECIAL") != std::string::npos) {
+    G4TrackingService::SETTING::BSTactive = false;
+  }
+  // Enable::TrackingService_VERBOSITY = INT_MAX - 10;
   // fst
   Enable::FST = true;
 

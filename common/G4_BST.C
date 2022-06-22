@@ -41,6 +41,7 @@ namespace G4BST
   {
     bool Tungsten = false;
     int optionMat = 0;
+    int BSTnoSupport = 0;
   }  // namespace SETTING
 }  // namespace G4BST
 
@@ -62,6 +63,10 @@ void BSTSetup(PHG4Reco *g4Reco)
   // hbst->OverlapCheck(true);
   hbst->OverlapCheck(OverlapCheck);
   cout << "BST material special setting " << G4BST::SETTING::optionMat << endl;
+  if(G4BST::SETTING::BSTnoSupport==1){
+    hbst->set_int_param("do_internal_supports", 0);
+    hbst->set_int_param("do_external_supports", 0);
+  }
   if(G4BST::SETTING::optionMat==1){
     hbst->set_double_param("layer_backing_thickness", 0.035 / 100 * 28.57 * cm); // 100 microns of Kapton
   }
