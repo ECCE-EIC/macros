@@ -66,6 +66,7 @@ void Event_Eval(const std::string &filename)
 
   eval->set_do_MCPARTICLES(true);
   eval->set_do_GEOMETRY(true);
+  cout << "saving MC particle to a depth of " << EVENT_EVALUATOR::MCStackDepth << endl;
   eval->set_depth_MCstack(EVENT_EVALUATOR::MCStackDepth);
   eval->set_do_HEPMC(Enable::EVENT_EVAL_DO_HEPMC);
   eval->set_do_store_event_level_info(Enable::EVENT_EVAL_DO_EVT_LVL);

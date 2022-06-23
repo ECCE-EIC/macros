@@ -169,7 +169,7 @@ void LFHCALSetup(PHG4Reco *g4Reco)
   fhcal->SetTowerMappingFile(mapping_fhcal_s.str());
   fhcal->OverlapCheck(OverlapCheck);
   fhcal->SetActive();
-  fhcal->SetDetailed(true);
+  fhcal->SetDetailed(false);
   fhcal->SuperDetector("LFHCAL");
   if (AbsorberActive) fhcal->SetAbsorberActive();
   fhcal->DoFullLightPropagation(doLightPropagation);

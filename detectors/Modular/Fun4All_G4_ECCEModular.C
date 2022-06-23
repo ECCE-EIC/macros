@@ -789,6 +789,11 @@ int Fun4All_G4_ECCEModular(
   }
   // EVENT_EVALUATOR::Verbosity = 1;
   EVENT_EVALUATOR::MCStackDepth = 1;
+  std::string mcsSettingToFind = "MCSD_";
+  if (detectorSettings.find(mcsSettingToFind) != std::string::npos) {
+    auto pos = detectorSettings.find(mcsSettingToFind);
+    EVENT_EVALUATOR::MCStackDepth = std::stoi(detectorSettings.substr(pos + mcsSettingToFind.size(), pos + mcsSettingToFind.size() + 1));
+  }
   Enable::EVENT_EVAL_DO_HEPMC   = Input::PYTHIA6 or Input::PYTHIA8 or Input::SARTRE or Input::HEPMC or Input::READEIC;
   Enable::EVENT_EVAL_DO_EVT_LVL = Input::PYTHIA6 or Input::PYTHIA8 or Input::READEIC;
   // EVENT_EVALUATOR::Verbosity = 1;
