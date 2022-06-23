@@ -810,13 +810,19 @@ int Fun4All_G4_ECCEModular(
   // Magnet Settings
   //---------------
   std::string fieldSettingToFind = "FIELD_";
-  if (detectorSettings.find("NOFIELD") != std::string::npos) {
+  if (detectorSettings.find("ZEROFIELD") != std::string::npos) {
+    const string magfield = "0.0"; // alternatively to specify a constant magnetic field, give a float number, which will be translated to solenoidal field in T, if string use as fieldmap name (including path)
+    G4MAGNET::magfield = magfield;
+    // G4WORLD::WorldMaterial = "G4_Galactic"; // set to G4_GALACTIC for material scans
+    cout << "Magnetic field set to " << G4MAGNET::magfield << " T" << endl;
+  }else if (detectorSettings.find("NOFIELD") != std::string::npos) {
     const string magfield = "0.0"; // alternatively to specify a constant magnetic field, give a float number, which will be translated to solenoidal field in T, if string use as fieldmap name (including path)
     G4MAGNET::magfield = magfield;
     G4WORLD::WorldMaterial = "G4_Galactic"; // set to G4_GALACTIC for material scans
   } else if (detectorSettings.find(fieldSettingToFind) != std::string::npos) {
       auto pos = detectorSettings.find(fieldSettingToFind);
       G4MAGNET::magfield = detectorSettings.substr(pos + fieldSettingToFind.size(), pos + fieldSettingToFind.size() + 3);
+      cout << "Magnetic field set to " << G4MAGNET::magfield << " T" << endl;
   } else {
     // const string magfield = "1.5"; // alternatively to specify a constant magnetic field, give a float number, which will be translated to solenoidal field in T, if string use as fieldmap name (including path)
     //  G4MAGNET::magfield = string(getenv("CALIBRATIONROOT")) + string("/Field/Map/sPHENIX.2d.root");  // default map from the calibration database
