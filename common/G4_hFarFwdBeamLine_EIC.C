@@ -30,8 +30,6 @@ float PosFlip(float pos);
 float AngleFlip(float angle);
 float MagFieldFlip(float Bfield);
 
-template <class T>
-T GetParameterFromFile( std::string filename, std::string param);
 
 // This creates the Enable Flag to be used in the main steering macro
 namespace Enable
@@ -59,8 +57,6 @@ namespace Enable
   //enabled automatically in hFarFwdBeamLineInit(), unless overridden by user
   bool HFARFWD_VIRTUAL_DETECTORS_IP6 = false;
   bool HFARFWD_VIRTUAL_DETECTORS_IP8 = false;
-
-  float HFARFWD_ION_ENERGY = 0;
 
   bool FFR_EVAL = false;
 
@@ -375,22 +371,24 @@ void hFarFwdDefineDetectorsIP6(PHG4Reco *g4Reco)
   
   if( ! Enable::RP_DISABLE_HITPLANE )
   {
-	  string paramFile = string(getenv("CALIBRATIONROOT")) + "/RomanPots/RP_parameters_IP6.dat";
-	  int Nlayers = GetParameterFromFile <int> (paramFile, "Number_layers");
+    string paramFile = string(getenv("CALIBRATIONROOT")) + "/RomanPots/RP_parameters_IP6.dat";
+    int Nlayers = GetParameterFromFile <int> (paramFile, "Number_layers");
 
-	  for( int layer = 0; layer < Nlayers; layer++ ) {
-		  auto *detRP = new EICG4RPSubsystem(Form("rpTruth_%d", layer), layer);
-		  detRP->SuperDetector("rpTruth");
-		  detRP->SetParameterFile( paramFile );
-		  detRP->set_double_param("FFenclosure_center", hFarFwdBeamLine::enclosure_center );
-		  detRP->set_int_param("layerNumber", layer + 1);    
-
-		  detRP->OverlapCheck(overlapCheck);
-		  detRP->SetMotherSubsystem(hFarFwdBeamLine::hFarFwdBeamLineEnclosure);
-		  detRP->SetActive(true);
-		  if (verbosity) detRP->Verbosity(verbosity);
-		  g4Reco->registerSubsystem(detRP);
-	  }
+    for( int layer = 0; layer < Nlayers; layer++ ) {
+      auto *detRP = new EICG4RPSubsystem( Form("rpTruth_%d", layer), layer );
+      detRP->SuperDetector( "rpTruth" );
+      detRP->set_double_param( "FFenclosure_center", hFarFwdBeamLine::enclosure_center );
+      detRP->set_int_param( "layerNumber", layer + 1 );    
+      detRP->SetBeamConfig( (Enable::BEAM_COLLISION_SETTING).Data() );
+      detRP->SetIonBeamEnergy( Enable::HFARFWD_ION_ENERGY );
+      detRP->SetElectronBeamEnergy( Enable::HFARBWD_E_ENERGY );
+      detRP->SetParametersFromFile( paramFile );
+      detRP->OverlapCheck( overlapCheck );
+      detRP->SetMotherSubsystem( hFarFwdBeamLine::hFarFwdBeamLineEnclosure );
+      detRP->SetActive( true );
+      if( verbosity ) { detRP->Verbosity( verbosity ); }
+      g4Reco->registerSubsystem( detRP );
+    }
   }
 
  
@@ -843,22 +841,24 @@ void hFarFwdDefineDetectorsIP8(PHG4Reco *g4Reco)
 
   if( ! Enable::RP_DISABLE_HITPLANE )
   {
-	  string paramFile = string(getenv("CALIBRATIONROOT")) + "/RomanPots/RP_parameters_IP8.dat";
-	  int Nlayers = GetParameterFromFile <int> (paramFile, "Number_layers");
+    string paramFile = string(getenv("CALIBRATIONROOT")) + "/RomanPots/RP_parameters_IP8.dat";
+    int Nlayers = GetParameterFromFile <int> (paramFile, "Number_layers");
 
-	  for( int layer = 0; layer < Nlayers; layer++ ) {
-		  auto *detRP = new EICG4RPSubsystem(Form("rpTruth_%d", layer), layer);
-		  detRP->SuperDetector("rpTruth");
-		  detRP->SetParameterFile( paramFile );
-		  detRP->set_double_param("FFenclosure_center", hFarFwdBeamLine::enclosure_center );
-		  detRP->set_int_param("layerNumber", layer + 1);    
-
-		  detRP->OverlapCheck(overlapCheck);
-		  detRP->SetMotherSubsystem(hFarFwdBeamLine::hFarFwdBeamLineEnclosure);
-		  detRP->SetActive(true);
-		  if (verbosity) detRP->Verbosity(verbosity);
-		  g4Reco->registerSubsystem(detRP);
-	  }
+    for( int layer = 0; layer < Nlayers; layer++ ) {
+      auto *detRP = new EICG4RPSubsystem( Form("rpTruth_%d", layer), layer );
+      detRP->SuperDetector( "rpTruth" );
+      detRP->set_double_param( "FFenclosure_center", hFarFwdBeamLine::enclosure_center );
+      detRP->set_int_param( "layerNumber", layer + 1 );    
+      detRP->SetBeamConfig( (Enable::BEAM_COLLISION_SETTING).Data() );
+      detRP->SetIonBeamEnergy( Enable::HFARFWD_ION_ENERGY );
+      detRP->SetElectronBeamEnergy( Enable::HFARBWD_E_ENERGY );
+      detRP->SetParametersFromFile( paramFile );
+      detRP->OverlapCheck( overlapCheck );
+      detRP->SetMotherSubsystem( hFarFwdBeamLine::hFarFwdBeamLineEnclosure );
+      detRP->SetActive( true );
+      if( verbosity ) { detRP->Verbosity( verbosity ); }
+      g4Reco->registerSubsystem( detRP );
+    }
   }
 
   if (verbosity > 0)
@@ -1409,45 +1409,6 @@ void FFR_Eval(const std::string &outputfile)
   se->registerSubsystem(eval);
 
   return;
-}
-
-//--------------------------------------------------------
-template <class T>
-T GetParameterFromFile(std::string filename, std::string param)
-{
-	std::ifstream infile;
-        std::string line;
-
-	infile.open( filename );
-
-	if( ! infile.is_open() ) 
-	{
-		std::cout << "ERROR in G4_hFarFwdBeamLine: Failed to open parameter file " << filename << std::endl;
-		gSystem->Exit(1);
-	}
-
-	while( std::getline(infile, line) ) {
-
-	    std::string name;
-	    double value;
-
-	    std::istringstream iss( line );
-
-	    // skip comment lines
-	    if( line.find("#") != std::string::npos ) { continue; }
-
-	    if( !(iss >> name >> value) ) {
-		std::cout << "Could not decode " << line << std::endl;
-		gSystem->Exit(1);
-	    }
-	    
-            if( name.compare(param) == 0 ) {
-		    return value;
-	    }
-	}
-
-        infile.close();
-	return 0;
 }
 
 

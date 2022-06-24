@@ -12,6 +12,7 @@
 #include <eicg4zdc/EICG4ZDCNtuple.h>
 #include <eicg4zdc/EICG4ZDCSubsystem.h>
 
+#include <eicg4bwd/EICG4BwdSubsystem.h>
 #include <g4main/PHG4Reco.h>
 
 #include <TSystem.h>
@@ -35,8 +36,6 @@ namespace Enable
   //enabled automatically in hFarBwdBeamLineInit(), unless overridden by user
   bool HFARBWD_VIRTUAL_DETECTORS_IP6 = false;
   bool HFARBWD_VIRTUAL_DETECTORS_IP8 = false;
-
-  float HFARBWD_E_ENERGY = 0;
 
 }  // namespace Enable
 
@@ -119,7 +118,7 @@ void hFarBwdDefineMagnets(PHG4Reco *g4Reco)
   if (Enable::HFARFWD_MAGNETS_IP6)
     magFile = string(getenv("CALIBRATIONROOT")) + "/Beam/ip6_h_farBwdBeamLineMagnets.dat";
   else if (Enable::HFARFWD_MAGNETS_IP8)
-    magFile = string(getenv("CALIBRATIONROOT")) + "/Beam/ip8_35mrad_h_farFwdBeamLineMagnets.dat";
+    magFile = string(getenv("CALIBRATIONROOT")) + "/Beam/ip8_35mrad_h_farBwdBeamLineMagnets.dat";
   else
   {
     cout << " You have to enable either the IP6 or IP8 Magnet configuration to define magnets! " << endl;
@@ -329,25 +328,25 @@ void hFarBwdDefineDetectorsIP6(PHG4Reco *g4Reco)
  
    int verbosity = std::max(Enable::VERBOSITY, Enable::HFARBWD_VERBOSITY);
 
-   auto *detLumi = new PHG4CylinderSubsystem("detLumi");
-   detLumi->SuperDetector("backLumi");
-   detLumi->set_double_param("place_x", 0);
-   detLumi->set_double_param("place_y", 0);
-   detLumi->set_double_param("place_z", -3400 - hFarBwdBeamLine::enclosure_center);
-   detLumi->set_double_param("rot_y", 0);
-   detLumi->set_double_param("radius", 0);
-   detLumi->set_double_param("thickness", 20);  // This is intentionally made large 25cm radius
-   detLumi->set_double_param("length", 0.03);
-   detLumi->set_string_param("material", "G4_Si");
-   detLumi->SetMotherSubsystem(hFarBwdBeamLine::hFarBwdBeamLineEnclosure);
+//   auto *detLumi = new PHG4CylinderSubsystem("detLumi");
+//   detLumi->SuperDetector("backLumi");
+//   detLumi->set_double_param("place_x", 0);
+//   detLumi->set_double_param("place_y", 0);
+//   detLumi->set_double_param("place_z", -3400 - hFarBwdBeamLine::enclosure_center);
+//   detLumi->set_double_param("rot_y", 0);
+//   detLumi->set_double_param("radius", 0);
+//   detLumi->set_double_param("thickness", 20);  // This is intentionally made large 25cm radius
+//   detLumi->set_double_param("length", 0.03);
+//   detLumi->set_string_param("material", "G4_Si");
+//   detLumi->SetMotherSubsystem(hFarBwdBeamLine::hFarBwdBeamLineEnclosure);
 
-   detLumi->SetActive();
-   detLumi->OverlapCheck(overlapCheck);
-   detLumi->set_color(0, 1, 0, 0.5);
+//   detLumi->SetActive();
+//   detLumi->OverlapCheck(overlapCheck);
+//   detLumi->set_color(0, 1, 0, 0.5);
 
-   detLumi->BlackHole();
-   if (verbosity) detLumi->Verbosity(verbosity);
-   g4Reco->registerSubsystem(detLumi);
+//   detLumi->BlackHole();
+//   if (verbosity) detLumi->Verbosity(verbosity);
+//   g4Reco->registerSubsystem(detLumi);
 
   // **********************************************
   // Low Q2 Tagger
@@ -357,57 +356,170 @@ void hFarBwdDefineDetectorsIP6(PHG4Reco *g4Reco)
 
 //   auto *detLowQ2Tag_1 = new PHG4CylinderSubsystem("detLowQ2Tag_1");
 
-   auto *detLowQ2Tag_1= new PHG4BlockSubsystem("detLowQ2Tag_1");
+//   auto *detLowQ2Tag_1= new PHG4BlockSubsystem("detLowQ2Tag_1");
 
-   detLowQ2Tag_1->SuperDetector("backLowQ2Tag_1");
-   detLowQ2Tag_1->set_double_param("place_x", -50);
-   detLowQ2Tag_1->set_double_param("place_y", 0);
-   detLowQ2Tag_1->set_double_param("place_z", -2400 - hFarBwdBeamLine::enclosure_center);
+//   detLowQ2Tag_1->SuperDetector("backLowQ2Tag_1");
+//   detLowQ2Tag_1->set_double_param("place_x", -50);
+//   detLowQ2Tag_1->set_double_param("place_y", 0);
+//   detLowQ2Tag_1->set_double_param("place_z", -2400 - hFarBwdBeamLine::enclosure_center);
 //   detLowQ2Tag_1->set_double_param("rot_y", 0);
 //   detLowQ2Tag_1->set_double_param("radius", 0);
 //   detLowQ2Tag_1->set_double_param("thickness", 30);  // This is intentionally made large 25cm radius
-   detLowQ2Tag_1->set_double_param("size_x", 50);  // This is intentionally made large 25cm radius
-   detLowQ2Tag_1->set_double_param("size_y", 35);  // This is intentionally made large 25cm radius
-   detLowQ2Tag_1->set_double_param("size_z", 0.03);  // This is intentionally made large 25cm radius
+//   detLowQ2Tag_1->set_double_param("size_x", 50);  // This is intentionally made large 25cm radius
+//   detLowQ2Tag_1->set_double_param("size_y", 35);  // This is intentionally made large 25cm radius
+//   detLowQ2Tag_1->set_double_param("size_z", 0.03);  // This is intentionally made large 25cm radius
 //   detLowQ2Tag_1->set_double_param("length", 0.03);
-   detLowQ2Tag_1->set_string_param("material", "G4_Si");
-   detLowQ2Tag_1->SetMotherSubsystem(hFarBwdBeamLine::hFarBwdBeamLineEnclosure);
+//   detLowQ2Tag_1->set_string_param("material", "G4_Si");
+//   detLowQ2Tag_1->SetMotherSubsystem(hFarBwdBeamLine::hFarBwdBeamLineEnclosure);
 
-   detLowQ2Tag_1->SetActive();
-   detLowQ2Tag_1->OverlapCheck(overlapCheck);
-   detLowQ2Tag_1->set_color(1, 0, 0, 0.5);
+//   detLowQ2Tag_1->SetActive();
+//   detLowQ2Tag_1->OverlapCheck(overlapCheck);
+//   detLowQ2Tag_1->set_color(1, 0, 0, 0.5);
 
-   detLowQ2Tag_1->BlackHole();
-   if (verbosity) detLowQ2Tag_1->Verbosity(verbosity);
-   g4Reco->registerSubsystem(detLowQ2Tag_1);
+//   detLowQ2Tag_1->BlackHole();
+//   if (verbosity) detLowQ2Tag_1->Verbosity(verbosity);
+//   g4Reco->registerSubsystem(detLowQ2Tag_1);
 
 
   // 2nd Set of Low Q2 tagger, z location 37m 
 
 //   auto *detLowQ2Tag_2 = new PHG4CylinderSubsystem("detLowQ2Tag_2");
-   auto *detLowQ2Tag_2 = new PHG4BlockSubsystem("detLowQ2Tag_2");
-   detLowQ2Tag_2->SuperDetector("backLowQ2Tag_2");
-   detLowQ2Tag_2->set_double_param("place_x", -80);
-   detLowQ2Tag_2->set_double_param("place_y", 0);
-   detLowQ2Tag_2->set_double_param("place_z", -3700 - hFarBwdBeamLine::enclosure_center);
+//   auto *detLowQ2Tag_2 = new PHG4BlockSubsystem("detLowQ2Tag_2");
+//   detLowQ2Tag_2->SuperDetector("backLowQ2Tag_2");
+//  detLowQ2Tag_2->set_double_param("place_x", -80);
+//   detLowQ2Tag_2->set_double_param("place_y", 0);
+//   detLowQ2Tag_2->set_double_param("place_z", -3700 - hFarBwdBeamLine::enclosure_center);
 //   detLowQ2Tag_2->set_double_param("rot_y", 0);
 //   detLowQ2Tag_2->set_double_param("radius", 0);
 //   detLowQ2Tag_2->set_double_param("thickness", 30);  // This is intentionally made large 25cm radius
-   detLowQ2Tag_2->set_double_param("size_x", 50);  // This is intentionally made large 25cm radius
-   detLowQ2Tag_2->set_double_param("size_y", 35);  // This is intentionally made large 25cm radius
-   detLowQ2Tag_2->set_double_param("size_z", 0.03);  // This is intentionally made large 25cm radius
+//   detLowQ2Tag_2->set_double_param("size_x", 50);  // This is intentionally made large 25cm radius
+//   detLowQ2Tag_2->set_double_param("size_y", 35);  // This is intentionally made large 25cm radius
+//   detLowQ2Tag_2->set_double_param("size_z", 0.03);  // This is intentionally made large 25cm radius
 //   detLowQ2Tag_2->set_double_param("length", 0.03);
-   detLowQ2Tag_2->set_string_param("material", "G4_Si");
-   detLowQ2Tag_2->SetMotherSubsystem(hFarBwdBeamLine::hFarBwdBeamLineEnclosure);
+//   detLowQ2Tag_2->set_string_param("material", "G4_Si");
+//   detLowQ2Tag_2->SetMotherSubsystem(hFarBwdBeamLine::hFarBwdBeamLineEnclosure);
 
-   detLowQ2Tag_2->SetActive();
-   detLowQ2Tag_2->OverlapCheck(overlapCheck);
-   detLowQ2Tag_2->set_color(1, 0, 0, 0.5);
+//   detLowQ2Tag_2->SetActive();
+//   detLowQ2Tag_2->OverlapCheck(overlapCheck);
+//   detLowQ2Tag_2->set_color(1, 0, 0, 0.5);
 
-   detLowQ2Tag_2->BlackHole();
-   if (verbosity) detLowQ2Tag_2->Verbosity(verbosity);
-   g4Reco->registerSubsystem(detLowQ2Tag_2);
+//   detLowQ2Tag_2->BlackHole();
+//   if (verbosity) detLowQ2Tag_2->Verbosity(verbosity);
+//   g4Reco->registerSubsystem(detLowQ2Tag_2);
 
+	if (Enable::BWD) {
+ 	int DetNr = 5; //number of Backward Detectors 
+	string bwddetname[5]={" is the first Q2 tagger", " is the second Q2 tagger", " is Lumi 0"," is Lumi +"," is Lumi -"};
+//	string mapname[5]={"BWD_mapping_v1.txt","BWD_mapping_v2.txt","BWD_mapping_v3.txt","BWD_mapping_v3.txt","BWD_mapping_v3.txt"};
+	float placex[5] = {-50,-80,0,0,0};
+	//float placex[5] = {0,0,0,0,0};
+	float placey[5] = {0,0,0,30,-30};
+	float placez[5] = {-118.5, - 818.5, -818.5,-718.5,-718.5};
+	float length = 20;
+	float Si_length = .1;
+	float Cu_length = .2;
+	float C_length = 40;
+	float width[5] = {40.5, 30, 16,16,16};
+	float height[5] = {40.5, 21, 16,8,8};
+	int deti=0;
+	for (int i = 0; i < DetNr; i ++){
+		if (!Enable::BWDN[i])continue;
+	cout <<"Detector "<<i<<bwddetname[i]<<endl;
+	  	ostringstream mapping_bwd;
+		mapping_bwd << getenv("CALIBRATIONROOT") << "/BWD/mapping/"<<G4BWD::mapname[i];
+		//mapping_bwd << G4BWD::mapname[i]; // Specify the mapping file for B0 ECal Towers here
+		auto *Bwd = new EICG4BwdSubsystem("BWD");
+		Bwd->SetTowerMappingFile(mapping_bwd.str());
+	        Bwd->SuperDetector(Form("BWD_%d", i));
+       		Bwd->set_double_param("place_x", placex[i]);
+	        Bwd->set_double_param("place_y", placey[i]);
+        	Bwd->set_double_param("place_z", placez[i]-length/2);
+	        Bwd->set_double_param("length", length);
+	        Bwd->set_double_param("width", width[i]);
+	        Bwd->set_double_param("height", height[i]);
+	        Bwd->set_string_param("material", "G4_PbWO4");
+	        Bwd->set_double_param("detid",deti);
+	        Bwd->set_double_param("global_x", placex[i]);
+	        Bwd->set_double_param("global_y", placey[i]);
+        	Bwd->set_double_param("global_z", placez[i]-length/2 + hFarBwdBeamLine::enclosure_center);
+		Bwd->set_int_param("lightyield",1); 		//Note additional parameter for storing Light Yield in B0 Ecal
+		Bwd->SetActive(true);
+	        if (verbosity)
+        	  Bwd->Verbosity(verbosity);
+	        Bwd->OverlapCheck(overlapCheck);
+        	Bwd->SetMotherSubsystem(hFarBwdBeamLine::hFarBwdBeamLineEnclosure);
+       		g4Reco->registerSubsystem(Bwd);
+		deti++;
+		if (i != 2){
+	        auto *Bwdt = new EICG4BwdSubsystem("BWD");
+	        Bwdt->SuperDetector(Form("BWDt_%d", i));
+       		Bwdt->set_double_param("place_x", placex[i]);
+	        Bwdt->set_double_param("place_y", placey[i]);
+        	Bwdt->set_double_param("place_z", placez[i]+Si_length/2+Cu_length/2+1);
+	        Bwdt->set_double_param("length", Si_length);
+	        Bwdt->set_double_param("width", width[i]);
+	        Bwdt->set_double_param("height", height[i]);
+	        Bwdt->set_string_param("material", "G4_Si");
+	        Bwdt->set_double_param("detid",deti);
+	        Bwdt->set_double_param("global_x", placex[i]);
+	        Bwdt->set_double_param("global_y", placey[i]);
+        	Bwdt->set_double_param("global_z", placez[i]+Si_length/2 +Cu_length/2+1+ hFarBwdBeamLine::enclosure_center);
+		Bwdt->set_int_param("lightyield",0); 		//Note additional parameter for storing Light Yield in B0 Ecal
+		Bwdt->SetActive(true);
+	        if (verbosity)
+        	  Bwdt->Verbosity(verbosity);
+	        Bwdt->OverlapCheck(overlapCheck);
+        	Bwdt->SetMotherSubsystem(hFarBwdBeamLine::hFarBwdBeamLineEnclosure);
+       		g4Reco->registerSubsystem(Bwdt);
+		deti++;
+	        auto *Bwdd = new EICG4BwdSubsystem("BWD");
+	        Bwdd->SuperDetector(Form("BWDd_%d", i));
+       		Bwdd->set_double_param("place_x", placex[i]);
+	        Bwdd->set_double_param("place_y", placey[i]);
+        	Bwdd->set_double_param("place_z", placez[i]+Cu_length/2+1);
+	        Bwdd->set_double_param("length", Cu_length);
+	        Bwdd->set_double_param("width", width[i]);
+	        Bwdd->set_double_param("height", height[i]);
+	        Bwdd->set_string_param("material", "G4_Cu");
+	        Bwdd->set_double_param("detid",deti);
+	        Bwdd->set_double_param("global_x", placex[i]);
+	        Bwdd->set_double_param("global_y", placey[i]);
+        	Bwdd->set_double_param("global_z", placez[i]+Cu_length/2 +1+ hFarBwdBeamLine::enclosure_center);
+		Bwdd->set_int_param("lightyield",0); 		//Note additional parameter for storing Light Yield in B0 Ecal
+		Bwdd->SetActive(false);
+	        if (verbosity)
+        	  Bwdd->Verbosity(verbosity);
+	        Bwdd->OverlapCheck(overlapCheck);
+        	Bwdd->SetMotherSubsystem(hFarBwdBeamLine::hFarBwdBeamLineEnclosure);
+       		g4Reco->registerSubsystem(Bwdd);
+		deti++;
+		}
+		else{
+	        auto *Bwdd = new EICG4BwdSubsystem("BWD");
+	        Bwdd->SuperDetector(Form("BWDd_%d", i));
+       		Bwdd->set_double_param("place_x", placex[i]);
+	        Bwdd->set_double_param("place_y", placey[i]);
+        	Bwdd->set_double_param("place_z", placez[i]+C_length/2+1);
+	        Bwdd->set_double_param("length", C_length);
+	        Bwdd->set_double_param("width", width[i]);
+	        Bwdd->set_double_param("height", height[i]);
+	        Bwdd->set_string_param("material", "G4_C");
+	        Bwdd->set_double_param("detid",deti);
+	        Bwdd->set_double_param("global_x", placex[i]);
+	        Bwdd->set_double_param("global_y", placey[i]);
+        	Bwdd->set_double_param("global_z", placez[i]+C_length/2 +1+ hFarBwdBeamLine::enclosure_center);
+		Bwdd->set_int_param("lightyield",0); 		//Note additional parameter for storing Light Yield in B0 Ecal
+		Bwdd->SetActive(false);
+	        if (verbosity)
+        	  Bwdd->Verbosity(verbosity);
+	        Bwdd->OverlapCheck(overlapCheck);
+        	Bwdd->SetMotherSubsystem(hFarBwdBeamLine::hFarBwdBeamLineEnclosure);
+       		g4Reco->registerSubsystem(Bwdd);
+		deti++;
+		
+		}
+		}
+	}
 //  int verbosity = std::max(Enable::VERBOSITY, Enable::HFARFWD_VERBOSITY);
 
 }
