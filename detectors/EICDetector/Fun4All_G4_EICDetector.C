@@ -320,7 +320,7 @@ int Fun4All_G4_EICDetector(
   Enable::EGEM = false;
   Enable::FGEM = false; // deactivated as it's replaced by a FTTL layer
   // Enable::BGEM = true; // not yet defined in this model
-  Enable::RWELL = true;
+  Enable::RWELL = false;
   // barrel tracker
   Enable::TrackingService = true;
   // Enable::TrackingService_VERBOSITY = INT_MAX - 10;
