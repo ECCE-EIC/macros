@@ -371,22 +371,24 @@ void hFarFwdDefineDetectorsIP6(PHG4Reco *g4Reco)
   
   if( ! Enable::RP_DISABLE_HITPLANE )
   {
-	  string paramFile = string(getenv("CALIBRATIONROOT")) + "/RomanPots/RP_parameters_IP6.dat";
-	  int Nlayers = GetParameterFromFile <int> (paramFile, "Number_layers");
+    string paramFile = string(getenv("CALIBRATIONROOT")) + "/RomanPots/RP_parameters_IP6.dat";
+    int Nlayers = GetParameterFromFile <int> (paramFile, "Number_layers");
 
-	  for( int layer = 0; layer < Nlayers; layer++ ) {
-		  auto *detRP = new EICG4RPSubsystem(Form("rpTruth_%d", layer), layer);
-		  detRP->SuperDetector("rpTruth");
-		  detRP->SetParameterFile( paramFile );
-		  detRP->set_double_param("FFenclosure_center", hFarFwdBeamLine::enclosure_center );
-		  detRP->set_int_param("layerNumber", layer + 1);    
-
-		  detRP->OverlapCheck(overlapCheck);
-		  detRP->SetMotherSubsystem(hFarFwdBeamLine::hFarFwdBeamLineEnclosure);
-		  detRP->SetActive(true);
-		  if (verbosity) detRP->Verbosity(verbosity);
-		  g4Reco->registerSubsystem(detRP);
-	  }
+    for( int layer = 0; layer < Nlayers; layer++ ) {
+      auto *detRP = new EICG4RPSubsystem( Form("rpTruth_%d", layer), layer );
+      detRP->SuperDetector( "rpTruth" );
+      detRP->set_double_param( "FFenclosure_center", hFarFwdBeamLine::enclosure_center );
+      detRP->set_int_param( "layerNumber", layer + 1 );    
+      detRP->SetBeamConfig( (Enable::BEAM_COLLISION_SETTING).Data() );
+      detRP->SetIonBeamEnergy( Enable::HFARFWD_ION_ENERGY );
+      detRP->SetElectronBeamEnergy( Enable::HFARBWD_E_ENERGY );
+      detRP->SetParametersFromFile( paramFile );
+      detRP->OverlapCheck( overlapCheck );
+      detRP->SetMotherSubsystem( hFarFwdBeamLine::hFarFwdBeamLineEnclosure );
+      detRP->SetActive( true );
+      if( verbosity ) { detRP->Verbosity( verbosity ); }
+      g4Reco->registerSubsystem( detRP );
+    }
   }
 
  
@@ -839,22 +841,24 @@ void hFarFwdDefineDetectorsIP8(PHG4Reco *g4Reco)
 
   if( ! Enable::RP_DISABLE_HITPLANE )
   {
-	  string paramFile = string(getenv("CALIBRATIONROOT")) + "/RomanPots/RP_parameters_IP8.dat";
-	  int Nlayers = GetParameterFromFile <int> (paramFile, "Number_layers");
+    string paramFile = string(getenv("CALIBRATIONROOT")) + "/RomanPots/RP_parameters_IP8.dat";
+    int Nlayers = GetParameterFromFile <int> (paramFile, "Number_layers");
 
-	  for( int layer = 0; layer < Nlayers; layer++ ) {
-		  auto *detRP = new EICG4RPSubsystem(Form("rpTruth_%d", layer), layer);
-		  detRP->SuperDetector("rpTruth");
-		  detRP->SetParameterFile( paramFile );
-		  detRP->set_double_param("FFenclosure_center", hFarFwdBeamLine::enclosure_center );
-		  detRP->set_int_param("layerNumber", layer + 1);    
-
-		  detRP->OverlapCheck(overlapCheck);
-		  detRP->SetMotherSubsystem(hFarFwdBeamLine::hFarFwdBeamLineEnclosure);
-		  detRP->SetActive(true);
-		  if (verbosity) detRP->Verbosity(verbosity);
-		  g4Reco->registerSubsystem(detRP);
-	  }
+    for( int layer = 0; layer < Nlayers; layer++ ) {
+      auto *detRP = new EICG4RPSubsystem( Form("rpTruth_%d", layer), layer );
+      detRP->SuperDetector( "rpTruth" );
+      detRP->set_double_param( "FFenclosure_center", hFarFwdBeamLine::enclosure_center );
+      detRP->set_int_param( "layerNumber", layer + 1 );    
+      detRP->SetBeamConfig( (Enable::BEAM_COLLISION_SETTING).Data() );
+      detRP->SetIonBeamEnergy( Enable::HFARFWD_ION_ENERGY );
+      detRP->SetElectronBeamEnergy( Enable::HFARBWD_E_ENERGY );
+      detRP->SetParametersFromFile( paramFile );
+      detRP->OverlapCheck( overlapCheck );
+      detRP->SetMotherSubsystem( hFarFwdBeamLine::hFarFwdBeamLineEnclosure );
+      detRP->SetActive( true );
+      if( verbosity ) { detRP->Verbosity( verbosity ); }
+      g4Reco->registerSubsystem( detRP );
+    }
   }
 
   if (verbosity > 0)
