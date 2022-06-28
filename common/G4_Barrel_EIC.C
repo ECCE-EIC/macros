@@ -69,7 +69,7 @@ void Barrel(PHG4Reco *g4Reco, int det_ver = 3)
 
   //---------------------------
   // Vertexing
-  double si_vtx_r_pos[] = {3.3, 4.35, 5.4};
+  double si_vtx_r_pos[] = {3.6, 4.8, 12.3};
   const int nVtxLayers = sizeof(si_vtx_r_pos) / sizeof(*si_vtx_r_pos);
   for (int ilayer = 0; ilayer < nVtxLayers; ilayer++)
   {
@@ -91,11 +91,11 @@ void Barrel(PHG4Reco *g4Reco, int det_ver = 3)
   //---------------------------
   // Barrel
 
-  double z_e_length[] = {-27, -29.0};
-  double z_h_length[] = {27., 29.0};
-  double si_r_pos[] = {21, 22.68}; // Modified on 29th Oct to account for new struture design
+  double z_e_length[] = {-38.5, -52.0};
+  double z_h_length[] = {38.5, 52.0};
+  double si_r_pos[] = {30., 40.00}; // Modified on 29th Oct to account for new struture design
   const int nTrckLayers = sizeof(si_r_pos) / sizeof(*si_r_pos);
-  
+  double mat_barr[] = {0.25,0.55}; 
   for (int ilayer = 0; ilayer < nTrckLayers; ilayer++)
   {
     //cout << "Radius " << ilayer + 1 << ": " << si_r_pos[ilayer] << "cms \t e-length : " << z_e_length[ilayer] << "cms \t h-length : " << z_h_length[ilayer] << "cms"<< endl;
@@ -103,7 +103,7 @@ void Barrel(PHG4Reco *g4Reco, int det_ver = 3)
     cyl = new PHG4CylinderSubsystem("BARR", ilayer);
     cyl->set_string_param("material", "G4_Si");
     cyl->set_double_param("radius", si_r_pos[ilayer]);
-    cyl->set_double_param("thickness", 0.05 / 100. * 9.37);
+    cyl->set_double_param("thickness", mat_barr[ilayer] / 100. * 9.37);
     cyl->set_double_param("place_z", (z_h_length[ilayer] + z_e_length[ilayer])/2);
     cyl->set_double_param("length", (z_h_length[ilayer] - z_e_length[ilayer]));
     cyl->SetActive();
