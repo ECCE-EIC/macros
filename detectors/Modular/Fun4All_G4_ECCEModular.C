@@ -440,6 +440,9 @@ int Fun4All_G4_ECCEModular(
     Enable::ETTL = false;
     Enable::CTTL = false;
   }
+  if (detectorSettings.find("TTLKALMEX") != std::string::npos) {
+    G4TTL::SETTING::optionKalmanInclude = false;
+  }
   //***********************************************
   // gems fwd & bwd
   //***********************************************
