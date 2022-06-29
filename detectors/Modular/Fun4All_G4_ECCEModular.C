@@ -105,6 +105,7 @@ int Fun4All_G4_ECCEModular(
       Input::SARTRE   = true;
     } else if (generatorSettings.Contains("READEIC")) {
       Input::READEIC  = true;
+      INPUTREADEIC::filename = inputFile;
     } else if (generatorSettings.Contains("HEPMCINPUT")) {
       Input::HEPMC    = true;
       INPUTHEPMC::filename = inputFile;
@@ -335,9 +336,43 @@ int Fun4All_G4_ECCEModular(
   // Reads event generators in EIC smear files, which is registered in InputRegister
   if (Input::READEIC)
   {
-    INPUTREADEIC::filename = inputFile;
     //! apply EIC beam parameter following EIC CDR
     INPUTGENERATOR::EICFileReader->SetFirstEntry(skip);
+    cout << "skipping " << skip << " events" << endl;
+    cout << inputFile << endl;
+    std::string inputCollsys = "";
+    if(inputFile.find("ep")!= std::string::npos ){
+      Enable::BEAM_COLLISION_SETTING = "ep-high-acceptance";
+      inputCollsys = "ep";
+    } else if(inputFile.find("eD")!= std::string::npos){
+      Enable::BEAM_COLLISION_SETTING = "eA";
+      inputCollsys = "eD";
+    } else {
+      Enable::BEAM_COLLISION_SETTING = "ep-high-divergence";
+      inputCollsys = "ep";
+    }
+    std::string readeicSettingToFind = "_"+inputCollsys+"_";
+    if (inputFile.find(readeicSettingToFind) != std::string::npos) {
+      auto pos = inputFile.find(readeicSettingToFind);
+      if(inputFile.substr(pos + readeicSettingToFind.size(), pos + readeicSettingToFind.size() + 2).find("_") != std::string::npos){
+        Enable::HFARBWD_E_ENERGY = std::stoi(inputFile.substr(pos + readeicSettingToFind.size(), pos + readeicSettingToFind.size() + 1));
+      } else {
+        Enable::HFARBWD_E_ENERGY = std::stoi(inputFile.substr(pos + readeicSettingToFind.size(), pos + readeicSettingToFind.size() + 2));
+      }
+      cout << "HFARBWD_E_ENERGY = " << Enable::HFARBWD_E_ENERGY << endl;
+
+      readeicSettingToFind = "_"+inputCollsys+"_" + std::to_string((int)Enable::HFARBWD_E_ENERGY) + "_";
+      cout << readeicSettingToFind << endl;
+      if (inputFile.find(readeicSettingToFind) != std::string::npos) {
+        auto pos = inputFile.find(readeicSettingToFind);
+        if(inputFile.substr(pos + readeicSettingToFind.size(), pos + readeicSettingToFind.size() + 3).find("_") != std::string::npos){
+          Enable::HFARFWD_ION_ENERGY = std::stoi(inputFile.substr(pos + readeicSettingToFind.size(), pos + readeicSettingToFind.size() + 2));
+        } else {
+          Enable::HFARFWD_ION_ENERGY = std::stoi(inputFile.substr(pos + readeicSettingToFind.size(), pos + readeicSettingToFind.size() + 3));
+        }
+      }
+      cout << "HFARFWD_ION_ENERGY = " << Enable::HFARFWD_ION_ENERGY << endl;
+    }
     Input::ApplyEICBeamParameter(INPUTGENERATOR::EICFileReader);
   }
 
