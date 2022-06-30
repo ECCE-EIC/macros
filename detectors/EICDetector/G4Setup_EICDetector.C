@@ -21,6 +21,7 @@
 #include <G4_FEMC_EIC.C>
 #include <G4_FHCAL.C>
 #include <G4_B0ECAL.C> //for B0 ECAL
+#include <G4_BWD.C> //for Far Backward Detectors
 #include <G4_FST_EIC.C>
 #include <G4_GEM_EIC.C>
 #include <G4_HcalIn_ref.C>
@@ -35,7 +36,7 @@
 #include <G4_TTL_EIC.C>
 #include <G4_TrackingSupport.C>
 #include <G4_Tracking_EIC.C>
-//#include <G4_B0Tracking_EIC.C> for B0 Tracking
+#include <G4_B0Tracking_EIC.C> //for B0 Tracking
 #include <G4_dRICH.C>
 #include <G4_mRICH.C>
 #include <G4_mRwell_EIC.C>
@@ -53,6 +54,7 @@
 #include <g4detectors/PHG4CylinderSubsystem.h>
 #include <eicg4b0/EICG4B0Subsystem.h>
 #include <eicg4b0ecal/EICG4B0ECALSubsystem.h>
+#include <eicg4bwd/EICG4BwdSubsystem.h>
 
 #include <g4eval/PHG4DstCompressReco.h>
 
@@ -128,7 +130,7 @@ void G4Init()
   if (Enable::PIPE) PipeInit();
   if (Enable::PLUGDOOR) PlugDoorInit();
   if (Enable::TRACKING) TrackingInit();
-//  if (Enable::B0TRACKING) B0TrackingInit();
+  if (Enable::B0TRACKING) B0TrackingInit();
 
   //Farforward/backward
   if (Enable::HFARFWD_MAGNETS) hFarBwdBeamLineInit();  //Shouldnt this be far backward enables
@@ -166,6 +168,7 @@ void G4Init()
   if (Enable::EHCAL) EHCALInit();
   if (Enable::mRICH) mRICHInit();
   if (Enable::ETOF) ETOFInit();
+  if (Enable::BWD) BWDInit();
 
   //Combined
   if (Enable::FST) FST_Init();
@@ -394,6 +397,13 @@ void ShowerCompress()
   compress->AddTowerContainer("TOWER_RAW_B0ECAL");
   compress->AddTowerContainer("TOWER_CALIB_B0ECAL");
 
+  compress->AddHitContainer("G4HIT_BWD");
+  compress->AddHitContainer("G4HIT_ABSORBER_BWD");
+  compress->AddCellContainer("G4CELL_BWD");
+  compress->AddTowerContainer("TOWER_SIM_BWD");
+  compress->AddTowerContainer("TOWER_RAW_BWD");
+  compress->AddTowerContainer("TOWER_CALIB_BWD");
+
   se->registerSubsystem(compress);
 
   return;
@@ -412,6 +422,7 @@ void DstCompress(Fun4AllDstOutputManager *out)
     //    out->StripNode("G4HIT_ZDC");
     //    out->StripNode("G4HIT_RomanPots");
     out->StripNode("G4HIT_b0Truth");
+    out->StripNode("G4HIT_BWD");
     out->StripNode("G4HIT_SVTXSUPPORT");
     out->StripNode("G4HIT_CEMC_ELECTRONICS");
     out->StripNode("G4HIT_CEMC");
@@ -453,6 +464,8 @@ void DstCompress(Fun4AllDstOutputManager *out)
     out->StripNode("G4HIT_ABSORBER_EHCAL");
     out->StripNode("G4CELL_EHCAL");
     out->StripNode("G4CELL_B0ECAL");
+    out->StripNode("G4CELL_BWD");
+
   }
 }
 #endif
