@@ -666,10 +666,10 @@ int Fun4All_G4_EICDetector(
   if (Enable::FFR_EVAL) FFR_Eval(outputroot + "_g4ffr_eval.root");
 
   if (Enable::B0ECAL_EVAL) B0ECAL_Eval(outputroot + "_g4b0ecal_eval_test.root"); // For B0Ecal
-    
+
   if (Enable::BWD_EVAL) BWD_Eval(outputroot + "_g4bwd_eval_e0100_debug"); // For Bwd
     
-  //if (Enable::FWDJETS_EVAL) Jet_FwdEval();
+  if (Enable::FWDJETS_EVAL) Jet_FwdEval();
 
   if (Enable::USER) UserAnalysisInit();
 
