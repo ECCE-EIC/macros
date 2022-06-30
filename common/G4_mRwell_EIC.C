@@ -29,14 +29,22 @@ namespace RWELL
   //  const double nom_driftgap[RWELL::n_layer] = {0.4, 0.4};
   //  const double nom_length[RWELL::n_layer] = {300.0, 300.0};
 
+  const int n_layer = 2;  //tracker layers
+  const double nom_radius[RWELL::n_layer] = {51., 77.0175};
+  double e_length_uRwell[RWELL::n_layer] =  {106., 197};
+  double h_length_uRwell[RWELL::n_layer] = { e_length_uRwell[0], 145};
+  const double nom_driftgap[RWELL::n_layer] = {0.4, 0.4};
+  const double nom_length[RWELL::n_layer] = {2*e_length_uRwell[0], 342.0};
+  
+/*
+  //ECCE Proposal Values
   const int n_layer = 3;  //tracker layers
-  //const double nom_radius[RWELL::n_layer] = {44.2, 47.4, 77.0175};
-  const double nom_radius[RWELL::n_layer] = {33.14, 51., 77.0175};
+  const double nom_radius[RWELL::n_layer] = {33.14, 51., 77.0175}; //ECCE Proposal values
   double e_length_uRwell[RWELL::n_layer] =  {40.08, 106., 197};
   double h_length_uRwell[RWELL::n_layer] = {e_length_uRwell[0], e_length_uRwell[1], 145};
   const double nom_driftgap[RWELL::n_layer] = {0.4, 0.4, 0.4};
-  //const double nom_length[RWELL::n_layer] = {140, 150, 280.0};
   const double nom_length[RWELL::n_layer] = {2*e_length_uRwell[0], 2*e_length_uRwell[1], 342.0};
+*/
   int subsysID = 0;
 }  //namespace RWELL
 

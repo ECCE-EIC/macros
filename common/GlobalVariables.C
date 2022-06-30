@@ -37,6 +37,11 @@ namespace Enable
   // IP selection require explicit choice in the main macros
   bool IP6 = false;
   bool IP8 = false;
+
+  float HFARFWD_ION_ENERGY = 0;
+  float HFARBWD_E_ENERGY = 0;
+  TString BEAM_COLLISION_SETTING;
+
 }  // namespace Enable
 
 // every G4 subsystem needs to implement this
@@ -69,6 +74,19 @@ namespace TRACKING
   PHG4TrackFastSim * FastKalmanFilterInnerTrack(nullptr);
 
   std::set<std::string> ProjectionNames;
+}
+
+//For B0 Tracking
+class B0TrackFastSim;
+namespace B0TRACKING
+{
+  string TrackNodeName = "TrackMap";
+
+  B0TrackFastSim * FastKalmanFilter(nullptr);
+
+  B0TrackFastSim * FastKalmanFilterB0Track(nullptr);
+
+  std::set<std::string> B0ProjectionNames;
 }
 
 namespace G4MAGNET
