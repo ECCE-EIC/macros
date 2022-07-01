@@ -26,8 +26,6 @@
 #include <G4_GEM_EIC.C>
 #include <G4_HcalIn_ref.C>
 #include <G4_HcalOut_ref.C>
-#include <G4_hFarFwdBeamLine_EIC.C>
-#include <G4_hFarBwdBeamLine_EIC.C>
 #include <G4_Input.C>
 #include <G4_LFHCAL.C>
 #include <G4_Magnet.C>
