@@ -670,7 +670,7 @@ int Fun4All_G4_EICDetector(
 
   if (Enable::BWD_EVAL) BWD_Eval(outputroot + "_g4bwd_eval_e0100_debug"); // For Bwd
     
-  if (Enable::FWDJETS_EVAL) Jet_FwdEval();
+  //if (Enable::FWDJETS_EVAL) Jet_FwdEval();
 
   if (Enable::USER) UserAnalysisInit();
 
