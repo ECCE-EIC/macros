@@ -478,6 +478,9 @@ int Fun4All_G4_ECCEModular(
   if (detectorSettings.find("TTLKALMEX") != std::string::npos) {
     G4TTL::SETTING::optionKalmanInclude = false;
   }
+  if (detectorSettings.find("TTLATHENA") != std::string::npos) {
+    G4TTL::SETTING::optionATHENA = true;
+  }
   //***********************************************
   // gems fwd & bwd
   //***********************************************

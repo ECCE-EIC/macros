@@ -39,6 +39,7 @@ namespace G4TTL
   double xoffsetFTTLIP8[3]      = { 8.4, 8.4, 8.4};
   namespace SETTING
   {
+    bool optionATHENA  = false;
     bool optionCEMC  = true;
     bool optionEEMCH = true;
     bool optionBasicGeo    = false;
@@ -458,7 +459,11 @@ int make_barrel_layer(string name, PHG4Reco *g4Reco,
   ttl->SetDetailed(false);
   ttl->SuperDetector(name);
   ttl->set_int_param("isForward", 0);                    //
-  ttl->set_double_param("place_z", zOffset * cm);                    //
+  ttl->set_double_param("place_z", zOffset * cm);   
+  if(G4TTL::SETTING::optionATHENA){
+    ttl->set_int_param("isECCE", 0);                  //
+    ttl->set_double_param("place_z", 12.0 * cm);   
+  }
   ttl->set_double_param("rMin", radius * cm);                    //
   ttl->set_double_param("length", 2.0 * halflength * cm);
   ttl->set_double_param("tSilicon", tSilicon);                    //
@@ -470,7 +475,8 @@ int make_barrel_layer(string name, PHG4Reco *g4Reco,
     ttl->set_double_param("cooling_plate_height", 1.0*mm);
   }
 
-  ttl->OverlapCheck(Enable::OVERLAPCHECK);
+  // ttl->OverlapCheck(Enable::OVERLAPCHECK);
+  ttl->OverlapCheck(true);
 
   g4Reco->registerSubsystem(ttl);
 
