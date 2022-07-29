@@ -11,6 +11,7 @@
 #include <g4eval/CaloEvaluator.h>
 
 #include <g4main/PHG4Reco.h>
+#include <g4detectors/PHG4GDMLSubsystem.h>
 
 #include <eiccaloreco/RawClusterBuilderkV3.h>
 #include <eiccaloreco/RawClusterBuilderHelper.h>
@@ -66,6 +67,7 @@ namespace G4BECAL
   {
     bool useMoreTowers = false;
     bool useNonProjective = false;
+    bool useGDML = false;
   }
 
 }  // namespace G4BECAL
@@ -91,7 +93,9 @@ double BECALSetup(PHG4Reco *g4Reco)
   // https://raw.githubusercontent.com/eic/fun4all_eiccalibrations/main/BarrelEcal/mapping/towerMap_BEMC_v002.txt
   // It uses IR of 80.3.
   ostringstream mapping_BECAL;
-  if(G4BECAL::SETTING::useNonProjective){
+  if(G4BECAL::SETTING::useGDML){
+    mapping_BECAL << getenv("CALIBRATIONROOT") << "/BarrelEcal/mapping/Volumes/slice";
+  } else if(G4BECAL::SETTING::useNonProjective){
     mapping_BECAL << getenv("CALIBRATIONROOT") << "/BarrelEcal/mapping/towerMap_BEMC_v001_nonproj.txt";
   }else {
     if(G4BECAL::SETTING::useMoreTowers){
@@ -107,9 +111,13 @@ double BECALSetup(PHG4Reco *g4Reco)
   becal->OverlapCheck(OverlapCheck);
   becal->SetActive();
   becal->SuperDetector("BECAL");
+  if(G4BECAL::SETTING::useGDML){
+    becal->set_int_param("use_gdml", 1);
+  }
   if (AbsorberActive) becal->SetAbsorberActive();
 
   g4Reco->registerSubsystem(becal);
+
 
   return  G4BECAL::topradius;
 
@@ -128,7 +136,9 @@ void BECAL_Towers()
   Fun4AllServer *se = Fun4AllServer::instance();
 
   ostringstream mapping_BECAL;
-  if(G4BECAL::SETTING::useNonProjective){
+  if(G4BECAL::SETTING::useGDML){
+    mapping_BECAL << getenv("CALIBRATIONROOT") << "/BarrelEcal/mapping/Volumes/slice";
+  } else if(G4BECAL::SETTING::useNonProjective){
     mapping_BECAL << getenv("CALIBRATIONROOT") << "/BarrelEcal/mapping/towerMap_BEMC_v001_nonproj.txt";
   }else {
     if(G4BECAL::SETTING::useMoreTowers){
@@ -148,6 +158,9 @@ void BECAL_Towers()
     tower_BECAL->set_hit_time_window(G4BECAL::timecut); // in ns
   }
   tower_BECAL->GeometryTableFile(mapping_BECAL.str());
+  if(G4BECAL::SETTING::useGDML){
+    tower_BECAL->set_use_gdml(true);
+  }
   tower_BECAL->Verbosity(verbosity);
   se->registerSubsystem(tower_BECAL);
 

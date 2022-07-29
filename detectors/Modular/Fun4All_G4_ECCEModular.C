@@ -517,6 +517,9 @@ int Fun4All_G4_ECCEModular(
   if (detectorSettings.find("BCNGMT") != std::string::npos) {
     G4BECAL::SETTING::useMoreTowers = true;
   }
+  if (detectorSettings.find("BCGDML") != std::string::npos) {
+    G4BECAL::SETTING::useGDML = true;
+  }
   Enable::HCALIN  = true;
   Enable::MAGNET  = true;
   Enable::HCALOUT = true;
