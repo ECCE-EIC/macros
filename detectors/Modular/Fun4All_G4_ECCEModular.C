@@ -120,6 +120,8 @@ int Fun4All_G4_ECCEModular(
       Input::SIMPLE_NUMBER = 2; // if you need 2 of them
     if (generatorSettings.Contains("Multi"))
       Input::SIMPLE_NUMBER = 3; // if you need 2 of them
+    if (generatorSettings.Contains("Max"))
+      Input::SIMPLE_NUMBER = 100; // if you need 2 of them
   }
 
   Input::VERBOSITY = 0;
@@ -225,6 +227,42 @@ int Fun4All_G4_ECCEModular(
           } else {
             INPUTGENERATOR::SimpleEventGenerator[igen]->set_eta_range(-4.0, 4.0);
           }
+          INPUTGENERATOR::SimpleEventGenerator[igen]->set_phi_range(-M_PI, M_PI);
+          INPUTGENERATOR::SimpleEventGenerator[igen]->set_p_range(particlemomMin, particlemomMax);
+        }
+    } else if (generatorSettings.Contains("Max")){
+        for(int igen=0;igen<Input::SIMPLE_NUMBER;igen++){
+          if (generatorSettings.Contains("Pion"))
+            INPUTGENERATOR::SimpleEventGenerator[igen]->add_particles("pi-", 1);
+          else if (generatorSettings.Contains("Kaon"))
+            INPUTGENERATOR::SimpleEventGenerator[igen]->add_particles("kaon-", 1);
+          else if (generatorSettings.Contains("Proton"))
+            INPUTGENERATOR::SimpleEventGenerator[igen]->add_particles("proton", 1);
+          else if (generatorSettings.Contains("Muon"))
+            INPUTGENERATOR::SimpleEventGenerator[igen]->add_particles("mu-", 1);
+          else if (generatorSettings.Contains("Photon"))
+            INPUTGENERATOR::SimpleEventGenerator[igen]->add_particles("gamma", 1);
+          else if (generatorSettings.Contains("Neutron"))
+            INPUTGENERATOR::SimpleEventGenerator[igen]->add_particles("neutron", 1);
+          else if (generatorSettings.Contains("Lambda"))
+            INPUTGENERATOR::SimpleEventGenerator[igen]->add_particles("lambda", 1);
+          else if (generatorSettings.Contains("K0S"))
+            INPUTGENERATOR::SimpleEventGenerator[igen]->add_particles("kaon0S", 1);
+          else if (generatorSettings.Contains("Electron"))
+            INPUTGENERATOR::SimpleEventGenerator[igen]->add_particles("e-", 1);
+          else if (generatorSettings.Contains("PiZero"))
+            INPUTGENERATOR::SimpleEventGenerator[igen]->add_particles("pi0", 1);
+          else {
+            std::cout << "You didn't specify which particle you wanted to generate, exiting" << std::endl;
+            return 0;
+          }
+          INPUTGENERATOR::SimpleEventGenerator[igen]->set_vertex_distribution_function(PHG4SimpleEventGenerator::Uniform,
+                                                                                    PHG4SimpleEventGenerator::Uniform,
+                                                                                    PHG4SimpleEventGenerator::Uniform);
+          INPUTGENERATOR::SimpleEventGenerator[igen]->set_vertex_distribution_mean(0., 0., 0.);
+          INPUTGENERATOR::SimpleEventGenerator[igen]->set_vertex_distribution_width(0., 0., 0.);
+
+          INPUTGENERATOR::SimpleEventGenerator[igen]->set_eta_range(-4.0, 4.0);
           INPUTGENERATOR::SimpleEventGenerator[igen]->set_phi_range(-M_PI, M_PI);
           INPUTGENERATOR::SimpleEventGenerator[igen]->set_p_range(particlemomMin, particlemomMax);
         }
@@ -489,6 +527,10 @@ int Fun4All_G4_ECCEModular(
 
   if (detectorSettings.find("NONPROJT") != std::string::npos) {
     Enable::AI_TRACKINGGEO = false;
+  }
+  if (detectorSettings.find("EPICT") != std::string::npos) {
+    Enable::AI_TRACKINGGEO = false;
+    Enable::EPIC_TRACKINGGEO = true;
   }
   //***********************************************
   // tracking macro settings

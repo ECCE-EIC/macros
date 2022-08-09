@@ -14,6 +14,7 @@
 #include <g4detectors/PHG4CylinderSubsystem.h>
 #include <g4detectors/PHG4SectorSubsystem.h>
 #include <g4trackfastsim/PHG4TrackFastSim.h>
+#include <fst/PHG4FSTSubsystem.h>
 
 #include <g4main/PHG4Reco.h>
 
@@ -30,6 +31,12 @@ namespace Enable
 {
   static bool FST = false;
   bool FST_OVERLAPCHECK = false;
+  bool FST_ABSORBER = false;
+  bool FST_CELL = false;
+  bool FST_TOWER = false;
+  bool FST_CLUSTER = false;
+  bool FST_EVAL = false;
+  int FST_VERBOSITY = 0;
 }  // namespace Enable
 
 namespace G4FST
@@ -62,6 +69,12 @@ Once calculated just pass the disk dimensions into this script
 
 void FSTSetup(PHG4Reco *g4Reco)
 {
+  // if(Enable::EPIC_TRACKINGGEO){
+
+  const bool AbsorberActive = Enable::ABSORBER || Enable::FST_ABSORBER;
+  bool OverlapCheck = Enable::OVERLAPCHECK || Enable::FST_OVERLAPCHECK;
+  Fun4AllServer *se = Fun4AllServer::instance();
+
   const double cm = PHG4Sector::Sector_Geometry::Unit_cm();
   const double mm = .1 * cm;
   const double um = 1e-3 * mm;
@@ -73,25 +86,65 @@ void FSTSetup(PHG4Reco *g4Reco)
   double bkwd_rmin[] = {3.3, 3.3, 5.25, 6.4};
   double bkwd_rmax[] = {15.3, 27.3, 35.25, 48.4};
 
+  // EPIC setup based on Ernst
+  const double bkwd_z_EPIC[] = {25.0, 45.0, 70.0, 100.0, 135.0};
+  double bkwd_rmin_EPIC[] = {3.6, 3.6, 3.6, 3.9, 4.5};
+  double bkwd_offset_EPIC[] = {0.0, 0.0, 0.0, 0.2, 0.7};
+  double bkwd_rmax_EPIC[] = {19.0, 43.0, 43.0, 43.0, 59.0};
+
   // non-projective values
   const double bkwd_z_np[] = {25, 52, 79, 106};
   double bkwd_rmin_np[] = {3.5, 3.5, 4.5, 5.5};
   double bkwd_rmax_np[] = {18.5, 36.5, 40.5, 41.5};
 
-  const int n_bkwd_disk = sizeof(bkwd_z) / sizeof(*bkwd_z);
+  int n_bkwd_disk = sizeof(bkwd_z) / sizeof(*bkwd_z);
+  if( Enable::EPIC_TRACKINGGEO)
+  {
+    n_bkwd_disk = sizeof(bkwd_z_EPIC) / sizeof(*bkwd_z_EPIC);
+  }
+
   for (unsigned int i = 0; i < n_bkwd_disk; i++)
   {
-/*
-    // Below was made to auto calculate the min and max Radius
-    if(bkwd_z[i] < uRwell1_e_length) bkwd_rmax[i] = std::min(max_radius, e_slope1*bkwd_z[i] + e_intercept1) - 0.5;
-    else if (bkwd_z[i] >= uRwell1_e_length && bkwd_z[i] <= (uRwell1_e_length + uRwell_plateau_length)){bkwd_rmax[i] = uRwell1_radius - 1.5;}
-    else if(bkwd_z[i] > (uRwell1_e_length + uRwell_plateau_length)){bkwd_rmax[i] = std::min(max_radius, e_slope2*bkwd_z[i] + e_intercept2) - 0.5;}
-    else {cout << "Cannot calculate the RMax exiting" << endl; gSystem->Exit(0); }
+    if(Enable::EPIC_TRACKINGGEO){
+      string name = Form("EST_%i", i);
+      double pitch = 10e-4;
+      PHG4FSTSubsystem *hfst = new PHG4FSTSubsystem(name);
+      hfst->OverlapCheck(OverlapCheck);
+      hfst->SuperDetector(name);
+      hfst->SetActive();
+      if (AbsorberActive) hfst->SetAbsorberActive();
+      hfst->set_double_param("z_position", -1*bkwd_z_EPIC[i]);
+      hfst->set_double_param("r_min", bkwd_rmin_EPIC[i]);
+      hfst->set_double_param("r_max", bkwd_rmax_EPIC[i]);
+      hfst->set_double_param("silicon_thickness", 35 * um);
+      hfst->set_double_param("offset_cutout", bkwd_offset_EPIC[i]);
+      g4Reco->registerSubsystem(hfst);
 
-    if(bkwd_z[i]>79.8 && bkwd_z[i]>0) bkwd_rmin[i] = (0.0521*bkwd_z[i] + 1.0);
-    else bkwd_rmin[i] = 3.3;
-*/  
-    if(Enable::AI_TRACKINGGEO){
+      if (TRACKING::FastKalmanFilter)
+      {
+        TRACKING::FastKalmanFilter->add_phg4hits(string("G4HIT_") + name,           //      const std::string& phg4hitsNames,
+                                                PHG4TrackFastSim::Vertical_Plane,  //      const DETECTOR_TYPE phg4dettype,
+                                                pitch / sqrt(12.),                 //      const float radres,
+                                                pitch / sqrt(12.),                 //      const float phires,
+                                                50e-4 / sqrt(12.),                 //      const float lonres, *ignored in plane detector*
+                                                0.95,                                 //      const float eff,
+                                                0);                                //      const float noise
+        TRACKING::FastKalmanFilterInnerTrack->add_phg4hits(string("G4HIT_") + name,           //      const std::string& phg4hitsNames,
+                                                PHG4TrackFastSim::Vertical_Plane,  //      const DETECTOR_TYPE phg4dettype,
+                                                pitch / sqrt(12.),                 //      const float radres,
+                                                pitch / sqrt(12.),                 //      const float phires,
+                                                50e-4 / sqrt(12.),                 //      const float lonres, *ignored in plane detector*
+                                                0.95,                                 //      const float eff,
+                                                0);                                //      const float noise
+        TRACKING::FastKalmanFilterSiliconTrack->add_phg4hits(string("G4HIT_") + name,           //      const std::string& phg4hitsNames,
+                                                PHG4TrackFastSim::Vertical_Plane,  //      const DETECTOR_TYPE phg4dettype,
+                                                pitch / sqrt(12.),                 //      const float radres,
+                                                pitch / sqrt(12.),                 //      const float phires,
+                                                50e-4 / sqrt(12.),                 //      const float lonres, *ignored in plane detector*
+                                                0.95,                                 //      const float eff,
+                                                0);                                //      const float noise
+      }
+    } else if(Enable::AI_TRACKINGGEO){
       make_LANL_FST_station(Form("EST_%i", i), g4Reco, -1*bkwd_z[i], bkwd_rmin[i], bkwd_rmax[i], 35 * um, 10e-4);  //cm
     } else {
       make_LANL_FST_station(Form("EST_%i", i), g4Reco, -1*bkwd_z_np[i], bkwd_rmin_np[i], bkwd_rmax_np[i], 35 * um, 10e-4);  //cm
@@ -103,6 +156,12 @@ void FSTSetup(PHG4Reco *g4Reco)
   double fwd_rmin[] = {3.3, 3.3, 5.2, 6.5, 7.5};
   double fwd_rmax[] = {15.3, 27.3, 35.2, 49.5, 49.5};
 
+  // Enable::EPIC_TRACKINGGEO
+  const double fwd_z_EPIC[] = {25.0, 45.0, 70.0, 100.0, 135.0};
+  double fwd_rmin_EPIC[] = {3.6, 3.6, 3.6, 4.5, 5.4};
+  double fwd_offset_EPIC[] = {0.0, 0.0, 0.0, -0.8, -1.7};
+  double fwd_rmax_EPIC[] = {19.0, 43.0, 43.0, 43.0, 53.0};
+
   // non-projective values
   const double fwd_z_np[] = {25, 52, 73, 106, 125};
   double fwd_rmin_np[] = {3.5, 3.5, 4.5, 5.5, 7.5};
@@ -111,19 +170,46 @@ void FSTSetup(PHG4Reco *g4Reco)
   const int n_fwd_disk = sizeof(fwd_z) / sizeof(*fwd_z);
   for (unsigned int i = 0; i < n_fwd_disk; i++)
   {
+    if(Enable::EPIC_TRACKINGGEO){
+      string name = Form("FST_%i", i);
+      double pitch = 10e-4;
+      PHG4FSTSubsystem *hfst = new PHG4FSTSubsystem(name);
+      hfst->OverlapCheck(OverlapCheck);
+      hfst->SuperDetector(name);
+      hfst->SetActive();
+      if (AbsorberActive) hfst->SetAbsorberActive();
+      hfst->set_double_param("z_position", fwd_z_EPIC[i]);
+      hfst->set_double_param("r_min", fwd_rmin_EPIC[i]);
+      hfst->set_double_param("r_max", fwd_rmax_EPIC[i]);
+      hfst->set_double_param("silicon_thickness", 35 * um);
+      hfst->set_double_param("offset_cutout", fwd_offset_EPIC[i]);
+      g4Reco->registerSubsystem(hfst);
 
-/*
-    if(fwd_z[i] < uRwell1_h_length) fwd_rmax[i] = std::min(max_radius, h_slope1*fwd_z[i] + h_intercept1) - 0.5;
-    else if (fwd_z[i] >= uRwell1_h_length && fwd_z[i] <= (uRwell1_h_length + uRwell_plateau_length)){fwd_rmax[i] = uRwell1_radius - 1.5;}
-    //else if(fwd_z[i] > (uRwell1_h_length + uRwell_plateau_length)){fwd_rmax[i] = std::min(max_radius, h_slope2*fwd_z[i] + h_intercept2) - 0.5;}
-    else if(fwd_z[i] > (uRwell1_h_length + uRwell_plateau_length) && fwd_z[i] <= 130.){ fwd_rmax[i] = std::min(max_radius, h_slope2*fwd_z[i] + h_intercept2) - 0.5;}
-    //else if(fwd_z[i] > 113.){fwd_rmax[i] = h_slope2*(fwd_z[i] + 5.) + h_intercept2 - 0.25;}
-    else {cout << "Cannot calculate the RMax exiting" << endl; gSystem->Exit(0); }
-
-    if(fwd_z[i]>66.8 && fwd_z[i]>0) fwd_rmin[i] = (0.0521*fwd_z[i] + 1.0);
-    else fwd_rmin[i] = 3.3;
-*/
-    if(Enable::AI_TRACKINGGEO){
+      if (TRACKING::FastKalmanFilter)
+      {
+        TRACKING::FastKalmanFilter->add_phg4hits(string("G4HIT_") + name,           //      const std::string& phg4hitsNames,
+                                                PHG4TrackFastSim::Vertical_Plane,  //      const DETECTOR_TYPE phg4dettype,
+                                                pitch / sqrt(12.),                 //      const float radres,
+                                                pitch / sqrt(12.),                 //      const float phires,
+                                                50e-4 / sqrt(12.),                 //      const float lonres, *ignored in plane detector*
+                                                0.95,                                 //      const float eff,
+                                                0);                                //      const float noise
+        TRACKING::FastKalmanFilterInnerTrack->add_phg4hits(string("G4HIT_") + name,           //      const std::string& phg4hitsNames,
+                                                PHG4TrackFastSim::Vertical_Plane,  //      const DETECTOR_TYPE phg4dettype,
+                                                pitch / sqrt(12.),                 //      const float radres,
+                                                pitch / sqrt(12.),                 //      const float phires,
+                                                50e-4 / sqrt(12.),                 //      const float lonres, *ignored in plane detector*
+                                                0.95,                                 //      const float eff,
+                                                0);                                //      const float noise
+        TRACKING::FastKalmanFilterSiliconTrack->add_phg4hits(string("G4HIT_") + name,           //      const std::string& phg4hitsNames,
+                                                PHG4TrackFastSim::Vertical_Plane,  //      const DETECTOR_TYPE phg4dettype,
+                                                pitch / sqrt(12.),                 //      const float radres,
+                                                pitch / sqrt(12.),                 //      const float phires,
+                                                50e-4 / sqrt(12.),                 //      const float lonres, *ignored in plane detector*
+                                                0.95,                                 //      const float eff,
+                                                0);                                //      const float noise
+      }
+    } else if(Enable::AI_TRACKINGGEO){
       make_LANL_FST_station(Form("FST_%i", i), g4Reco, fwd_z[i], fwd_rmin[i], fwd_rmax[i], 35 * um, 10e-4);  //cm
     } else {
       make_LANL_FST_station(Form("FST_%i", i), g4Reco, fwd_z_np[i], fwd_rmin_np[i], fwd_rmax_np[i], 35 * um, 10e-4);  //cm
@@ -173,6 +259,7 @@ int make_LANL_FST_station(string name, PHG4Reco *g4Reco,
   fst->get_geometry().set_N_Sector(1);
   fst->get_geometry().set_material("G4_AIR");
   fst->OverlapCheck(OverlapCheck);  //true);//overlapcheck);
+  // fst->OverlapCheck(true);  //true);//overlapcheck);
 
   const double cm = PHG4Sector::Sector_Geometry::Unit_cm();
   const double mm = .1 * cm;
@@ -189,6 +276,7 @@ int make_LANL_FST_station(string name, PHG4Reco *g4Reco,
 
   g4Reco->registerSubsystem(fst);
 
+  
   if (TRACKING::FastKalmanFilter)
   {
     TRACKING::FastKalmanFilter->add_phg4hits(string("G4HIT_") + name,           //      const std::string& phg4hitsNames,
@@ -196,23 +284,24 @@ int make_LANL_FST_station(string name, PHG4Reco *g4Reco,
                                              pitch / sqrt(12.),                 //      const float radres,
                                              pitch / sqrt(12.),                 //      const float phires,
                                              50e-4 / sqrt(12.),                 //      const float lonres, *ignored in plane detector*
-                                             0.9,                                 //      const float eff,
+                                             0.95,                                 //      const float eff,
                                              0);                                //      const float noise
     TRACKING::FastKalmanFilterInnerTrack->add_phg4hits(string("G4HIT_") + name,           //      const std::string& phg4hitsNames,
                                              PHG4TrackFastSim::Vertical_Plane,  //      const DETECTOR_TYPE phg4dettype,
                                              pitch / sqrt(12.),                 //      const float radres,
                                              pitch / sqrt(12.),                 //      const float phires,
                                              50e-4 / sqrt(12.),                 //      const float lonres, *ignored in plane detector*
-                                             0.9,                                 //      const float eff,
+                                             0.95,                                 //      const float eff,
                                              0);                                //      const float noise
     TRACKING::FastKalmanFilterSiliconTrack->add_phg4hits(string("G4HIT_") + name,           //      const std::string& phg4hitsNames,
                                              PHG4TrackFastSim::Vertical_Plane,  //      const DETECTOR_TYPE phg4dettype,
                                              pitch / sqrt(12.),                 //      const float radres,
                                              pitch / sqrt(12.),                 //      const float phires,
                                              50e-4 / sqrt(12.),                 //      const float lonres, *ignored in plane detector*
-                                             0.9,                                 //      const float eff,
+                                             0.95,                                 //      const float eff,
                                              0);                                //      const float noise
   }
+
   return 0;
 }
 //-----------------------------------------------------------------------------------//
@@ -236,5 +325,6 @@ int make_supportCyl(string name, PHG4Reco *g4Reco, double r, double t, double le
   g4Reco->registerSubsystem(cyl);
   return 0;
 }
+
 #endif
 

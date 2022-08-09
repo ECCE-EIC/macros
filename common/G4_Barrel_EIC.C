@@ -97,6 +97,30 @@ void Barrel(PHG4Reco *g4Reco, int det_ver = 3)
       BarrelFastKalmanFilterConfigSVTX(TRACKING::FastKalmanFilterInnerTrack, ilayer, si_vtx_r_pos[ilayer],false);
       BarrelFastKalmanFilterConfigSVTX(TRACKING::FastKalmanFilterSiliconTrack, ilayer, si_vtx_r_pos[ilayer],false);
     }
+  } else if(Enable::EPIC_TRACKINGGEO){
+    //---------------------------
+    // Vertexing
+    // 270 mm vertex layer with X/X0 ~ 0.05% at r = 36mm
+    //   270 mm vertex layer with X/X0 ~ 0.05% at r = 48mm
+    //   270 mm vertex layer with X/X0 ~ 0.05% at r = 120mm
+    double si_vtx_r_pos[] = {3.60, 4.8, 12.00};
+    const int nVtxLayers = sizeof(si_vtx_r_pos) / sizeof(*si_vtx_r_pos);
+    for (int ilayer = 0; ilayer < nVtxLayers; ilayer++)
+    {
+      cyl = new PHG4CylinderSubsystem("SVTX", ilayer);
+      cyl->set_string_param("material", "G4_Si");
+      cyl->set_double_param("radius", si_vtx_r_pos[ilayer]);
+      cyl->set_double_param("thickness", 0.05 / 100. * 9.37);
+      cyl->set_double_param("place_z", 0.);
+      cyl->set_double_param("length", 27.);
+      cyl->SetActive();
+  //    cyl->SuperDetector("SVTX");  breakout SVTX into individual layers
+      cyl->OverlapCheck(OverlapCheck);
+      g4Reco->registerSubsystem(cyl);
+      BarrelFastKalmanFilterConfigSVTX(TRACKING::FastKalmanFilter, ilayer, si_vtx_r_pos[ilayer],true);
+      BarrelFastKalmanFilterConfigSVTX(TRACKING::FastKalmanFilterInnerTrack, ilayer, si_vtx_r_pos[ilayer],false);
+      BarrelFastKalmanFilterConfigSVTX(TRACKING::FastKalmanFilterSiliconTrack, ilayer, si_vtx_r_pos[ilayer],false);
+    }
   } else {
     //---------------------------
     // Vertexing
@@ -141,6 +165,31 @@ void Barrel(PHG4Reco *g4Reco, int det_ver = 3)
       cyl->set_double_param("radius", si_r_pos[ilayer]);
       cyl->set_double_param("thickness", G4BARRELEIC::SETTING::SAGITTAX0 / 100. * 9.37);
       cyl->set_double_param("place_z", (z_h_length[ilayer] - z_e_length[ilayer])/2);
+      cyl->set_double_param("length", si_z_length[ilayer]);
+      cyl->SetActive();
+      cyl->OverlapCheck(OverlapCheck);
+  //    cyl->SuperDetector("BARR");   breakout BARR into individual layers
+      g4Reco->registerSubsystem(cyl);
+
+      BarrelFastKalmanFilterConfigBARR(TRACKING::FastKalmanFilter, ilayer, si_r_pos[ilayer],true);
+      BarrelFastKalmanFilterConfigBARR(TRACKING::FastKalmanFilterInnerTrack, ilayer, si_r_pos[ilayer],false);
+      BarrelFastKalmanFilterConfigBARR(TRACKING::FastKalmanFilterSiliconTrack, ilayer, si_r_pos[ilayer],false);
+    }
+  } else if(Enable::EPIC_TRACKINGGEO){
+    double si_z_length[] = {54.0, 84.0};
+    double si_r_pos[] = {27.0, 42.0}; // Modified on 29th Oct to account for new struture design
+    const int nTrckLayers = sizeof(si_r_pos) / sizeof(*si_r_pos);
+    float sagittaX0layer[] = {0.25, 0.55};
+    
+    for (int ilayer = 0; ilayer < nTrckLayers; ilayer++)
+    {
+      //cout << "Radius " << ilayer + 1 << ": " << si_r_pos[ilayer] << "cms \t e-length : " << z_e_length[ilayer] << "cms \t h-length : " << z_h_length[ilayer] << "cms"<< endl;
+      //cout << "eslope : " << e_slope1 << " \n hslope : " << h_slope1 << " \n zleft : " << z_e_length[ilayer] << "\n zright : " << z_h_length[ilayer] << " \n radius : " << si_r_pos[ilayer] << endl ;
+      cyl = new PHG4CylinderSubsystem("BARR", ilayer);
+      cyl->set_string_param("material", "G4_Si");
+      cyl->set_double_param("radius", si_r_pos[ilayer]);
+      cyl->set_double_param("thickness", sagittaX0layer[ilayer] / 100. * 9.37);
+      cyl->set_double_param("place_z", 0.0);
       cyl->set_double_param("length", si_z_length[ilayer]);
       cyl->SetActive();
       cyl->OverlapCheck(OverlapCheck);

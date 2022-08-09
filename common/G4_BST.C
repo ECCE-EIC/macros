@@ -60,12 +60,14 @@ void BSTSetup(PHG4Reco *g4Reco)
 
   /** Use dedicated BST module */
   PHG4BSTSubsystem *hbst = new PHG4BSTSubsystem("BST");
-  // hbst->OverlapCheck(true);
   hbst->OverlapCheck(OverlapCheck);
   cout << "BST material special setting " << G4BST::SETTING::optionMat << endl;
   if(G4BST::SETTING::BSTnoSupport==1){
     hbst->set_int_param("do_internal_supports", 0);
     hbst->set_int_param("do_external_supports", 0);
+  }
+  if(Enable::EPIC_TRACKINGGEO){
+    hbst->set_int_param("use_EPIC_setup", 1);
   }
   if(G4BST::SETTING::optionMat==1){
     hbst->set_double_param("layer_backing_thickness", 0.035 / 100 * 28.57 * cm); // 100 microns of Kapton
@@ -89,40 +91,42 @@ void BSTSetup(PHG4Reco *g4Reco)
     198.307,
     210.276
   };
+  G4double layerradii_EPIC[5] = {
+    36.16,
+    48.2239,
+    120.070,
+    270.0,
+    420.0
+  };
 
 
-  if (TRACKING::FastKalmanFilter)
-  {
-    TRACKING::FastKalmanFilter->add_phg4hits(string("G4HIT_BST"),     //      const std::string& phg4hitsNames,
-                                            PHG4TrackFastSim::Cylinder,
-                                            999.,                      // radial-resolution [cm]
-                                            10. / 10000. / sqrt(12.),  // azimuthal-resolution [cm]
-                                            10. / 10000. / sqrt(12.),  // z-resolution [cm]
-                                            1,                         // efficiency,
-                                            0                          // noise hits
-    );
-    for(int ilay=0; ilay<5; ilay++){
-      TRACKING::FastKalmanFilter->add_cylinder_state(Form("BST_%d",ilay), layerradii[ilay]);
+  for(int ilay=0; ilay<5; ilay++){
+    if (TRACKING::FastKalmanFilter)
+    {
+      TRACKING::FastKalmanFilter->add_phg4hits(string(Form("G4HIT_BST_%d",ilay)),     //      const std::string& phg4hitsNames,
+                                              PHG4TrackFastSim::Cylinder,
+                                              999.,                      // radial-resolution [cm]
+                                              10. / 10000. / sqrt(12.),  // azimuthal-resolution [cm]
+                                              10. / 10000. / sqrt(12.),  // z-resolution [cm]
+                                              0.95,                         // efficiency,
+                                              0                          // noise hits
+      );
+      TRACKING::FastKalmanFilter->add_cylinder_state(Form("BST_%d",ilay), Enable::EPIC_TRACKINGGEO ? layerradii_EPIC[ilay] : layerradii[ilay]);
       TRACKING::ProjectionNames.insert(Form("BST_%d",ilay));
     }
-  }
-  if (TRACKING::FastKalmanFilterInnerTrack)
-  {
-    TRACKING::FastKalmanFilterInnerTrack->add_phg4hits(string("G4HIT_BST"),     //      const std::string& phg4hitsNames,
-                                            PHG4TrackFastSim::Cylinder,
-                                            999.,                      // radial-resolution [cm]
-                                            10. / 10000. / sqrt(12.),  // azimuthal-resolution [cm]
-                                            10. / 10000. / sqrt(12.),  // z-resolution [cm]
-                                            1,                         // efficiency,
-                                            0                          // noise hits
-    );
-    for(int ilay=0; ilay<5; ilay++){
-      TRACKING::FastKalmanFilterInnerTrack->add_cylinder_state(Form("BST_%d",ilay), layerradii[ilay]);
+    if (TRACKING::FastKalmanFilterInnerTrack)
+    {
+      TRACKING::FastKalmanFilterInnerTrack->add_phg4hits(string(Form("G4HIT_BST_%d",ilay)),     //      const std::string& phg4hitsNames,
+                                              PHG4TrackFastSim::Cylinder,
+                                              999.,                      // radial-resolution [cm]
+                                              10. / 10000. / sqrt(12.),  // azimuthal-resolution [cm]
+                                              10. / 10000. / sqrt(12.),  // z-resolution [cm]
+                                              0.95,                         // efficiency,
+                                              0                          // noise hits
+      );
+      TRACKING::FastKalmanFilterInnerTrack->add_cylinder_state(Form("BST_%d",ilay), Enable::EPIC_TRACKINGGEO ? layerradii_EPIC[ilay] : layerradii[ilay]);
     }
-
   }
-
-
 }
 
 void BST_Cells(int verbosity = 0)

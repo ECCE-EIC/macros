@@ -34,6 +34,7 @@ namespace Enable
   bool DSTOUT = false;
   bool DSTOUT_COMPRESS = false;
   bool AI_TRACKINGGEO = true;
+  bool EPIC_TRACKINGGEO = true;
   int VERBOSITY = 0;
 
   // IP selection require explicit choice in the main macros

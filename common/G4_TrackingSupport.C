@@ -185,7 +185,8 @@ double TrackingServiceCone(ServiceProperties *object, PHG4Reco *g4Reco, double r
 
 double TrackingServiceCylinder(ServiceProperties *object, PHG4Reco *g4Reco, double radius)
 {
-  bool AbsorberActive = Enable::ABSORBER || Enable::TrackingService_ABSORBER;
+  // bool AbsorberActive = Enable::ABSORBER || Enable::TrackingService_ABSORBER;
+  bool AbsorberActive = true;
   bool OverlapCheck = Enable::OVERLAPCHECK || Enable::TrackingService_OVERLAPCHECK;
   int verbosity = max(Enable::VERBOSITY, Enable::TrackingService_VERBOSITY);
 
@@ -264,7 +265,32 @@ double TrackingService(PHG4Reco *g4Reco, double radius)
   double PlasticThickness = 0.48;    // 0.241488 cms
   double CarbonThickness = shellX0;  // 0.3 cms -> 1% X/X0
 
-  if(Enable::AI_TRACKINGGEO){
+  if(Enable::EPIC_TRACKINGGEO){
+    // Cone service from the end Disk to the uRwell1 radius
+    cones.push_back(new ServiceProperties("ETrackingCone_Disk4TouRwell", CuThickness, AlThickness, WaterThickness, PlasticThickness, CarbonThickness, 0, -147.47, -101, 68, 43.2));
+
+    // The cylindrical plateau structure for Electron uRwell side.
+    cylinders.push_back(new ServiceProperties("ETrackingCyl_uRWellPlateau", CuThickness, AlThickness, WaterThickness, PlasticThickness, CarbonThickness, 0, -101., -88.2/2, 43.2, 0));
+
+    // Cone service from electron side uRwell1 to vertex support.
+    cones.push_back(new ServiceProperties("ETrackingCone_uRwellToVertex", CuThickness, AlThickness, WaterThickness, PlasticThickness, CarbonThickness, 0, -88.2/2, -38.9/2., 43.2, 13.0));
+
+
+
+
+    // Cone service in H-region from vertex to inner uRwell
+    cones.push_back(new ServiceProperties("HTrackingCone_VertexTouRwell", CuThickness, AlThickness, WaterThickness, PlasticThickness, CarbonThickness, 0, 38.9/2., 88.2/2, 13.0, 43.2));
+
+    // Cylinder service to rest the uRwell in H region Plateau
+    cylinders.push_back(new ServiceProperties("HTrackingRWellPlateau", CuThickness, AlThickness, WaterThickness, PlasticThickness, CarbonThickness, 0, 88.2/2, 107.75, 43.2, 0));
+
+    // Cone service from uRwell to Disk 5 in h-region
+    cones.push_back(new ServiceProperties("HTrackingCone_uRwellToDisk5", CuThickness, AlThickness, WaterThickness, PlasticThickness, CarbonThickness, 0, 107.75, 173, 43.2, 69.2));
+
+    // Supports beyond FGEM
+    cones.push_back(new ServiceProperties("HTrackingConeService_7", 13, 0, 0.70, 0.48, shellX0, 0, 173, 173.1, 69.2, 85));
+    cones.push_back(new ServiceProperties("HTrackingConeService_8", 13, 0, 0.70, 0.48, shellX0, 0, 173.1, 195, 85, 100));
+  } else if(Enable::AI_TRACKINGGEO){
     // Cylinder from end Disk to EGEM
     cylinders.push_back(new ServiceProperties("ETrackingCyl_EGEMToDisk4", CuThickness, AlThickness, WaterThickness, PlasticThickness, CarbonThickness, 0, -120.0, -1 * e_cone_ends, disk_cone_radii, 0));
 

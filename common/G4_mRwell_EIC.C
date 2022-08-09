@@ -34,17 +34,25 @@ namespace RWELL
   const double nom_radius[RWELL::n_layer] = {33.14, 51., 77.0175};
   double e_length_uRwell[RWELL::n_layer] =  {70., 115., 290/2.};
   double h_length_uRwell[RWELL::n_layer] = {70., 115., 290/2.};
+  double e_length_uRwell_nonproj[RWELL::n_layer] = {40., 106., 197.};
+  double h_length_uRwell_nonproj[RWELL::n_layer] = {40., 106., 145.};
   const double nom_driftgap[RWELL::n_layer] = {0.4, 0.4, 0.4};
   //const double nom_length[RWELL::n_layer] = {140, 150, 280.0};
   const double nom_length[RWELL::n_layer] = {140., 230., 280.0};
+  const double nom_length_nonproj[RWELL::n_layer] = {80., 212., 342.0};
   int subsysID = 0;
 }  //namespace RWELL
 
 void RWellInit(int verbosity = 0)
 {
   BlackHoleGeometry::max_radius = std::max(BlackHoleGeometry::max_radius, RWELL::nom_radius[RWELL::n_layer - 1] / 10. + 0.7);
-  BlackHoleGeometry::max_z = std::max(BlackHoleGeometry::max_z, RWELL::nom_length[RWELL::n_layer - 1] / 2.0);
-  BlackHoleGeometry::min_z = std::min(BlackHoleGeometry::min_z, -RWELL::nom_length[RWELL::n_layer - 1] / 2.0);
+  if(!Enable::AI_TRACKINGGEO){
+    BlackHoleGeometry::max_z = std::max(BlackHoleGeometry::max_z, RWELL::nom_length_nonproj[RWELL::n_layer - 1] / 2.0);
+    BlackHoleGeometry::min_z = std::min(BlackHoleGeometry::min_z, -RWELL::nom_length_nonproj[RWELL::n_layer - 1] / 2.0);
+  } else{
+    BlackHoleGeometry::max_z = std::max(BlackHoleGeometry::max_z, RWELL::nom_length[RWELL::n_layer - 1] / 2.0);
+    BlackHoleGeometry::min_z = std::min(BlackHoleGeometry::min_z, -RWELL::nom_length[RWELL::n_layer - 1] / 2.0);
+  }
 }
 
 double Build_G4_RWell_Bare(PHG4Reco* g4Reco,
@@ -90,6 +98,9 @@ double Build_G4_RWell_Bare(PHG4Reco* g4Reco,
   PHG4CylinderSubsystem* rwell_cyl;
 
   double Shift = (RWELL::h_length_uRwell[index] - RWELL::e_length_uRwell[index])/2.0;
+  if(!Enable::AI_TRACKINGGEO){
+    Shift = (RWELL::h_length_uRwell_nonproj[index] - RWELL::e_length_uRwell_nonproj[index])/2.0;
+  }
   // here is our uRwell:
   //Gass layer
   rwell_cyl = new PHG4CylinderSubsystem(Form("RWELL_%d", index), RWELL::subsysID);
@@ -202,6 +213,9 @@ double Build_G4_RWell_Sup01(PHG4Reco* g4Reco,
   PHG4CylinderSubsystem* rwell_cyl;
 
   double Shift = (RWELL::h_length_uRwell[index] - RWELL::e_length_uRwell[index])/2.0;
+  if(!Enable::AI_TRACKINGGEO){
+    Shift = (RWELL::h_length_uRwell_nonproj[index] - RWELL::e_length_uRwell_nonproj[index])/2.0;
+  }
   // here is our uRwell:
   //Gass layer
   rwell_cyl = new PHG4CylinderSubsystem("RWELL", index);
@@ -375,12 +389,14 @@ double RWellSetup(PHG4Reco* g4Reco,
 
   for (int ilyr = 0; ilyr < RWELL::n_layer; ilyr++)  //RWELL trackers are registered in Build_RWELL macro
   {
+    if(Enable::EPIC_TRACKINGGEO && ilyr==0) continue;
+
     if (type == 0)
     {
       radius = Build_G4_RWell_Bare(g4Reco,                     //returns RWELL radiaus
                                    RWELL::nom_radius[ilyr],    //radius
                                    RWELL::nom_driftgap[ilyr],  //driftgap,
-                                   RWELL::nom_length[ilyr],    //length
+                                   Enable::AI_TRACKINGGEO ? RWELL::nom_length[ilyr] : RWELL::nom_length_nonproj[ilyr],    //length
                                    ilyr);                      //index
     }
     if (type == 1)
@@ -388,7 +404,7 @@ double RWellSetup(PHG4Reco* g4Reco,
       radius = Build_G4_RWell_Sup01(g4Reco,                     //returns RWELL radiaus
                                     RWELL::nom_radius[ilyr],    //radius
                                     RWELL::nom_driftgap[ilyr],  //driftgap,
-                                    RWELL::nom_length[ilyr],    //length
+                                   Enable::AI_TRACKINGGEO ? RWELL::nom_length[ilyr] : RWELL::nom_length_nonproj[ilyr],    //length
                                     ilyr);                      //index
     }
 
