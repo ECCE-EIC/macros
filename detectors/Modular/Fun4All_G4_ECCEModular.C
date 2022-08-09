@@ -587,8 +587,11 @@ int Fun4All_G4_ECCEModular(
     cout << "setting DRCALO stuff" << endl;
   }
   G4TTL::SETTING::optionDR = 1;
-  Enable::LFHCAL  = true;
 
+  Enable::LFHCAL  = true;
+  if(detectorSettings.find("LFEPIC") != std::string::npos){
+    G4LFHCAL::SETTING::EPICSETUP = true;
+  }
   //***********************************************
   // bwd calos
   //***********************************************

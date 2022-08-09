@@ -44,7 +44,7 @@ void BarrelFastKalmanFilterConfigSVTX(PHG4TrackFastSim * kalman_filter, int ilay
       999.,                      // radial-resolution [cm]
       10. / 10000. / sqrt(12.),  // azimuthal-resolution [cm]
       10. / 10000. / sqrt(12.),  // z-resolution [cm]
-      1,                         // efficiency,
+      0.95,                         // efficiency,
       0                          // noise hits
   );
   kalman_filter->add_cylinder_state(Form("SVTX_%d",ilay), radius);
@@ -60,7 +60,7 @@ void BarrelFastKalmanFilterConfigBARR(PHG4TrackFastSim * kalman_filter, int ilay
       999.,                      // radial-resolution [cm]
       10. / 10000. / sqrt(12.),  // azimuthal-resolution [cm]
       10. / 10000. / sqrt(12.),  // z-resolution [cm]
-      1,                         // efficiency,
+      0.95,                         // efficiency,
       0                          // noise hits
   );
   kalman_filter->add_cylinder_state(Form("BARR_%d",ilay), radius);

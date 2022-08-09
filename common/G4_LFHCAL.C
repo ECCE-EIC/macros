@@ -65,6 +65,7 @@ namespace G4LFHCAL
     bool longer = true;
     bool doLightProp = false;
     bool tailcatcher = true;
+    bool EPICSETUP = false;
   }  // namespace SETTING
 }  // namespace G4LFHCAL
 
@@ -105,7 +106,12 @@ TString GetMappingFile(){
   else if (G4LFHCAL::SETTING::asymmetric)
   {
     if (Enable::IP6){
-      if (G4LFHCAL::SETTING::longer){
+      if (G4LFHCAL::SETTING::EPICSETUP){
+        if (G4LFHCAL::SETTING::tailcatcher)
+          mappinFileName += "/LFHcal/mapping/towerMap_LFHCAL_IP6-asymmetric-epic-tailcatcher.txt";
+        else
+          mappinFileName += "/LFHcal/mapping/towerMap_LFHCAL_IP6-asymmetric-epic.txt";
+      } else if (G4LFHCAL::SETTING::longer){
         if (G4LFHCAL::SETTING::tailcatcher)
           mappinFileName += "/LFHcal/mapping/towerMap_LFHCAL_IP6-asymmetric-long-tailcatcher.txt";
         else
