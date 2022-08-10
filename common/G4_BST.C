@@ -42,6 +42,8 @@ namespace G4BST
     bool Tungsten = false;
     int optionMat = 0;
     int BSTnoSupport = 0;
+    int bent_sagitta_default = 0;
+    int bent_sagitta_mod = 0;
   }  // namespace SETTING
 }  // namespace G4BST
 
@@ -68,6 +70,11 @@ void BSTSetup(PHG4Reco *g4Reco)
   }
   if(Enable::EPIC_TRACKINGGEO){
     hbst->set_int_param("use_EPIC_setup", 1);
+    if(G4BST::SETTING::bent_sagitta_default){
+      hbst->set_int_param("use_bent_wafer_sagittas_default", 1);
+    } else if(G4BST::SETTING::bent_sagitta_mod){
+      hbst->set_int_param("use_bent_wafer_sagittas_mod", 1);
+    }
   }
   if(G4BST::SETTING::optionMat==1){
     hbst->set_double_param("layer_backing_thickness", 0.035 / 100 * 28.57 * cm); // 100 microns of Kapton

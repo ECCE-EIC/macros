@@ -535,6 +535,12 @@ int Fun4All_G4_ECCEModular(
   if (detectorSettings.find("EPICT") != std::string::npos) {
     Enable::AI_TRACKINGGEO = false;
     Enable::EPIC_TRACKINGGEO = true;
+    if (detectorSettings.find("BENTSAGDEF") != std::string::npos) {
+      G4BST::SETTING::bent_sagitta_default = true;
+    }
+    if (detectorSettings.find("BENTSAGMOD") != std::string::npos) {
+      G4BST::SETTING::bent_sagitta_mod = true;
+    }
   }
   //***********************************************
   // tracking macro settings
