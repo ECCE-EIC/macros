@@ -75,7 +75,7 @@ int Fun4All_G4_ECCEModular(
 
   // Setting proton beam pipe energy. If you don't know what to set here, leave it at 275
   Enable::HFARFWD_ION_ENERGY = 275;
-
+  Enable::HFARBWD_E_ENERGY = 18;
   // Either:
   // read previously generated g4-hits files, in this case it opens a DST and skips
   // the simulations step completely. The G4Setup macro is only loaded to get information
@@ -330,6 +330,7 @@ int Fun4All_G4_ECCEModular(
     //INPUTGENERATOR::Pythia6->set_config_file(string(getenv("CALIBRATIONROOT")) + "/Generators/phpythia6_ep.cfg");
     INPUTGENERATOR::Pythia6->set_config_file(inputFile);
     //! apply EIC beam parameter following EIC CDR
+    Enable::BEAM_COLLISION_SETTING = "ep-high-acceptance";
     Input::ApplyEICBeamParameter(INPUTGENERATOR::Pythia6);
   }
   // pythia8
