@@ -45,6 +45,7 @@ namespace G4FST
   {
     bool FST_TPC = false;
     bool SUPPORTCYL = false;
+    bool EPIC_TRACKINGGEO_VARIANT = false;
   }  // namespace SETTING
 }  // namespace G4FST
 
@@ -92,15 +93,27 @@ void FSTSetup(PHG4Reco *g4Reco)
   double bkwd_offset_EPIC[] = {0.0, 0.0, 0.0, 0.2, 0.7};
   double bkwd_rmax_EPIC[] = {19.0, 43.0, 43.0, 43.0, 59.0};
 
+  // AI optimized z positions in EPIC service cone
+  const double bkwd_z_EPIC2[] = {33.2, 58.29, 80.05, 107.4};
+  double bkwd_rmin_EPIC2[] = {3.6, 3.6, 3.6, 3.9};
+  double bkwd_offset_EPIC2[] = {0.0, 0.0, 0.0, 0.3};
+  double bkwd_rmax_EPIC2[] = {28.3, 43.0, 43.0, 45.0};
+
+
   // non-projective values
   const double bkwd_z_np[] = {25, 52, 79, 106};
-  double bkwd_rmin_np[] = {3.5, 3.5, 4.5, 5.5};
+  double bkwd_rmin_np[] = {3.6, 3.6, 4.5, 5.5};
   double bkwd_rmax_np[] = {18.5, 36.5, 40.5, 41.5};
 
   int n_bkwd_disk = sizeof(bkwd_z) / sizeof(*bkwd_z);
   if( Enable::EPIC_TRACKINGGEO)
   {
-    n_bkwd_disk = sizeof(bkwd_z_EPIC) / sizeof(*bkwd_z_EPIC);
+    if(G4FST::SETTING::EPIC_TRACKINGGEO_VARIANT)
+    {
+      n_bkwd_disk = sizeof(bkwd_z) / sizeof(*bkwd_z);
+    } else {
+      n_bkwd_disk = sizeof(bkwd_z_EPIC) / sizeof(*bkwd_z_EPIC);
+    }
   }
 
   for (unsigned int i = 0; i < n_bkwd_disk; i++)
@@ -113,11 +126,11 @@ void FSTSetup(PHG4Reco *g4Reco)
       hfst->SuperDetector(name);
       hfst->SetActive();
       if (AbsorberActive) hfst->SetAbsorberActive();
-      hfst->set_double_param("z_position", -1*bkwd_z_EPIC[i]);
-      hfst->set_double_param("r_min", bkwd_rmin_EPIC[i]);
-      hfst->set_double_param("r_max", bkwd_rmax_EPIC[i]);
+      hfst->set_double_param("z_position", G4FST::SETTING::EPIC_TRACKINGGEO_VARIANT ? -1*bkwd_z_EPIC2[i] : -1*bkwd_z_EPIC[i]);
+      hfst->set_double_param("r_min", G4FST::SETTING::EPIC_TRACKINGGEO_VARIANT ? bkwd_rmin_EPIC2[i] : bkwd_rmin_EPIC[i]);
+      hfst->set_double_param("r_max", G4FST::SETTING::EPIC_TRACKINGGEO_VARIANT ? bkwd_rmax_EPIC2[i] : bkwd_rmax_EPIC[i]);
       hfst->set_double_param("silicon_thickness", 35 * um);
-      hfst->set_double_param("offset_cutout", bkwd_offset_EPIC[i]);
+      hfst->set_double_param("offset_cutout", G4FST::SETTING::EPIC_TRACKINGGEO_VARIANT ? bkwd_offset_EPIC2[i] : bkwd_offset_EPIC[i]);
       g4Reco->registerSubsystem(hfst);
 
       if (TRACKING::FastKalmanFilter)
@@ -162,12 +175,24 @@ void FSTSetup(PHG4Reco *g4Reco)
   double fwd_offset_EPIC[] = {0.0, 0.0, 0.0, -0.8, -1.7};
   double fwd_rmax_EPIC[] = {19.0, 43.0, 43.0, 43.0, 53.0};
 
+  // AI optimized z positions in EPIC service cone
+  const double fwd_z_EPIC2[] = {33.2, 58.29, 79.85, 115, 125};
+  double fwd_rmin_EPIC2[] = {3.6, 3.6, 3.9, 4.85, 5.1};
+  double fwd_offset_EPIC2[] = {0.0, 0.0, -0.2, -1.2, -1.4};
+  double fwd_rmax_EPIC2[] = {15.3, 27.3, 35.2, 49.5, 49.5};
+
   // non-projective values
   const double fwd_z_np[] = {25, 52, 73, 106, 125};
-  double fwd_rmin_np[] = {3.5, 3.5, 4.5, 5.5, 7.5};
+  double fwd_rmin_np[] = {3.6, 3.6, 4.5, 5.5, 7.5};
   double fwd_rmax_np[] = {18.5, 36.5, 40.5, 41.5, 43.4};
 
   const int n_fwd_disk = sizeof(fwd_z) / sizeof(*fwd_z);
+  if(G4FST::SETTING::EPIC_TRACKINGGEO_VARIANT)
+  {
+    n_bkwd_disk = sizeof(fwd_z) / sizeof(*fwd_z);
+  } else {
+    n_bkwd_disk = sizeof(fwd_z_EPIC) / sizeof(*fwd_z_EPIC);
+  }
   for (unsigned int i = 0; i < n_fwd_disk; i++)
   {
     if(Enable::EPIC_TRACKINGGEO){
@@ -178,11 +203,11 @@ void FSTSetup(PHG4Reco *g4Reco)
       hfst->SuperDetector(name);
       hfst->SetActive();
       if (AbsorberActive) hfst->SetAbsorberActive();
-      hfst->set_double_param("z_position", fwd_z_EPIC[i]);
-      hfst->set_double_param("r_min", fwd_rmin_EPIC[i]);
-      hfst->set_double_param("r_max", fwd_rmax_EPIC[i]);
+      hfst->set_double_param("z_position", G4FST::SETTING::EPIC_TRACKINGGEO_VARIANT ? fwd_z_EPIC2[i] : fwd_z_EPIC[i]);
+      hfst->set_double_param("r_min", G4FST::SETTING::EPIC_TRACKINGGEO_VARIANT ? fwd_rmin_EPIC2[i] : fwd_rmin_EPIC[i]);
+      hfst->set_double_param("r_max", G4FST::SETTING::EPIC_TRACKINGGEO_VARIANT ? fwd_rmax_EPIC2[i] : fwd_rmax_EPIC[i]);
       hfst->set_double_param("silicon_thickness", 35 * um);
-      hfst->set_double_param("offset_cutout", fwd_offset_EPIC[i]);
+      hfst->set_double_param("offset_cutout", G4FST::SETTING::EPIC_TRACKINGGEO_VARIANT ? fwd_offset_EPIC2[i] : fwd_offset_EPIC[i]);
       g4Reco->registerSubsystem(hfst);
 
       if (TRACKING::FastKalmanFilter)

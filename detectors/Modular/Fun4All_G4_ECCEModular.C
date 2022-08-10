@@ -486,6 +486,9 @@ int Fun4All_G4_ECCEModular(
   // Enable::TrackingService_VERBOSITY = INT_MAX - 10;
   // fst
   Enable::FST = true;
+  if (detectorSettings.find("EPICFST2") != std::string::npos) {
+    G4FST::SETTING::EPIC_TRACKINGGEO_VARIANT = true;
+  }
 
   //***********************************************
   // TOFs
