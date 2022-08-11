@@ -90,6 +90,7 @@ void BSTSetup(PHG4Reco *g4Reco)
   if (AbsorberActive) hbst->SetAbsorberActive();
   g4Reco->registerSubsystem(hbst);
 
+  int ilayersBST = 5;
   // TODO FIX currently hardcoded values!
   G4double layerradii[5] = {
     36.16,
@@ -98,16 +99,47 @@ void BSTSetup(PHG4Reco *g4Reco)
     198.307,
     210.276
   };
-  G4double layerradii_EPIC[5] = {
+  G4double layerradii_EPIC[] = {
     36.16,
     48.2239,
     120.070,
     270.0,
+    420.0,
+    0.0
+  };
+  G4double layerradii_EPIC_sagdef[] = {
+    36.16,
+    48.2239,
+    120.070,
+    198.307,
+    210.276,
+    420.0
+  };
+  G4double layerradii_EPIC_sagmod[] = {
+    36.16,
+    48.2239,
+    120.070,
+    240.3,
+    270.0,
     420.0
   };
 
+  if(Enable::EPIC_TRACKINGGEO){
+    if(G4BST::SETTING::bent_sagitta_default){
+      ilayersBST = 6;
+    } else if(G4BST::SETTING::bent_sagitta_mod){
+      ilayersBST = 6;
+    }
+  }
 
-  for(int ilay=0; ilay<5; ilay++){
+  for(int ilay=0; ilay<ilayersBST; ilay++){
+    if(Enable::EPIC_TRACKINGGEO){
+      if(G4BST::SETTING::bent_sagitta_default){
+        layerradii_EPIC[ilay] = layerradii_EPIC_sagdef[ilay];
+      } else if(G4BST::SETTING::bent_sagitta_mod){
+        layerradii_EPIC[ilay] = layerradii_EPIC_sagmod[ilay];
+      }
+    }
     if (TRACKING::FastKalmanFilter)
     {
       TRACKING::FastKalmanFilter->add_phg4hits(string(Form("G4HIT_BST_%d",ilay)),     //      const std::string& phg4hitsNames,
