@@ -272,15 +272,16 @@ double TrackingService(PHG4Reco *g4Reco, double radius)
     // The cylindrical plateau structure for Electron uRwell side.
     cylinders.push_back(new ServiceProperties("ETrackingCyl_uRWellPlateau", CuThickness, AlThickness, WaterThickness, PlasticThickness, CarbonThickness, 0, -101., -88.2/2, 43.2, 0));
 
-    // Cone service from electron side uRwell1 to vertex support.
-    cones.push_back(new ServiceProperties("ETrackingCone_uRwellToVertex", CuThickness, AlThickness, WaterThickness, PlasticThickness, CarbonThickness, 0, -88.2/2, -38.9/2., 43.2, 13.0));
+    if(!G4BST::SETTING::ECCE_with_OuterStave){
+      // Cone service from electron side uRwell1 to vertex support.
+      cones.push_back(new ServiceProperties("ETrackingCone_uRwellToVertex", CuThickness, AlThickness, WaterThickness, PlasticThickness, CarbonThickness, 0, -88.2/2, -38.9/2., 43.2, 13.0));
 
 
 
 
-    // Cone service in H-region from vertex to inner uRwell
-    cones.push_back(new ServiceProperties("HTrackingCone_VertexTouRwell", CuThickness, AlThickness, WaterThickness, PlasticThickness, CarbonThickness, 0, 38.9/2., 88.2/2, 13.0, 43.2));
-
+      // Cone service in H-region from vertex to inner uRwell
+      cones.push_back(new ServiceProperties("HTrackingCone_VertexTouRwell", CuThickness, AlThickness, WaterThickness, PlasticThickness, CarbonThickness, 0, 38.9/2., 88.2/2, 13.0, 43.2));
+    }
     // Cylinder service to rest the uRwell in H region Plateau
     cylinders.push_back(new ServiceProperties("HTrackingRWellPlateau", CuThickness, AlThickness, WaterThickness, PlasticThickness, CarbonThickness, 0, 88.2/2, 107.75, 43.2, 0));
 

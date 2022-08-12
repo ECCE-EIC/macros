@@ -44,6 +44,7 @@ namespace G4BST
     int BSTnoSupport = 0;
     int bent_sagitta_default = 0;
     int bent_sagitta_mod = 0;
+    int ECCE_with_OuterStave = 0;
   }  // namespace SETTING
 }  // namespace G4BST
 
@@ -74,6 +75,8 @@ void BSTSetup(PHG4Reco *g4Reco)
       hbst->set_int_param("use_bent_wafer_sagittas_default", 1);
     } else if(G4BST::SETTING::bent_sagitta_mod){
       hbst->set_int_param("use_bent_wafer_sagittas_mod", 1);
+    } else if(G4BST::SETTING::ECCE_with_OuterStave){
+      hbst->set_int_param("use_ECCE_with_OuterStave", 1);
     }
   }
   if(G4BST::SETTING::optionMat==1){
@@ -92,12 +95,20 @@ void BSTSetup(PHG4Reco *g4Reco)
 
   int ilayersBST = 5;
   // TODO FIX currently hardcoded values!
-  G4double layerradii[5] = {
+  G4double layerradii[] = {
     36.16,
     48.2239,
     60.1924,
     198.307,
     210.276
+  };
+  G4double layerradii_ECCE_wStave[] = {
+    36.16,
+    48.2239,
+    60.1924,
+    198.307,
+    210.276,
+    420.0
   };
   G4double layerradii_EPIC[] = {
     36.16,
@@ -129,6 +140,8 @@ void BSTSetup(PHG4Reco *g4Reco)
       ilayersBST = 6;
     } else if(G4BST::SETTING::bent_sagitta_mod){
       ilayersBST = 6;
+    } else if(G4BST::SETTING::ECCE_with_OuterStave){
+      ilayersBST = 6;
     }
   }
 
@@ -138,6 +151,8 @@ void BSTSetup(PHG4Reco *g4Reco)
         layerradii_EPIC[ilay] = layerradii_EPIC_sagdef[ilay];
       } else if(G4BST::SETTING::bent_sagitta_mod){
         layerradii_EPIC[ilay] = layerradii_EPIC_sagmod[ilay];
+      } else if(G4BST::SETTING::ECCE_with_OuterStave){
+        layerradii_EPIC[ilay] = layerradii_ECCE_wStave[ilay];
       }
     }
     if (TRACKING::FastKalmanFilter)

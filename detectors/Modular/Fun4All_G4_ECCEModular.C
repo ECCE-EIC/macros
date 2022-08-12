@@ -541,6 +541,9 @@ int Fun4All_G4_ECCEModular(
     if (detectorSettings.find("BENTSAGMOD") != std::string::npos) {
       G4BST::SETTING::bent_sagitta_mod = true;
     }
+    if (detectorSettings.find("ECCEBST") != std::string::npos) {
+      G4BST::SETTING::ECCE_with_OuterStave = true;
+    }
   }
   //***********************************************
   // tracking macro settings
