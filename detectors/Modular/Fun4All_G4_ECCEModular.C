@@ -642,6 +642,18 @@ int Fun4All_G4_ECCEModular(
     Enable::BLACKHOLE_SAVEHITS = true; // turn off saving of bh hits
     Enable::EVENT_EVAL_DO_HITS_BLACKHOLE = true; // turn off saving of bh hits
   }
+
+
+
+  if (detectorSettings.find("CALOOFF") != std::string::npos) {
+    Enable::LFHCAL  = false;
+    Enable::FEMC    = false;
+    Enable::BECAL   = false;
+    Enable::HCALIN  = false;
+    Enable::HCALOUT = false;
+    Enable::EEMCH   = false;
+  }
+
   // BlackHoleGeometry::visible = true;
   
   // ZDC
