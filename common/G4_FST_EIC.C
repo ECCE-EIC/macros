@@ -84,7 +84,7 @@ void FSTSetup(PHG4Reco *g4Reco)
 
   // AI optimized values
   const double bkwd_z[] = {33.2, 58.29, 80.05, 107.4};
-  double bkwd_rmin[] = {3.3, 3.3, 5.25, 6.4};
+  double bkwd_rmin[] = {3.6, 3.6, 5.25, 6.4};
   double bkwd_rmax[] = {15.3, 27.3, 35.25, 48.4};
 
   // EPIC setup based on Ernst
@@ -95,9 +95,13 @@ void FSTSetup(PHG4Reco *g4Reco)
 
   // AI optimized z positions in EPIC service cone
   const double bkwd_z_EPIC2[] = {33.2, 58.29, 80.05, 107.4};
-  double bkwd_rmin_EPIC2[] = {3.6, 3.6, 3.6, 3.9};
-  double bkwd_offset_EPIC2[] = {0.0, 0.0, 0.0, 0.3};
-  double bkwd_rmax_EPIC2[] = {28.3, 43.0, 43.0, 45.0};
+  double bkwd_rmin_EPIC2[] = {3.6, 3.6, 5.25, 6.4};
+  double bkwd_offset_EPIC2[] = {0.0, 0.0, 0.0, 0.0};
+  double bkwd_rmax_EPIC2[] = {15.3, 27.3, 35.25, 46.4};
+  // const double bkwd_z_EPIC2[] = {33.2, 58.29, 80.05, 107.4};
+  // double bkwd_rmin_EPIC2[] = {3.6, 3.6, 3.6, 3.9};
+  // double bkwd_offset_EPIC2[] = {0.0, 0.0, 0.0, 0.3};
+  // double bkwd_rmax_EPIC2[] = {28.3, 43.0, 43.0, 45.0};
 
 
   // non-projective values
@@ -166,7 +170,7 @@ void FSTSetup(PHG4Reco *g4Reco)
 
   // AI optimized values
   const double fwd_z[] = {33.2, 58.29, 79.85, 115, 125};
-  double fwd_rmin[] = {3.3, 3.3, 5.2, 6.5, 7.5};
+  double fwd_rmin[] = {3.6, 3.6, 5.2, 6.5, 7.5};
   double fwd_rmax[] = {15.3, 27.3, 35.2, 49.5, 49.5};
 
   // Enable::EPIC_TRACKINGGEO
@@ -176,10 +180,14 @@ void FSTSetup(PHG4Reco *g4Reco)
   double fwd_rmax_EPIC[] = {19.0, 43.0, 43.0, 43.0, 53.0};
 
   // AI optimized z positions in EPIC service cone
+  // const double fwd_z_EPIC2[] = {33.2, 58.29, 79.85, 115, 125};
+  // double fwd_rmin_EPIC2[] = {3.6, 3.6, 3.9, 4.85, 5.1};
+  // double fwd_offset_EPIC2[] = {0.0, 0.0, -0.2, -1.2, -1.4};
+  // double fwd_rmax_EPIC2[] = {15.3, 27.3, 35.2, 49.5, 49.5};
   const double fwd_z_EPIC2[] = {33.2, 58.29, 79.85, 115, 125};
-  double fwd_rmin_EPIC2[] = {3.6, 3.6, 3.9, 4.85, 5.1};
-  double fwd_offset_EPIC2[] = {0.0, 0.0, -0.2, -1.2, -1.4};
-  double fwd_rmax_EPIC2[] = {15.3, 27.3, 35.2, 49.5, 49.5};
+  double fwd_rmin_EPIC2[] = {3.6, 3.6, 5.2, 6.5, 7.5};
+  double fwd_offset_EPIC2[] = {0.0, 0.0, 0.0, 0.0, 0.0};
+  double fwd_rmax_EPIC2[] = {15.3, 27.3, 35.2, 44.5, 49.5};
 
   // non-projective values
   const double fwd_z_np[] = {25, 52, 73, 106, 125};
