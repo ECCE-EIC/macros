@@ -45,6 +45,7 @@ namespace G4BST
     int bent_sagitta_default = 0;
     int bent_sagitta_mod = 0;
     int ECCE_with_OuterStave = 0;
+    int use_OuterStave_lowerR = 0;
   }  // namespace SETTING
 }  // namespace G4BST
 
@@ -64,6 +65,7 @@ void BSTSetup(PHG4Reco *g4Reco)
   /** Use dedicated BST module */
   PHG4BSTSubsystem *hbst = new PHG4BSTSubsystem("BST");
   hbst->OverlapCheck(OverlapCheck);
+  // hbst->OverlapCheck(true);
   cout << "BST material special setting " << G4BST::SETTING::optionMat << endl;
   if(G4BST::SETTING::BSTnoSupport==1){
     hbst->set_int_param("do_internal_supports", 0);
@@ -77,6 +79,9 @@ void BSTSetup(PHG4Reco *g4Reco)
       hbst->set_int_param("use_bent_wafer_sagittas_mod", 1);
     } else if(G4BST::SETTING::ECCE_with_OuterStave){
       hbst->set_int_param("use_ECCE_with_OuterStave", 1);
+      if(G4BST::SETTING::use_OuterStave_lowerR){
+        hbst->set_double_param("radius_outer_stave", 33.);
+      }
     }
   }
   if(G4BST::SETTING::optionMat==1){

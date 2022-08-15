@@ -543,6 +543,9 @@ int Fun4All_G4_ECCEModular(
     }
     if (detectorSettings.find("ECCEBST") != std::string::npos) {
       G4BST::SETTING::ECCE_with_OuterStave = true;
+      if (detectorSettings.find("ECCEBSTSTVLOWR") != std::string::npos) {
+        G4BST::SETTING::use_OuterStave_lowerR = true;
+      }
     }
   }
   //***********************************************
