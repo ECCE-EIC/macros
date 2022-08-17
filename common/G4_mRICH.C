@@ -57,7 +57,7 @@ void mRICHSetup(PHG4Reco *g4Reco, const int detectorSetup = 1,  //1: full setup;
 
   double Rmin = 6;
   double Rmax = 57;
-  double zposOrg = -134 ;
+  double zposOrg = -133.5 ;
   double zpos = zposOrg;
   
   double min_polar_angle = atan2(Rmin, zpos);
@@ -81,9 +81,9 @@ void mRICHSetup(PHG4Reco *g4Reco, const int detectorSetup = 1,  //1: full setup;
   const double um = 1e-3 * mm;
 
   PHG4SectorSubsystem *mRichDummy;
-  mRichDummy = new PHG4SectorSubsystem("mRICH_Plane");
+  mRichDummy = new PHG4SectorSubsystem("mRICH_Plane_0");
 
-  mRichDummy->SuperDetector("mRICH_Plane");
+  mRichDummy->SuperDetector("mRICH_Plane_0");
 
   mRichDummy->get_geometry().set_normal_polar_angle(polar_angle);
   mRichDummy->get_geometry().set_normal_start(zpos * PHG4Sector::Sector_Geometry::Unit_cm());
@@ -94,14 +94,73 @@ void mRICHSetup(PHG4Reco *g4Reco, const int detectorSetup = 1,  //1: full setup;
   mRichDummy->get_geometry().set_N_Sector(1);
   mRichDummy->get_geometry().set_material("G4_AIR");
   mRichDummy->OverlapCheck(true);  //true);//overlapcheck);
-  mRichDummy->get_geometry().AddLayer("mRICH_Plane_Air", "G4_AIR", 100* um, true, 100);
+  mRichDummy->get_geometry().AddLayer("mRICH_Plane_0_Air", "G4_AIR", 100* um, true, 100);
 
   g4Reco->registerSubsystem(mRichDummy);
 
+  Rmin = 7;
+  Rmax = 57;
+  double zposOrg2 = -162. ;
+  zpos = zposOrg2;
+  
+  min_polar_angle = atan2(Rmin, zpos);
+  max_polar_angle = atan2(Rmax, zpos);
+
+  // always facing the interaction point
+  polar_angle = 0;
+  if (zpos < 0)
+  {
+    zpos = -zpos;
+    polar_angle = M_PI;
+  }
+  if (max_polar_angle < min_polar_angle)
+  {
+    double t = max_polar_angle;
+    max_polar_angle = min_polar_angle;
+    min_polar_angle = t;
+  }
+
+  PHG4SectorSubsystem *mRichDummy2;
+  mRichDummy2 = new PHG4SectorSubsystem("mRICH_Plane_1");
+
+  mRichDummy2->SuperDetector("mRICH_Plane_1");
+
+  mRichDummy2->get_geometry().set_normal_polar_angle(polar_angle);
+  mRichDummy2->get_geometry().set_normal_start(zpos * PHG4Sector::Sector_Geometry::Unit_cm());
+  mRichDummy2->get_geometry().set_min_polar_angle(min_polar_angle);
+  mRichDummy2->get_geometry().set_max_polar_angle(max_polar_angle);
+  mRichDummy2->get_geometry().set_max_polar_edge(PHG4Sector::Sector_Geometry::ConeEdge());
+  mRichDummy2->get_geometry().set_min_polar_edge(PHG4Sector::Sector_Geometry::ConeEdge());
+  mRichDummy2->get_geometry().set_N_Sector(1);
+  mRichDummy2->get_geometry().set_material("G4_AIR");
+  mRichDummy2->OverlapCheck(true);  //true);//overlapcheck);
+  mRichDummy2->get_geometry().AddLayer("mRICH_Plane_1_Air", "G4_AIR", 100* um, true, 100);
+
+  g4Reco->registerSubsystem(mRichDummy2);
+
   if (TRACKING::FastKalmanFilter)
   {
-    TRACKING::FastKalmanFilter-> add_zplane_state("mRICH_Plane", zposOrg);
-    TRACKING::ProjectionNames.insert("mRICH_Plane");
+    TRACKING::FastKalmanFilter->add_phg4hits(string(Form("G4HIT_mRICH_Plane_0")),     //      const std::string& phg4hitsNames,
+                                                  PHG4TrackFastSim::Vertical_Plane,
+                                                  999.,                      // radial-resolution [cm]
+                                                  999.,  // azimuthal-resolution [cm]
+                                                  999.,  // z-resolution [cm]
+                                                  0.0001,                         // efficiency,
+                                                  0);                          // noise hits
+
+    TRACKING::FastKalmanFilter-> add_zplane_state("mRICH_Plane_0", zposOrg);
+    TRACKING::ProjectionNames.insert("mRICH_Plane_0");
+
+    TRACKING::FastKalmanFilter->add_phg4hits(string(Form("G4HIT_mRICH_Plane_1")),     //      const std::string& phg4hitsNames,
+                                                  PHG4TrackFastSim::Vertical_Plane,
+                                                  999.,                      // radial-resolution [cm]
+                                                  999.,  // azimuthal-resolution [cm]
+                                                  999.,  // z-resolution [cm]
+                                                  0.0001,                         // efficiency,
+                                                  0);                          // noise hits
+
+    TRACKING::FastKalmanFilter-> add_zplane_state("mRICH_Plane_1", zposOrg2);
+    TRACKING::ProjectionNames.insert("mRICH_Plane_1");
   }
 }
 

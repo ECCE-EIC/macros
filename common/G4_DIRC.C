@@ -78,10 +78,72 @@ void DIRCSetup(PHG4Reco* g4Reco)
   if (TRACKING::FastKalmanFilter)
   {
     // project to an reference plane at z=170 cm
-    TRACKING::FastKalmanFilter-> add_cylinder_state("hpDIRC", 70);
+    TRACKING::FastKalmanFilter-> add_cylinder_state("hpDIRC", 72.96);
     TRACKING::ProjectionNames.insert("hpDIRC");
   }
 
+  double gluethickness = 0.05;
+  int nparts = 4;
+
+  double dirclength = 122.5 * (nparts - 1) + 56.0 + gluethickness * nparts - 5.0;
+
+  // add projection planes for angle determination
+  PHG4CylinderSubsystem *cyl(nullptr);
+
+  cyl = new PHG4CylinderSubsystem("hpDIRC_Plane", 0);
+  cyl->set_string_param("material", "G4_AIR");
+  cyl->set_double_param("radius", 70.0);
+  cyl->set_double_param("thickness", 0.01);
+  cyl->set_double_param("place_z", -43.75);
+  cyl->set_double_param("length", dirclength);
+  cyl->SetActive();
+//    cyl->SuperDetector("SVTX");  breakout SVTX into individual layers
+  cyl->OverlapCheck(true);
+  g4Reco->registerSubsystem(cyl);
+
+  if (TRACKING::FastKalmanFilter)
+  {
+    // add Barrel Layers
+    TRACKING::FastKalmanFilter->add_phg4hits(
+        Form("G4HIT_hpDIRC_Plane_0"),  // const std::string& phg4hitsNames,
+        PHG4TrackFastSim::Cylinder,
+        999.,                      // radial-resolution [cm]
+        999.,  // azimuthal-resolution [cm]
+        999.,  // z-resolution [cm]
+        0.0001,                         // efficiency,
+        0                          // noise hits
+    );
+    TRACKING::FastKalmanFilter-> add_cylinder_state("hpDIRC_Plane_0", 70);
+    TRACKING::ProjectionNames.insert("hpDIRC_Plane_0");
+  }
+  PHG4CylinderSubsystem *cyl2(nullptr);
+
+  cyl2 = new PHG4CylinderSubsystem("hpDIRC_Plane", 1);
+  cyl2->set_string_param("material", "G4_AIR");
+  cyl2->set_double_param("radius", 80.2);
+  cyl2->set_double_param("thickness", 0.01);
+  cyl2->set_double_param("place_z", -43.75);
+  cyl2->set_double_param("length", dirclength);
+  cyl2->SetActive();
+//    cyl->SuperDetector("SVTX");  breakout SVTX into individual layers
+  cyl2->OverlapCheck(true);
+  g4Reco->registerSubsystem(cyl2);
+
+  if (TRACKING::FastKalmanFilter)
+  {
+    // add Barrel Layers
+    TRACKING::FastKalmanFilter->add_phg4hits(
+        Form("G4HIT_hpDIRC_Plane_1"),  // const std::string& phg4hitsNames,
+        PHG4TrackFastSim::Cylinder,
+        999.,                      // radial-resolution [cm]
+        999.,  // azimuthal-resolution [cm]
+        999.,  // z-resolution [cm]
+        0.0001,                         // efficiency,
+        0                          // noise hits
+    );
+    TRACKING::FastKalmanFilter-> add_cylinder_state("hpDIRC_Plane_1", 80.2);
+    TRACKING::ProjectionNames.insert("hpDIRC_Plane_1");
+  }
 }
 
 void DIRCReco()

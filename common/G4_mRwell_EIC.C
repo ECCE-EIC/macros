@@ -40,6 +40,7 @@ namespace RWELL
   //const double nom_length[RWELL::n_layer] = {140, 150, 280.0};
   const double nom_length[RWELL::n_layer] = {140., 230., 280.0};
   const double nom_length_nonproj[RWELL::n_layer] = {80., 212., 342.0};
+  const double efficiency = 0.95;
   int subsysID = 0;
 }  //namespace RWELL
 
@@ -418,7 +419,7 @@ double RWellSetup(PHG4Reco* g4Reco,
                                                1. / sqrt(12.),                                     //      const float radres,
                                                55e-4,                                              //      const float phires,
                                                55e-4,                                              //      const float lonres,
-                                               1,                                                  //      const float eff,
+                                               RWELL::efficiency,                                                  //      const float eff,
                                                0);                                                 //      const float noise
       TRACKING::FastKalmanFilter->add_cylinder_state(Form("RWELL_%d", ilyr), RWELL::nom_radius[ilyr]);
       TRACKING::ProjectionNames.insert(Form("RWELL_%d", ilyr));
@@ -431,7 +432,7 @@ double RWellSetup(PHG4Reco* g4Reco,
                                                1. / sqrt(12.),                                     //      const float radres,
                                                55e-4,                                              //      const float phires,
                                                55e-4,                                              //      const float lonres,
-                                               1,                                                  //      const float eff,
+                                               RWELL::efficiency,                                                  //      const float eff,
                                                0);                                                 //      const float noise
     // only for layers that is close to the silicon tracker system, use in FastKalmanFilterSiliconTrack
     if (TRACKING::FastKalmanFilterSiliconTrack and RWELL::nom_radius[ilyr] < 50)
@@ -440,7 +441,7 @@ double RWellSetup(PHG4Reco* g4Reco,
                                                1. / sqrt(12.),                                     //      const float radres,
                                                55e-4,                                              //      const float phires,
                                                55e-4,                                              //      const float lonres,
-                                               1,                                                  //      const float eff,
+                                               RWELL::efficiency,                                                  //      const float eff,
                                                0);                                                 //      const float noise
   }
   return radius;  //cm
