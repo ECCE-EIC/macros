@@ -108,9 +108,9 @@ void RICHSetup(PHG4Reco *g4Reco)
 
 
   Rmin = 12;
-  Rmax = 88;
+  Rmax = 170;
   double zposOrg2 = 185.3+100;
-  zpos = zposOrg;
+  zpos = zposOrg2;
   
   min_polar_angle = atan2(Rmin, zpos);
   max_polar_angle = atan2(Rmax, zpos);
