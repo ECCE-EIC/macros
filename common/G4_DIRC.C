@@ -97,6 +97,7 @@ void DIRCSetup(PHG4Reco* g4Reco)
   cyl->set_double_param("place_z", -43.75);
   cyl->set_double_param("length", dirclength);
   cyl->SetActive();
+  cyl->SaveAllHits(true);
 //    cyl->SuperDetector("SVTX");  breakout SVTX into individual layers
   cyl->OverlapCheck(true);
   g4Reco->registerSubsystem(cyl);
@@ -125,6 +126,7 @@ void DIRCSetup(PHG4Reco* g4Reco)
   cyl2->set_double_param("place_z", -43.75);
   cyl2->set_double_param("length", dirclength);
   cyl2->SetActive();
+  cyl2->SaveAllHits(true);
 //    cyl->SuperDetector("SVTX");  breakout SVTX into individual layers
   cyl2->OverlapCheck(true);
   g4Reco->registerSubsystem(cyl2);

@@ -102,6 +102,7 @@ void RICHSetup(PHG4Reco *g4Reco)
   dRICHDummy->get_geometry().set_material("G4_AIR");
   dRICHDummy->OverlapCheck(true);  //true);//overlapcheck);
   dRICHDummy->get_geometry().AddLayer("dRICH_Plane_0_Air", "G4_AIR", 100* um, true, 100);
+  dRICHDummy->SaveAllHits(true);
 
   g4Reco->registerSubsystem(dRICHDummy);
 
@@ -143,6 +144,7 @@ void RICHSetup(PHG4Reco *g4Reco)
   dRICHDummy2->get_geometry().set_material("G4_AIR");
   dRICHDummy2->OverlapCheck(true);  //true);//overlapcheck);
   dRICHDummy2->get_geometry().AddLayer("dRICH_Plane_1_Air", "G4_AIR", 100* um, true, 100);
+  dRICHDummy2->SaveAllHits(true);
 
   g4Reco->registerSubsystem(dRICHDummy2);
 

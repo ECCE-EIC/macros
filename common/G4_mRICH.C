@@ -95,6 +95,7 @@ void mRICHSetup(PHG4Reco *g4Reco, const int detectorSetup = 1,  //1: full setup;
   mRichDummy->get_geometry().set_material("G4_AIR");
   mRichDummy->OverlapCheck(true);  //true);//overlapcheck);
   mRichDummy->get_geometry().AddLayer("mRICH_Plane_0_Air", "G4_AIR", 100* um, true, 100);
+  mRichDummy->SaveAllHits(true);
 
   g4Reco->registerSubsystem(mRichDummy);
 
@@ -135,6 +136,7 @@ void mRICHSetup(PHG4Reco *g4Reco, const int detectorSetup = 1,  //1: full setup;
   mRichDummy2->get_geometry().set_material("G4_AIR");
   mRichDummy2->OverlapCheck(true);  //true);//overlapcheck);
   mRichDummy2->get_geometry().AddLayer("mRICH_Plane_1_Air", "G4_AIR", 100* um, true, 100);
+  mRichDummy2->SaveAllHits(true);
 
   g4Reco->registerSubsystem(mRichDummy2);
 
