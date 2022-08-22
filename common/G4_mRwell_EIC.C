@@ -40,8 +40,11 @@ namespace RWELL
   //const double nom_length[RWELL::n_layer] = {140, 150, 280.0};
   const double nom_length[RWELL::n_layer] = {140., 230., 280.0};
   const double nom_length_nonproj[RWELL::n_layer] = {80., 212., 342.0};
-  const double efficiency = 0.95;
   int subsysID = 0;
+  namespace SETTING
+  {
+    float TRACKING_EFFICIENCY = 1.00;
+  }  // namespace SETTING
 }  //namespace RWELL
 
 void RWellInit(int verbosity = 0)
@@ -54,6 +57,7 @@ void RWellInit(int verbosity = 0)
     BlackHoleGeometry::max_z = std::max(BlackHoleGeometry::max_z, RWELL::nom_length[RWELL::n_layer - 1] / 2.0);
     BlackHoleGeometry::min_z = std::min(BlackHoleGeometry::min_z, -RWELL::nom_length[RWELL::n_layer - 1] / 2.0);
   }
+  cout << "RWELL: Using tracking efficiency of: " << RWELL::SETTING::TRACKING_EFFICIENCY << endl;
 }
 
 double Build_G4_RWell_Bare(PHG4Reco* g4Reco,
@@ -386,6 +390,8 @@ double Build_G4_RWell_Sup01(PHG4Reco* g4Reco,
 double RWellSetup(PHG4Reco* g4Reco,
                   int type = 1)
 {
+  cout << "RWELL: Using tracking efficiency of: " << RWELL::SETTING::TRACKING_EFFICIENCY << endl;
+
   double radius = 0;
 
   for (int ilyr = 0; ilyr < RWELL::n_layer; ilyr++)  //RWELL trackers are registered in Build_RWELL macro
@@ -419,7 +425,7 @@ double RWellSetup(PHG4Reco* g4Reco,
                                                1. / sqrt(12.),                                     //      const float radres,
                                                55e-4,                                              //      const float phires,
                                                55e-4,                                              //      const float lonres,
-                                               RWELL::efficiency,                                                  //      const float eff,
+                                               RWELL::SETTING::TRACKING_EFFICIENCY,                                                  //      const float eff,
                                                0);                                                 //      const float noise
       TRACKING::FastKalmanFilter->add_cylinder_state(Form("RWELL_%d", ilyr), RWELL::nom_radius[ilyr]);
       TRACKING::ProjectionNames.insert(Form("RWELL_%d", ilyr));
@@ -432,7 +438,7 @@ double RWellSetup(PHG4Reco* g4Reco,
                                                1. / sqrt(12.),                                     //      const float radres,
                                                55e-4,                                              //      const float phires,
                                                55e-4,                                              //      const float lonres,
-                                               RWELL::efficiency,                                                  //      const float eff,
+                                               RWELL::SETTING::TRACKING_EFFICIENCY,                                                  //      const float eff,
                                                0);                                                 //      const float noise
     // only for layers that is close to the silicon tracker system, use in FastKalmanFilterSiliconTrack
     if (TRACKING::FastKalmanFilterSiliconTrack and RWELL::nom_radius[ilyr] < 50)
@@ -441,7 +447,7 @@ double RWellSetup(PHG4Reco* g4Reco,
                                                1. / sqrt(12.),                                     //      const float radres,
                                                55e-4,                                              //      const float phires,
                                                55e-4,                                              //      const float lonres,
-                                               RWELL::efficiency,                                                  //      const float eff,
+                                               RWELL::SETTING::TRACKING_EFFICIENCY,                                                  //      const float eff,
                                                0);                                                 //      const float noise
   }
   return radius;  //cm

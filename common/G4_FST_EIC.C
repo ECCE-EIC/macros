@@ -46,6 +46,7 @@ namespace G4FST
     bool FST_TPC = false;
     bool SUPPORTCYL = false;
     bool EPIC_TRACKINGGEO_VARIANT = false;
+    double TRACKING_EFFICIENCY = 1.00;
   }  // namespace SETTING
 }  // namespace G4FST
 
@@ -71,6 +72,9 @@ Once calculated just pass the disk dimensions into this script
 void FSTSetup(PHG4Reco *g4Reco)
 {
   // if(Enable::EPIC_TRACKINGGEO){
+
+  cout << "FST/EST: Using tracking efficiency of: " << G4FST::SETTING::TRACKING_EFFICIENCY << endl;
+
 
   const bool AbsorberActive = Enable::ABSORBER || Enable::FST_ABSORBER;
   bool OverlapCheck = Enable::OVERLAPCHECK || Enable::FST_OVERLAPCHECK;
@@ -144,21 +148,21 @@ void FSTSetup(PHG4Reco *g4Reco)
                                                 pitch / sqrt(12.),                 //      const float radres,
                                                 pitch / sqrt(12.),                 //      const float phires,
                                                 50e-4 / sqrt(12.),                 //      const float lonres, *ignored in plane detector*
-                                                0.95,                                 //      const float eff,
+                                                G4FST::SETTING::TRACKING_EFFICIENCY,                                 //      const float eff,
                                                 0);                                //      const float noise
         TRACKING::FastKalmanFilterInnerTrack->add_phg4hits(string("G4HIT_") + name,           //      const std::string& phg4hitsNames,
                                                 PHG4TrackFastSim::Vertical_Plane,  //      const DETECTOR_TYPE phg4dettype,
                                                 pitch / sqrt(12.),                 //      const float radres,
                                                 pitch / sqrt(12.),                 //      const float phires,
                                                 50e-4 / sqrt(12.),                 //      const float lonres, *ignored in plane detector*
-                                                0.95,                                 //      const float eff,
+                                                G4FST::SETTING::TRACKING_EFFICIENCY,                                 //      const float eff,
                                                 0);                                //      const float noise
         TRACKING::FastKalmanFilterSiliconTrack->add_phg4hits(string("G4HIT_") + name,           //      const std::string& phg4hitsNames,
                                                 PHG4TrackFastSim::Vertical_Plane,  //      const DETECTOR_TYPE phg4dettype,
                                                 pitch / sqrt(12.),                 //      const float radres,
                                                 pitch / sqrt(12.),                 //      const float phires,
                                                 50e-4 / sqrt(12.),                 //      const float lonres, *ignored in plane detector*
-                                                0.95,                                 //      const float eff,
+                                                G4FST::SETTING::TRACKING_EFFICIENCY,                                 //      const float eff,
                                                 0);                                //      const float noise
       }
     } else if(Enable::AI_TRACKINGGEO){
@@ -225,21 +229,21 @@ void FSTSetup(PHG4Reco *g4Reco)
                                                 pitch / sqrt(12.),                 //      const float radres,
                                                 pitch / sqrt(12.),                 //      const float phires,
                                                 50e-4 / sqrt(12.),                 //      const float lonres, *ignored in plane detector*
-                                                0.95,                                 //      const float eff,
+                                                G4FST::SETTING::TRACKING_EFFICIENCY,                                 //      const float eff,
                                                 0);                                //      const float noise
         TRACKING::FastKalmanFilterInnerTrack->add_phg4hits(string("G4HIT_") + name,           //      const std::string& phg4hitsNames,
                                                 PHG4TrackFastSim::Vertical_Plane,  //      const DETECTOR_TYPE phg4dettype,
                                                 pitch / sqrt(12.),                 //      const float radres,
                                                 pitch / sqrt(12.),                 //      const float phires,
                                                 50e-4 / sqrt(12.),                 //      const float lonres, *ignored in plane detector*
-                                                0.95,                                 //      const float eff,
+                                                G4FST::SETTING::TRACKING_EFFICIENCY,                                 //      const float eff,
                                                 0);                                //      const float noise
         TRACKING::FastKalmanFilterSiliconTrack->add_phg4hits(string("G4HIT_") + name,           //      const std::string& phg4hitsNames,
                                                 PHG4TrackFastSim::Vertical_Plane,  //      const DETECTOR_TYPE phg4dettype,
                                                 pitch / sqrt(12.),                 //      const float radres,
                                                 pitch / sqrt(12.),                 //      const float phires,
                                                 50e-4 / sqrt(12.),                 //      const float lonres, *ignored in plane detector*
-                                                0.95,                                 //      const float eff,
+                                                G4FST::SETTING::TRACKING_EFFICIENCY,                                 //      const float eff,
                                                 0);                                //      const float noise
       }
     } else if(Enable::AI_TRACKINGGEO){
@@ -317,21 +321,21 @@ int make_LANL_FST_station(string name, PHG4Reco *g4Reco,
                                              pitch / sqrt(12.),                 //      const float radres,
                                              pitch / sqrt(12.),                 //      const float phires,
                                              50e-4 / sqrt(12.),                 //      const float lonres, *ignored in plane detector*
-                                             0.95,                                 //      const float eff,
+                                             G4FST::SETTING::TRACKING_EFFICIENCY,                                 //      const float eff,
                                              0);                                //      const float noise
     TRACKING::FastKalmanFilterInnerTrack->add_phg4hits(string("G4HIT_") + name,           //      const std::string& phg4hitsNames,
                                              PHG4TrackFastSim::Vertical_Plane,  //      const DETECTOR_TYPE phg4dettype,
                                              pitch / sqrt(12.),                 //      const float radres,
                                              pitch / sqrt(12.),                 //      const float phires,
                                              50e-4 / sqrt(12.),                 //      const float lonres, *ignored in plane detector*
-                                             0.95,                                 //      const float eff,
+                                             G4FST::SETTING::TRACKING_EFFICIENCY,                                 //      const float eff,
                                              0);                                //      const float noise
     TRACKING::FastKalmanFilterSiliconTrack->add_phg4hits(string("G4HIT_") + name,           //      const std::string& phg4hitsNames,
                                              PHG4TrackFastSim::Vertical_Plane,  //      const DETECTOR_TYPE phg4dettype,
                                              pitch / sqrt(12.),                 //      const float radres,
                                              pitch / sqrt(12.),                 //      const float phires,
                                              50e-4 / sqrt(12.),                 //      const float lonres, *ignored in plane detector*
-                                             0.95,                                 //      const float eff,
+                                             G4FST::SETTING::TRACKING_EFFICIENCY,                                 //      const float eff,
                                              0);                                //      const float noise
   }
 

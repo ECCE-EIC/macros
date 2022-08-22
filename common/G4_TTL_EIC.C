@@ -48,6 +48,7 @@ namespace G4TTL
     int optionGeo   = 7;
     int optionGran  = 1;
     int optionMat  = 1;
+    float TRACKING_EFFICIENCY  = 1.0;
   }  // namespace SETTING
 
 
@@ -243,6 +244,9 @@ void TTL_Init()
   if(!G4TTL::SETTING::optionKalmanInclude){
     cout << "TTL layers not included in Kalman filter" << endl;
   }
+
+  cout << "TTL: Using tracking efficiency of: " << G4TTL::SETTING::TRACKING_EFFICIENCY << endl;
+
 }
 //-----------------------------------------------------------------------------------//
 void FTTLSetup(PHG4Reco *g4Reco, TString fttloption = "")
@@ -342,7 +346,7 @@ int make_forward_station(string name, PHG4Reco *g4Reco,
                                               G4TTL::PositionResolution_R,           //      const float radres,
                                               G4TTL::PositionResolution,           //      const float phires,
                                               tSilicon / sqrt(12.),              //      const float lonres, *ignored in plane detector*
-                                              1,                                 //      const float eff,
+                                              G4TTL::SETTING::TRACKING_EFFICIENCY,                                 //      const float eff,
                                               0);                                //      const float noise
       TRACKING::FastKalmanFilter->add_zplane_state(name, zpos);
       TRACKING::ProjectionNames.insert(name);
@@ -354,7 +358,7 @@ int make_forward_station(string name, PHG4Reco *g4Reco,
                                               G4TTL::PositionResolution_R,           //      const float radres,
                                               G4TTL::PositionResolution,           //      const float phires,
                                               tSilicon / sqrt(12.),              //      const float lonres, *ignored in plane detector*
-                                              1,                                 //      const float eff,
+                                              G4TTL::SETTING::TRACKING_EFFICIENCY,                                 //      const float eff,
                                               0);                                //      const float noise
     }
   }
@@ -426,7 +430,7 @@ int make_forward_station_basic(string name, PHG4Reco *g4Reco,
                                               G4TTL::PositionResolution_R,           //      const float radres,
                                               G4TTL::PositionResolution,           //      const float phires,
                                               tSilicon / sqrt(12.),              //      const float lonres, *ignored in plane detector*
-                                              1,                                 //      const float eff,
+                                              G4TTL::SETTING::TRACKING_EFFICIENCY,                                 //      const float eff,
                                               0);                                //      const float noise
       TRACKING::FastKalmanFilter->add_zplane_state(name, zpos);
       TRACKING::ProjectionNames.insert(name);
@@ -438,7 +442,7 @@ int make_forward_station_basic(string name, PHG4Reco *g4Reco,
                                               G4TTL::PositionResolution_R,           //      const float radres,
                                               G4TTL::PositionResolution,           //      const float phires,
                                               tSilicon / sqrt(12.),              //      const float lonres, *ignored in plane detector*
-                                              1,                                 //      const float eff,
+                                              G4TTL::SETTING::TRACKING_EFFICIENCY,                                 //      const float eff,
                                               0);                                //      const float noise
     }
   }
@@ -488,7 +492,7 @@ int make_barrel_layer(string name, PHG4Reco *g4Reco,
                                               tSilicon / sqrt(12.),        //      const float radres,
                                               G4TTL::PositionResolution_phi,     //      const float phires,
                                               G4TTL::PositionResolution_eta,     //      const float lonres,
-                                              1,                           //      const float eff,
+                                              G4TTL::SETTING::TRACKING_EFFICIENCY,                           //      const float eff,
                                               0);                          //      const float noise
       TRACKING::FastKalmanFilter->add_cylinder_state(name, radius);
 
@@ -501,7 +505,7 @@ int make_barrel_layer(string name, PHG4Reco *g4Reco,
                                               tSilicon / sqrt(12.),        //      const float radres,
                                               G4TTL::PositionResolution_phi,     //      const float phires,
                                               G4TTL::PositionResolution_eta,     //      const float lonres,
-                                              1,                           //      const float eff,
+                                              G4TTL::SETTING::TRACKING_EFFICIENCY,                           //      const float eff,
                                               0);                          //      const float noise
 
     }
@@ -561,7 +565,7 @@ int make_barrel_layer_basic(string name, PHG4Reco *g4Reco,
                                               tSilicon / sqrt(12.),        //      const float radres,
                                               G4TTL::PositionResolution_phi,     //      const float phires,
                                               G4TTL::PositionResolution_eta,     //      const float lonres,
-                                              1,                           //      const float eff,
+                                              G4TTL::SETTING::TRACKING_EFFICIENCY,                           //      const float eff,
                                               0);                          //      const float noise
       TRACKING::FastKalmanFilter->add_cylinder_state(name, radius);
 
@@ -574,7 +578,7 @@ int make_barrel_layer_basic(string name, PHG4Reco *g4Reco,
                                               tSilicon / sqrt(12.),        //      const float radres,
                                               G4TTL::PositionResolution_phi,     //      const float phires,
                                               G4TTL::PositionResolution_eta,     //      const float lonres,
-                                              1,                           //      const float eff,
+                                              G4TTL::SETTING::TRACKING_EFFICIENCY,                           //      const float eff,
                                               0);                          //      const float noise
 
     }

@@ -24,6 +24,7 @@ namespace G4BARRELEIC
   namespace SETTING
   {
     float SAGITTAX0 = 0.05;
+    float TRACKING_EFFICIENCY = 1.00;
   }  // namespace SETTING
 }  // namespace G4BARRELEIC
 
@@ -44,7 +45,7 @@ void BarrelFastKalmanFilterConfigSVTX(PHG4TrackFastSim * kalman_filter, int ilay
       999.,                      // radial-resolution [cm]
       10. / 10000. / sqrt(12.),  // azimuthal-resolution [cm]
       10. / 10000. / sqrt(12.),  // z-resolution [cm]
-      0.95,                         // efficiency,
+      G4BARRELEIC::SETTING::TRACKING_EFFICIENCY,                         // efficiency,
       0                          // noise hits
   );
   kalman_filter->add_cylinder_state(Form("SVTX_%d",ilay), radius);
@@ -60,7 +61,7 @@ void BarrelFastKalmanFilterConfigBARR(PHG4TrackFastSim * kalman_filter, int ilay
       999.,                      // radial-resolution [cm]
       10. / 10000. / sqrt(12.),  // azimuthal-resolution [cm]
       10. / 10000. / sqrt(12.),  // z-resolution [cm]
-      0.95,                         // efficiency,
+      G4BARRELEIC::SETTING::TRACKING_EFFICIENCY,                         // efficiency,
       0                          // noise hits
   );
   kalman_filter->add_cylinder_state(Form("BARR_%d",ilay), radius);
@@ -74,6 +75,9 @@ void Barrel(PHG4Reco *g4Reco, int det_ver = 3)
 {
   bool OverlapCheck = Enable::OVERLAPCHECK || Enable::BARREL_OVERLAPCHECK;
   // import Geometry (lines 111 to 148 in https://github.com/eic/g4lblvtx/blob/master/macros/auxiliary_studies/simplified_geometry/Fun4All_G4_simplified_v2.C):
+
+  cout << "BARREL: Using tracking efficiency of: " << G4BARRELEIC::SETTING::TRACKING_EFFICIENCY << endl;
+
   PHG4CylinderSubsystem *cyl(nullptr);
 
   if(Enable::AI_TRACKINGGEO){
