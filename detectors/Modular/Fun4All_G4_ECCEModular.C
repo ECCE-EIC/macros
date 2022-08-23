@@ -115,7 +115,7 @@ int Fun4All_G4_ECCEModular(
   Input::SIMPLE = false;
   if (particlemomMin>-1 && particlemomMax>-1){
     Input::SIMPLE = true;
-    Input::SIMPLE_VERBOSITY = 0;
+    Input::SIMPLE_VERBOSITY = 2;
     if (generatorSettings.Contains("Two"))
       Input::SIMPLE_NUMBER = 2; // if you need 2 of them
     if (generatorSettings.Contains("Multi"))
@@ -553,8 +553,12 @@ int Fun4All_G4_ECCEModular(
   //***********************************************
   Enable::TRACKING              = true;
   Enable::TRACKING_EVAL         = Enable::TRACKING && false;
+  Enable::TRACKING_VERBOSITY         = 0;
   G4TRACKING::DISPLACED_VERTEX  = true;  // this option exclude vertex in the track fitting and use RAVE to reconstruct primary and 2ndary vertexes
-                                        // projections to calorimeters
+  if (detectorSettings.find("3DT") != std::string::npos) {
+  G4TRACKING::USE3DPOINTS  = true;
+  }
+  // projections to calorimeters
   G4TRACKING::PROJECTION_EEMC     = true;
   G4TRACKING::PROJECTION_BECAL    = true;
   G4TRACKING::PROJECTION_EHCAL    = true;

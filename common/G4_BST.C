@@ -46,7 +46,7 @@ namespace G4BST
     int bent_sagitta_mod = 0;
     int ECCE_with_OuterStave = 0;
     int use_OuterStave_lowerR = 0;
-    float TRACKING_EFFICIENCY = 0;
+    float TRACKING_EFFICIENCY = 1.0;
   }  // namespace SETTING
 }  // namespace G4BST
 
@@ -167,7 +167,7 @@ void BSTSetup(PHG4Reco *g4Reco)
     {
       TRACKING::FastKalmanFilter->add_phg4hits(string(Form("G4HIT_BST_%d",ilay)),     //      const std::string& phg4hitsNames,
                                               PHG4TrackFastSim::Cylinder,
-                                              999.,                      // radial-resolution [cm]
+                                              50. / 10000. / sqrt(12.),                      // radial-resolution [cm] --> Sensor thickness / sqrt(12)
                                               10. / 10000. / sqrt(12.),  // azimuthal-resolution [cm]
                                               10. / 10000. / sqrt(12.),  // z-resolution [cm]
                                               G4BST::SETTING::TRACKING_EFFICIENCY,                         // efficiency,
@@ -180,7 +180,7 @@ void BSTSetup(PHG4Reco *g4Reco)
     {
       TRACKING::FastKalmanFilterInnerTrack->add_phg4hits(string(Form("G4HIT_BST_%d",ilay)),     //      const std::string& phg4hitsNames,
                                               PHG4TrackFastSim::Cylinder,
-                                              999.,                      // radial-resolution [cm]
+                                              50. / 10000. / sqrt(12.),                      // radial-resolution [cm] --> Sensor thickness / sqrt(12)
                                               10. / 10000. / sqrt(12.),  // azimuthal-resolution [cm]
                                               10. / 10000. / sqrt(12.),  // z-resolution [cm]
                                               G4BST::SETTING::TRACKING_EFFICIENCY,                         // efficiency,

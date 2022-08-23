@@ -26,6 +26,7 @@ namespace Enable
 namespace G4TRACKING
 {
   bool DISPLACED_VERTEX = false;
+  bool USE3DPOINTS = false;
   bool PROJECTION_EEMC = false;
   bool PROJECTION_EHCAL = false;
   bool PROJECTION_CEMC = false;
@@ -68,6 +69,10 @@ void InitFastKalmanFilter(PHG4TrackFastSim *kalman_filter)
   }
 
   kalman_filter->set_sub_top_node_name("TRACKS");
+  if (G4TRACKING::USE3DPOINTS)
+  {
+    // kalman_filter->set_use_3D_spacepoints(true);
+  }
 }
 
 //-----------------------------------------------------------------------------//
