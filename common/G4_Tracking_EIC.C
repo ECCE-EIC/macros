@@ -71,7 +71,7 @@ void InitFastKalmanFilter(PHG4TrackFastSim *kalman_filter)
   kalman_filter->set_sub_top_node_name("TRACKS");
   if (G4TRACKING::USE3DPOINTS)
   {
-    // kalman_filter->set_use_3D_spacepoints(true);
+    kalman_filter->set_use_3D_spacepoints(true);
   }
 }
 
