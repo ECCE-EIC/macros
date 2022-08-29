@@ -107,7 +107,7 @@ void RICHSetup(PHG4Reco *g4Reco)
   g4Reco->registerSubsystem(dRICHDummy);
 
 
-  Rmin = 12;
+  Rmin = 13;
   Rmax = 170;
   double zposOrg2 = 185.3+100;
   zpos = zposOrg2;
