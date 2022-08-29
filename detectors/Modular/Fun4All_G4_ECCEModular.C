@@ -457,6 +457,11 @@ int Fun4All_G4_ECCEModular(
   // barrel trackers
   //***********************************************
   Enable::RWELL = true;
+  std::string rwllSettingToFind = "RWELLSTP_";
+  if (detectorSettings.find(rwllSettingToFind) != std::string::npos) {
+    auto pos = detectorSettings.find(rwllSettingToFind);
+    RWELL::SETTING::optionSetup = std::stoi(detectorSettings.substr(pos + rwllSettingToFind.size(), pos + rwllSettingToFind.size() + 1));
+  }
   // barrel tracker
   Enable::TrackingService = true;
   Enable::BST = true;

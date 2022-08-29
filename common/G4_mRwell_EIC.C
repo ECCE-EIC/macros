@@ -44,6 +44,7 @@ namespace RWELL
   namespace SETTING
   {
     float TRACKING_EFFICIENCY = 1.00;
+    int optionSetup = 0;
   }  // namespace SETTING
 }  //namespace RWELL
 
@@ -59,7 +60,6 @@ void RWellInit(int verbosity = 0)
   }
   cout << "RWELL: Using tracking efficiency of: " << RWELL::SETTING::TRACKING_EFFICIENCY << endl;
 }
-
 double Build_G4_RWell_Bare(PHG4Reco* g4Reco,
                            double rwellrad = 80.0,
                            double driftgap = 1.83,
@@ -397,6 +397,9 @@ double RWellSetup(PHG4Reco* g4Reco,
   for (int ilyr = 0; ilyr < RWELL::n_layer; ilyr++)  //RWELL trackers are registered in Build_RWELL macro
   {
     if(Enable::EPIC_TRACKINGGEO && ilyr==0) continue;
+    if(RWELL::SETTING::optionSetup==1 && (ilyr==2)) continue; // only inner layer
+    if(RWELL::SETTING::optionSetup==2 && (ilyr==1)) continue; // only outer layer
+    if(RWELL::SETTING::optionSetup==3) continue; // fully skip rwells
 
     if (type == 0)
     {
