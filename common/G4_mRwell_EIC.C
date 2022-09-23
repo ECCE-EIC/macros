@@ -44,6 +44,7 @@ namespace RWELL
   namespace SETTING
   {
     float TRACKING_EFFICIENCY = 1.00;
+    float TRACKING_RESO = 55e-4;
     int optionSetup = 0;
   }  // namespace SETTING
 }  //namespace RWELL
@@ -426,8 +427,8 @@ double RWellSetup(PHG4Reco* g4Reco,
       TRACKING::FastKalmanFilter->add_phg4hits(string("G4HIT_") + string(Form("RWELL_%d", ilyr)),  //      const std::string& phg4hitsNames,
                                                PHG4TrackFastSim::Cylinder,                         //      const DETECTOR_TYPE phg4dettype,
                                                1. / sqrt(12.),                                     //      const float radres,
-                                               55e-4,                                              //      const float phires,
-                                               55e-4,                                              //      const float lonres,
+                                               RWELL::SETTING::TRACKING_RESO,                                              //      const float phires,
+                                               RWELL::SETTING::TRACKING_RESO,                                              //      const float lonres,
                                                RWELL::SETTING::TRACKING_EFFICIENCY,                                                  //      const float eff,
                                                0);                                                 //      const float noise
       TRACKING::FastKalmanFilter->add_cylinder_state(Form("RWELL_%d", ilyr), RWELL::nom_radius[ilyr]);
@@ -439,8 +440,8 @@ double RWellSetup(PHG4Reco* g4Reco,
       TRACKING::FastKalmanFilterInnerTrack->add_phg4hits(string("G4HIT_") + string(Form("RWELL_%d", ilyr)),  //      const std::string& phg4hitsNames,
                                                PHG4TrackFastSim::Cylinder,                         //      const DETECTOR_TYPE phg4dettype,
                                                1. / sqrt(12.),                                     //      const float radres,
-                                               55e-4,                                              //      const float phires,
-                                               55e-4,                                              //      const float lonres,
+                                               RWELL::SETTING::TRACKING_RESO,                                              //      const float phires,
+                                               RWELL::SETTING::TRACKING_RESO,                                              //      const float lonres,
                                                RWELL::SETTING::TRACKING_EFFICIENCY,                                                  //      const float eff,
                                                0);                                                 //      const float noise
     // only for layers that is close to the silicon tracker system, use in FastKalmanFilterSiliconTrack
@@ -448,8 +449,8 @@ double RWellSetup(PHG4Reco* g4Reco,
       TRACKING::FastKalmanFilterSiliconTrack->add_phg4hits(string("G4HIT_") + string(Form("RWELL_%d", ilyr)),  //      const std::string& phg4hitsNames,
                                                PHG4TrackFastSim::Cylinder,                         //      const DETECTOR_TYPE phg4dettype,
                                                1. / sqrt(12.),                                     //      const float radres,
-                                               55e-4,                                              //      const float phires,
-                                               55e-4,                                              //      const float lonres,
+                                               RWELL::SETTING::TRACKING_RESO,                                              //      const float phires,
+                                               RWELL::SETTING::TRACKING_RESO,                                              //      const float lonres,
                                                RWELL::SETTING::TRACKING_EFFICIENCY,                                                  //      const float eff,
                                                0);                                                 //      const float noise
   }

@@ -31,16 +31,16 @@
 /vis/ogl/set/displayListLimit 5000000
 # increase display limit for more complex detectors
 #
-/vis/viewer/set/viewpointThetaPhi 260 -40
-#/vis/viewer/set/viewpointThetaPhi 266 0
+#/vis/viewer/set/viewpointThetaPhi 260 -40
+/vis/viewer/set/viewpointThetaPhi 266 0
 #/vis/viewer/addCutawayPlane 0 0 0 m 1 0 0
 
 # slice view of detector
-#/vis/viewer/set/cutawayMode multiply
+/vis/viewer/set/cutawayMode multiply
 /vis/viewer/addCutawayPlane 0 0 0 m 1 0 0
-/vis/viewer/addCutawayPlane 0 0 0 m 0 -1 0
-#/vis/viewer/addCutawayPlane 0.03 0 0 m -1 0 0
-#/vis/viewer/addCutawayPlane 0 0 -2.9 m 0 0 1
+#/vis/viewer/addCutawayPlane 0 0 0 m 0 -1 0
+/vis/viewer/addCutawayPlane 0.03 0 0 m -1 0 0
+/vis/viewer/addCutawayPlane 0 0 -2.9 m 0 0 1
 /vis/viewer/zoom 2.2
 #
 # our world is 4x4 meters, the detector is about 1m across
